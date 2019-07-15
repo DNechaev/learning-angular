@@ -4,17 +4,14 @@
 
 ## Install
 ``` 
-cd ../client
+cd client/
 npm install
 ng build 
 
 cd ..
 docker-compose build --no-cache
 docker-compose run app npm install
-docker-compose up -d
-cat ./server/demo.sql | docker-compose exec -T db /usr/bin/mysql -u root --password=root database_development
 docker-compose down
-
 ```
 
 ## Use
@@ -33,12 +30,15 @@ Goto url: http://localhost:8090/
 ``` 
 Goto url:
 - http://localhost:8090/api/users
-- http://localhost:8090/api/..
+- http://localhost:8090/api/roles
+- http://localhost:8090/api/events
+- http://localhost:8090/api/purchases
 ``` 
 
 **Adminer**
 ```
-host: localhost:8091
+host: http://localhost:8091
+server: db
 user: root
 password: root
 db: database_development
@@ -52,5 +52,8 @@ user: root
 password: root
 ```
 
-
+**Demo DB**
+```
+Use Adminer for restore demo data (demo.sql)
+```
 
