@@ -33,6 +33,9 @@ Goto url:
 - http://localhost:8090/api/roles
 - http://localhost:8090/api/events
 - http://localhost:8090/api/purchases
+- http://localhost:8090/api/session/login
+- http://localhost:8090/api/session/logout
+- http://localhost:8090/api/session/profile
 ``` 
 
 **Adminer**

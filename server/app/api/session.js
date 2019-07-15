@@ -1,12 +1,12 @@
 module.exports = (app, db) => {
 
-    app.post( "/api/sessions/login", (req, res) =>
+    app.post( "/api/session/login", (req, res) =>
         app.Session.login(req.body.email, req.body.password)
             .then(result => res.json(result) )
             .catch( err => res.status(500).json(err) )
     );
 
-    app.post( "/api/sessions/logout", (req, res) => {
+    app.post( "/api/session/logout", (req, res) => {
 
         // Access
         if (req.auth.guest) {
@@ -18,7 +18,7 @@ module.exports = (app, db) => {
             .catch(err => res.status(500).json(err))
     });
 
-    app.get( "/api/sessions/profile", (req, res) => {
+    app.get( "/api/session/profile", (req, res) => {
 
         // Access
         if (req.auth.guest) {
