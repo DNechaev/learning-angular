@@ -4,25 +4,25 @@
 
 ## Install
 ``` 
-cd ./server
-npm install
-
 cd ../client
 npm install
-``` 
-
-## Build
-```
-cd ./client
 ng build 
+
+cd ..
+docker-compose build --no-cache
+docker-compose run app npm install
+docker-compose up -d
+cat ./server/demo.sql | docker-compose exec -T db /usr/bin/mysql -u root --password=root database_development
+docker-compose down
+
 ```
 
 ## Use
 
 **Docker**
 ``` 
-docker-compose up --build
-```
+docker-compose up
+``` 
 
 **App**
 ``` 
@@ -31,7 +31,9 @@ Goto url: http://localhost:8090/
 
 **App Api**
 ``` 
-Goto url: http://localhost:8090/api/..
+Goto url:
+- http://localhost:8090/api/users
+- http://localhost:8090/api/..
 ``` 
 
 **Adminer**
@@ -39,6 +41,7 @@ Goto url: http://localhost:8090/api/..
 host: localhost:8091
 user: root
 password: root
+db: database_development
 ```
 
 **Mysql**

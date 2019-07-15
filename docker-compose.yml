@@ -5,7 +5,7 @@ services:
     command: --default-authentication-plugin=mysql_native_password
     restart: always
     environment:
-      MYSQL_DATABASE: test
+      MYSQL_DATABASE: database_development
       MYSQL_ROOT_PASSWORD: root
     ports:
       - 8092:3306
@@ -16,11 +16,15 @@ services:
   adminer:
     image: adminer:latest
     restart: always
+    links:
+      - db
     ports:
       - 8091:8080
   app:
     build:
       context: ./docker/node
+    links:
+      - db
     ports:
       - 8090:8080
     volumes:
