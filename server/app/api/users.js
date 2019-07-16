@@ -26,6 +26,11 @@ module.exports = (app, db) => {
             };
         }
 
+        // email
+        if (typeof req.query.email === 'string') {
+            where.email = req.query.email;
+        }
+
         db.user.findAll({
             logging: console.log,
             where: where,

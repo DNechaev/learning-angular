@@ -3,7 +3,10 @@ module.exports = (app, db) => {
     app.post( "/api/session/login", (req, res) =>
         app.Session.login(req.body.email, req.body.password)
             .then(result => res.json(result) )
-            .catch( err => res.status(500).json(err) )
+            .catch( err => {
+                console.log('Error [Session.login]: ', err);
+                return res.status(500).json(err)
+            } )
     );
 
     app.post( "/api/session/logout", (req, res) => {

@@ -17,6 +17,8 @@ class Session {
                     },
                     attributes: ['id', 'name', 'email']
                 }).then(user => {
+                    if (!user) return reject('User not found');
+
                     const ssid = crypto.randomBytes(16).toString("hex");
                     this.db.user.update({
                         ssid: ssid,
