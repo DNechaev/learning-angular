@@ -1,9 +1,11 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { PageNotFoundComponent } from './shared/page-not-found/page-not-found.component';
+import { PageNotFoundComponent } from './shared/404/page-not-found.component';
+import { AuthGuard } from './shared/guards/auth.guard';
 
 const routes: Routes = [
-  { path: '**', component: PageNotFoundComponent }
+  { path: '', redirectTo: '/system/users', pathMatch: 'full' },
+  { path: '**', component: PageNotFoundComponent, canActivate: [AuthGuard] }
 ];
 
 @NgModule({

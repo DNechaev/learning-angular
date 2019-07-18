@@ -13,10 +13,11 @@ module.exports = (app, db) => {
 
         // Access
         if (req.auth.guest) {
-            return res.status(401).json('Unauthorized');
+            return res.status(401).json({message: 'Unauthorized'});
         }
 
-        app.Session.logout(req.body.ssid)
+        let user = app.Session.getCurrentUser(req);
+        app.Session.logout(user.ssid)
             .then(result => res.json(result))
             .catch(err => res.status(500).json(err))
     });
@@ -25,12 +26,31 @@ module.exports = (app, db) => {
 
         // Access
         if (req.auth.guest) {
-            return res.status(401).json('Unauthorized');
+            return res.status(401).json({message: 'Unauthorized'});
         }
 
-        app.Session.getUserBySsid(req.body.ssid)
-            .then(result => res.json(result))
-            .catch(err => res.status(500).json(err))
+        let user = app.Session.getCurrentUser(req);
+        if (user) {
+            res.json(user);
+        } else {
+            res.status(500).json({message: 'User not found'})
+        }
+
+    });
+
+    app.post("/api/session/registration", (req, res) => {
+
+        // Access
+        if (!req.auth.guest) {
+            return res.status(401).json('You are already registered');
+        }
+
+        app.Session.registration(req.body.email, req.body.password, req.body.name)
+            .then(result => res.json(result) )
+            .catch( err => {
+                console.log('Error [Session.registration]: ', err);
+                return res.status(500).json(err)
+            } )
 
     });
 

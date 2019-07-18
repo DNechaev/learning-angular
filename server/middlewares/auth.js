@@ -6,18 +6,20 @@ module.exports = (app, db) => {
             user: undefined
         };
 
-        let ssid = req.body.ssid || req.query.ssid;
-        if (typeof ssid === 'string') {
-            console.log('SSID: ', ssid);
-            app.Session.getUserBySsid(ssid)
+        let sessionId = req.header('X-SSID') || req.body.ssid || req.query.ssid;
+
+        if (typeof sessionId === 'string') {
+            console.log('SessionId: ', sessionId);
+            app.Session.getUserBySsid(sessionId)
                 .then( user => {
                     req.auth.guest = false;
                     req.auth.user  = user;
                     return next();
-                }).catch( err => next() )
+                }).catch( err => next(err) )
         } else {
-            console.log('SSID: empty');
+            console.log('SessionId: empty');
             return next();
         }
+
     };
 };

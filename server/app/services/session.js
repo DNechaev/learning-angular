@@ -7,6 +7,48 @@ class Session {
             this.db = db;
         }
 
+        registration(email, password, name) {
+            return new Promise((resolve, reject) => {
+
+                        this.db.user.create({
+                            email, password, name
+                        }).then( user => {
+
+                                user.setRoles([3]).then(() => {
+
+
+                                    this.db.user.findOne({
+                                        where: {
+                                            email: email,
+                                            password: password
+                                        },
+                                        attributes: ['id', 'name', 'email']
+                                    }).then(user => {
+                                        if (!user) return reject('Unauthorized');
+
+                                        const sessionId = crypto.randomBytes(16).toString("hex");
+                                        this.db.user.update({
+                                            ssid: sessionId,
+                                        }, {
+                                            where: {
+                                                id: user.id
+                                            }
+                                        }).then( () => {
+                                            this.getUserBySsid(sessionId)
+                                                .then( user => resolve(user) )
+                                                .catch( err => reject(err) );
+                                        }).catch( err => reject(err) );
+                                        
+
+                                    }).catch(err => reject(err) );
+
+                                }).catch( err => reject(err) )
+
+                            })
+                            .catch(err => reject(err));
+            });
+        }
+
         login(email, password) {
             return new Promise((resolve, reject) => {
 
@@ -17,17 +59,20 @@ class Session {
                     },
                     attributes: ['id', 'name', 'email']
                 }).then(user => {
-                    if (!user) return reject('User not found');
+                    if (!user) return reject('Unauthorized');
 
-                    const ssid = crypto.randomBytes(16).toString("hex");
+                    const sessionId = crypto.randomBytes(16).toString("hex");
                     this.db.user.update({
-                        ssid: ssid,
+                        ssid: sessionId,
                     }, {
                         where: {
                             id: user.id
                         }
-                    }).then( user => resolve(user) )
-                        .catch( err => reject(err) );
+                    }).then( () => {
+                        this.getUserBySsid(sessionId)
+                            .then( user => resolve(user) )
+                            .catch( err => reject(err) );
+                    }).catch( err => reject(err) );
                 }).catch( err => reject(err) )
 
             });
@@ -50,7 +95,7 @@ class Session {
                         if (user !== null) {
                             return resolve(user);
                         }
-                        return reject('User not found');
+                        return reject('Unauthorized');
                     })
                     .catch( err => reject(err) );
 
@@ -63,12 +108,12 @@ class Session {
                 this.getUserBySsid(ssid)
                     .then(user => {
                         this.db.user.update({
-                            ssid: '',
+                            ssid: null,
                         }, {
                             where: {
                                 id: user.id
                             }
-                        }).then( user => resolve(user) )
+                        }).then( () => resolve({}) )
                             .catch( err => reject(err) );
                     }).catch( err => reject(err) )
 
@@ -81,7 +126,7 @@ class Session {
                 return false;
             }
 
-            let user = JSON.parse(JSON.stringify(req.auth.user));
+            let user = this.getCurrentUser(req);
             console.log('checkAccess', user);
 
             let userRoles = user['roles'].map( v => v.name);
@@ -96,6 +141,11 @@ class Session {
             });
 
             return access;
+        }
+
+        getCurrentUser(req) {
+            if (req.auth.guest) return null;
+            return JSON.parse(JSON.stringify(req.auth.user));
         }
 
 }

@@ -83,8 +83,11 @@ module.exports = (app, db) => {
             name: req.body.name,
             email: req.body.email,
             password: req.body.password
-        }).then(result => res.json(result))
-            .catch(err => res.status(500).json(err));
+        }).then(user => {
+            user.setRoles(req.body.roles)
+                .then(() => res.json(user))
+                .catch(err => res.status(500).json(err));
+        }).catch(err => res.status(500).json(err));
 
     });
 
@@ -107,8 +110,11 @@ module.exports = (app, db) => {
                 where: {
                     id: req.params.id
                 }
-            }).then((result) => res.json(result))
-            .catch(err => res.status(500).json(err));
+            }).then( user => {
+                user.setRoles(req.body.roles)
+                    .then(() => res.json(user))
+                    .catch(err => res.status(500).json(err));
+            }).catch(err => res.status(500).json(err));
 
     });
 

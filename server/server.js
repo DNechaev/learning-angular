@@ -2,6 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const db = require("./models");
 const auth = require("./middlewares/auth");
+const errorHandler = require("./middlewares/error-handler");
 const session = require("./app/services/session");
 const cors = require('cors');
 
@@ -18,6 +19,12 @@ require("./app/api/users")(app, db);
 require("./app/api/roles")(app, db);
 require("./app/api/events")(app, db);
 require("./app/api/purchases")(app, db);
+
+app.use(function(req, res, next){
+    res.render('404', { message: 'Page not found' });
+});
+
+app.use(errorHandler);
 
 db.sequelize.sync().then(() => {
     app.listen(8080, () => console.log("App listening on external docker app port (see: docker-compose.yml)!"));

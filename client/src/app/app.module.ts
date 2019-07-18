@@ -4,8 +4,10 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AuthModule } from './auth/auth.module';
+import { SystemModule } from './system/system.module';
 import { AppComponent } from './app.component';
-import { PageNotFoundComponent } from './shared/page-not-found/page-not-found.component';
+import { PageNotFoundComponent } from './shared/404/page-not-found.component';
+import { AuthenticationService } from './shared/services/authentication.service';
 
 @NgModule({
   declarations: [
@@ -15,10 +17,11 @@ import { PageNotFoundComponent } from './shared/page-not-found/page-not-found.co
   imports: [
     BrowserModule,
     AuthModule,
+    SystemModule,
     AppRoutingModule,
     HttpClientModule
   ],
-  providers: [],
+  providers: [AuthenticationService],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

@@ -1,0 +1,9 @@
+<div class="container" *ngIf="this.currentUser" >
+  <h1>{{ this.currentUser.name }}, you are already registred! </h1>
+  <a [routerLink]="'/'">Back on the main page</a>
+</div>
+
+<div class="container" *ngIf="!this.currentUser" >
+  <h1>You are not authorized!</h1>
+  <a [routerLink]="'/login'">Please login</a>
+</div>
