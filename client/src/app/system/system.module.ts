@@ -5,19 +5,21 @@ import { SystemRoutingModule } from './system-routing.module';
 import { SharedModule } from '../shared/shared.module';
 import { SystemComponent } from './system.component';
 import { UsersComponent } from './users/users.component';
-import {AuthenticationService} from '../shared/services/authentication.service';
-
+import {NgbPaginationModule} from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
     SystemComponent,
-    UsersComponent
+    UsersComponent,
   ],
   imports: [
     CommonModule,
     SystemRoutingModule,
-    SharedModule
+    SharedModule,
+    NgbPaginationModule
   ],
-  providers: [AuthenticationService],
+  exports: [ UsersComponent ],
+  entryComponents: [ UsersComponent ],
+  providers: [],
 })
 export class SystemModule {}

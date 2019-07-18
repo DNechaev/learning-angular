@@ -3,5 +3,6 @@ export class User {
   name: string;
   email: string;
   password: string;
+  roles: Array<any>;
   ssid?: string;
 }

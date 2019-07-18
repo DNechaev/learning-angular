@@ -8,10 +8,11 @@ import {Router, ActivatedRoute} from '@angular/router';
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
-  providers: [AuthenticationService]
+  providers: []
 })
 export class LoginComponent implements OnInit {
 
+  currentUser;
   form: FormGroup;
   returnUrl: string;
   error;
@@ -24,15 +25,17 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
 
+    this.currentUser = this.authenticationService.currentUserValue;
+    this.authenticationService.currentUser.subscribe((user) => {
+      console.log('[LoginComponent] currentUser', user);
+      this.currentUser = user;
+    });
+
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
 
     this.form = new FormGroup({
       'email': new FormControl(null, [Validators.required, Validators.email]),
       'password': new FormControl(null, [Validators.required, Validators.minLength(4)]),
-    });
-
-    this.authenticationService.currentUser.subscribe((user) => {
-       console.log('[LoginComponent] currentUser', user);
     });
 
   }

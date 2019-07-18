@@ -5,13 +5,14 @@ import { AuthRoutingModule } from './auth-routing.module';
 import { SharedModule } from '../shared/shared.module';
 import { AuthComponent } from './auth.component';
 import { LoginComponent } from './login/login.component';
+import { LogoutComponent } from './logout/logout.component';
 import { RegistrationComponent } from './registration/registration.component';
-import {AuthenticationService} from '../shared/services/authentication.service';
 
 @NgModule({
   declarations: [
     AuthComponent,
     LoginComponent,
+    LogoutComponent,
     RegistrationComponent
   ],
   imports: [
@@ -19,6 +20,6 @@ import {AuthenticationService} from '../shared/services/authentication.service';
     AuthRoutingModule,
     SharedModule
   ],
-  providers: [AuthenticationService],
+  providers: [],
 })
 export class AuthModule {}

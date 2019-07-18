@@ -8,7 +8,7 @@ import {Router, ActivatedRoute} from '@angular/router';
   selector: 'app-registration',
   templateUrl: './registration.component.html',
   styleUrls: ['./registration.component.scss'],
-  providers: [AuthenticationService]
+  providers: []
 })
 export class RegistrationComponent implements OnInit {
 
@@ -25,6 +25,9 @@ export class RegistrationComponent implements OnInit {
   ngOnInit() {
 
     this.currentUser = this.authenticationService.currentUserValue;
+    this.authenticationService.currentUser.subscribe((user) => {
+      this.currentUser = user;
+    });
 
     this.form = new FormGroup({
       'email': new FormControl(null, [Validators.required, Validators.email]),
@@ -32,9 +35,7 @@ export class RegistrationComponent implements OnInit {
       'name': new FormControl(null, [Validators.required, Validators.minLength(4)]),
     });
 
-    this.authenticationService.currentUser.subscribe((user) => {
-       this.currentUser = user;
-    });
+
   }
 
   onSubmit() {

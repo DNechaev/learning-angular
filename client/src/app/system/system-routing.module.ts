@@ -8,7 +8,8 @@ import { AuthGuard } from '../shared/guards/auth.guard';
 
 const routes: Routes = [
   { path: 'system', component: SystemComponent, children: [
-      { path: 'users', component: UsersComponent/*, canActivate: [AuthGuard]*/ },
+      { path: '', redirectTo: '/system/users', pathMatch: 'full' },
+      { path: 'users', component: UsersComponent, canActivate: [AuthGuard] },
   ]}
 ];
 

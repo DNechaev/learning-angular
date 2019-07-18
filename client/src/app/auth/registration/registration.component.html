@@ -1,6 +1,6 @@
 <div class="container" *ngIf="this.currentUser" >
-  <h1>{{ this.currentUser.name }}, you are already registred! </h1>
-  <a [routerLink]="'/'">Back on the main page</a>
+  <h1>{{ this.currentUser.name }}, you are already logined! </h1>
+  <a routerLink="/auth/logout">Logout</a>
 </div>
 
 <div class="container" *ngIf="!this.currentUser" >
@@ -23,4 +23,5 @@
     <button type="submit" class="btn btn-primary" [disabled]="form.invalid">Submit</button>
   </form>
   <small class="text-red form-text text-muted" *ngIf="error">{{ error | json }}</small>
+  <a routerLink="/auth/login">Are you already registered? Sign in.</a>
 </div>

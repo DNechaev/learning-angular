@@ -1,5 +1,23 @@
 module.exports = (app, db) => {
+
+
+
+    const paginate = (query, { page, pageSize }) => {
+        const offset = ( page - 1 ) * pageSize;
+        const limit = offset + pageSize;
+
+        return {
+            ...query,
+            offset,
+            limit,
+        }
+    };
+
+
     app.get( "/api/users", (req, res) => {
+
+        page     = (+req.query.page) ? +req.query.page : 1;
+        pageSize = (+req.query.page_size) ? +req.query.page_size : 10;
 
         // Access
         if (!app.Session.checkAccess(req, ['ADMIN'])) {
@@ -12,7 +30,7 @@ module.exports = (app, db) => {
         console.log('req.query', req.query);
 
         let where = {};
-
+/*
         // name
         if (typeof req.query.name === 'string') {
             //where.name = {[db.Sequelize.Op.like]: req.query.name}};
@@ -30,18 +48,37 @@ module.exports = (app, db) => {
         if (typeof req.query.email === 'string') {
             where.email = req.query.email;
         }
-
-        db.user.findAll({
-            logging: console.log,
-            where: where,
-            include: [
-                {
-                    model: db.role,
-                    as: 'roles',
-                    attributes: ['id', 'name'],
-                }
-            ]
-        }).then((result) => res.json(result))
+*/
+        // filter
+        /*if (typeof req.query.filter === 'string') {
+            where.name = {
+                [db.Sequelize.Op.or]: [
+                    {[db.Sequelize.Op.like]: req.query.name},
+                    {[db.Sequelize.Op.like]: '%' +req.query.name},
+                    {[db.Sequelize.Op.like]: '%' +req.query.name + '%'},
+                    {[db.Sequelize.Op.like]: req.query.name + '%'}
+                ]
+            };
+        }
+*/
+        db.user.findAndCountAll(paginate(
+            {
+                logging: console.log,
+                where: where,
+                include: [
+                    {
+                        model: db.role,
+                        as: 'roles',
+                        attributes: ['id', 'name'],
+                    }
+                ],
+                distinct:true
+            }, { page, pageSize }))
+            .then((result) => {
+                    result.page = page;
+                    result.pageSize = pageSize;
+                    return res.json(result);
+            })
             .catch( err => res.status(500).json(err) );
 
     });
@@ -137,7 +174,7 @@ module.exports = (app, db) => {
             where: {
                 id: req.params.id
             }
-        }).then((result) => res.json(result))
+        }).then(() => res.json({}))
           .catch(err => res.status(500).json(err));
 
     });
