@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
 
     User.associate = (models) => {
         User.belongsToMany(models.role, { as: 'roles', through: 'user_role', foreignKey: 'userId' });
-        User.hasMany(models.purchase, { as: 'purchases', foreignKey: 'userId', sourceKey: 'id' });
+        User.hasMany(models.purchase, { as: 'purchases', foreignKey: 'userId', sourceKey: 'id', onDelete: 'cascade' });
     };
 
     return User;

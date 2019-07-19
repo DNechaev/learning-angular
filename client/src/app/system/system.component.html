@@ -1,6 +1,6 @@
 <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0">
   <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">Tickets</a>
-  <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
+  <app-search class="w-100"></app-search>
   <ul class="navbar-nav px-3">
     <li class="nav-item text-nowrap">
       <a class="nav-link" routerLink="/auth/logout">Sign out</a>
@@ -15,7 +15,7 @@
       <div class="sidebar-sticky">
         <ul class="nav flex-column">
           <li class="nav-item">
-            <a class="nav-link" routerLink="/system/users" routerLinkActive="active">Users</a>
+            <a class="nav-link" routerLink="/system/users" routerLinkActive="active"><i class="fas fa-users"></i> Users</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" routerLink="/system/tickets" routerLinkActive="active">Tickets</a>

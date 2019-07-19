@@ -4,13 +4,17 @@ import { CommonModule } from '@angular/common';
 import { SystemRoutingModule } from './system-routing.module';
 import { SharedModule } from '../shared/shared.module';
 import { SystemComponent } from './system.component';
-import { UsersComponent } from './users/users.component';
-import {NgbPaginationModule} from '@ng-bootstrap/ng-bootstrap';
+import { UsersListComponent } from './users/users-list.component';
+import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
+import { SearchComponent } from './search/search.component';
+import { UsersFormComponent } from './users/users-form.component';
 
 @NgModule({
   declarations: [
+    SearchComponent,
     SystemComponent,
-    UsersComponent,
+    UsersListComponent,
+    UsersFormComponent,
   ],
   imports: [
     CommonModule,
@@ -18,8 +22,7 @@ import {NgbPaginationModule} from '@ng-bootstrap/ng-bootstrap';
     SharedModule,
     NgbPaginationModule
   ],
-  exports: [ UsersComponent ],
-  entryComponents: [ UsersComponent ],
+  exports: [],
   providers: [],
 })
 export class SystemModule {}

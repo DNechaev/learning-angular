@@ -1,10 +1,9 @@
-import {Injectable} from '@angular/core';
-import {BehaviorSubject, Observable, throwError} from 'rxjs';
-import {HttpClient, HttpErrorResponse} from '@angular/common/http';
-import {environment} from '../../../environments/environment';
-import {map, catchError, retry} from 'rxjs/operators';
-import {User} from '../models/user.model';
-import {Role} from '../models/role.model';
+import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
+import { map, retry } from 'rxjs/operators';
+import { User } from '../models/user.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
@@ -36,8 +35,7 @@ export class AuthenticationService {
           this.sessionId = user.ssid;
           this.currentUserSubject.next(user);
           return user;
-        }),
-        // catchError(this.handleError)
+        })
       );
   }
 
@@ -55,8 +53,7 @@ export class AuthenticationService {
           this.sessionId = user.ssid;
           this.currentUserSubject.next(user);
           return user;
-        }),
-        // catchError(this.handleError)
+        })
       );
   }
 
@@ -73,20 +70,6 @@ export class AuthenticationService {
     });
 
     return access;
-  }
-
-  private handleError(error: HttpErrorResponse) {
-    if (error.error instanceof ErrorEvent) {
-      // A client-side or network error occurred. Handle it accordingly.
-      console.error('An error occurred:', error.error.message);
-    } else {
-      // The backend returned an unsuccessful response code.
-      // The response body may contain clues as to what went wrong,
-      console.error('Backend returned code', error);
-    }
-    // return an observable with a user-facing error message
-    return throwError(
-      'Something bad happened; please try again later.');
   }
 
 }

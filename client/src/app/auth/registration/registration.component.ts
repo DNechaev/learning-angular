@@ -3,7 +3,6 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {AuthenticationService} from 'src/app/shared/services/authentication.service';
 import {Router, ActivatedRoute} from '@angular/router';
 
-@Injectable()
 @Component({
   selector: 'app-registration',
   templateUrl: './registration.component.html',
@@ -30,9 +29,9 @@ export class RegistrationComponent implements OnInit {
     });
 
     this.form = new FormGroup({
-      'email': new FormControl(null, [Validators.required, Validators.email]),
-      'password': new FormControl(null, [Validators.required, Validators.minLength(4)]),
-      'name': new FormControl(null, [Validators.required, Validators.minLength(4)]),
+      email: new FormControl(null, [Validators.required, Validators.email]),
+      password: new FormControl(null, [Validators.required, Validators.minLength(4)]),
+      name: new FormControl(null, [Validators.required, Validators.minLength(4)]),
     });
 
 

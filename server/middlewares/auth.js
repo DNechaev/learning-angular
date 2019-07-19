@@ -3,7 +3,7 @@ module.exports = (app, db) => {
 
         req.auth = {
             guest: true,
-            user: undefined
+            user:  null
         };
 
         let sessionId = req.header('X-SSID') || req.body.ssid || req.query.ssid;
@@ -15,7 +15,10 @@ module.exports = (app, db) => {
                     req.auth.guest = false;
                     req.auth.user  = user;
                     return next();
-                }).catch( err => next(err) )
+                }).catch( err => next({
+                    name: 'UnauthorizedError',
+                    message: err
+                }) )
         } else {
             console.log('SessionId: empty');
             return next();

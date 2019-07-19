@@ -6,7 +6,7 @@
 ``` 
 cd client/
 npm install
-ng build 
+ng build --prod
 
 cd ..
 docker-compose build --no-cache

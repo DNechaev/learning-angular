@@ -1,29 +1,32 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AuthModule } from './auth/auth.module';
 import { SystemModule } from './system/system.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { AuthInterceptor } from './shared/interceptors/auth.interceptor';
+import { ToastsComponent } from './toasts.component';
 import { PageNotFoundComponent } from './shared/404/page-not-found.component';
-import { AuthenticationService } from './shared/services/authentication.service';
+import { AuthInterceptor } from './shared/interceptors/auth.interceptor';
+
 
 @NgModule({
   declarations: [
     AppComponent,
+    ToastsComponent,
     PageNotFoundComponent
   ],
   imports: [
     BrowserModule,
+    NgbModule,
     AuthModule,
     SystemModule,
     AppRoutingModule,
     HttpClientModule
   ],
   providers: [
-    AuthenticationService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,

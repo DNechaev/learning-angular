@@ -16,9 +16,6 @@ module.exports = (app, db) => {
 
     app.get( "/api/users", (req, res) => {
 
-        page     = (+req.query.page) ? +req.query.page : 1;
-        pageSize = (+req.query.page_size) ? +req.query.page_size : 10;
-
         // Access
         if (!app.Session.checkAccess(req, ['ADMIN'])) {
             if (req.auth.guest) {
@@ -27,10 +24,13 @@ module.exports = (app, db) => {
             return res.status(403).json('Forbidden');
         }
 
+        page     = (+req.query.page) ? +req.query.page : 1;
+        pageSize = (+req.query.page_size) ? +req.query.page_size : 10;
+
         console.log('req.query', req.query);
 
         let where = {};
-/*
+
         // name
         if (typeof req.query.name === 'string') {
             //where.name = {[db.Sequelize.Op.like]: req.query.name}};
@@ -48,19 +48,21 @@ module.exports = (app, db) => {
         if (typeof req.query.email === 'string') {
             where.email = req.query.email;
         }
-*/
+
         // filter
-        /*if (typeof req.query.filter === 'string') {
-            where.name = {
-                [db.Sequelize.Op.or]: [
-                    {[db.Sequelize.Op.like]: req.query.name},
-                    {[db.Sequelize.Op.like]: '%' +req.query.name},
-                    {[db.Sequelize.Op.like]: '%' +req.query.name + '%'},
-                    {[db.Sequelize.Op.like]: req.query.name + '%'}
-                ]
-            };
+        if (typeof req.query.filter === 'string') {
+            where[db.Sequelize.Op.or] = [
+                {name: {[db.Sequelize.Op.like]: req.query.filter}},
+                {name: {[db.Sequelize.Op.like]: '%' +req.query.filter}},
+                {name: {[db.Sequelize.Op.like]: '%' +req.query.filter + '%'}},
+                {name: {[db.Sequelize.Op.like]: req.query.filter + '%'}},
+                {email: {[db.Sequelize.Op.like]: req.query.filter}},
+                {email: {[db.Sequelize.Op.like]: '%' +req.query.filter}},
+                {email: {[db.Sequelize.Op.like]: '%' +req.query.filter + '%'}},
+                {email: {[db.Sequelize.Op.like]: req.query.filter + '%'}},
+            ];
         }
-*/
+
         db.user.findAndCountAll(paginate(
             {
                 logging: console.log,

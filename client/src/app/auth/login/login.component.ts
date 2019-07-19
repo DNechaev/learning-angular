@@ -1,9 +1,8 @@
-import {Component, Injectable, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {AuthenticationService} from 'src/app/shared/services/authentication.service';
 import {Router, ActivatedRoute} from '@angular/router';
 
-@Injectable()
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -31,11 +30,11 @@ export class LoginComponent implements OnInit {
       this.currentUser = user;
     });
 
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+    this.returnUrl = this.route.snapshot.queryParams.returnUrl || '/';
 
     this.form = new FormGroup({
-      'email': new FormControl(null, [Validators.required, Validators.email]),
-      'password': new FormControl(null, [Validators.required, Validators.minLength(4)]),
+      email: new FormControl(null, [Validators.required, Validators.email]),
+      password: new FormControl(null, [Validators.required, Validators.minLength(4)]),
     });
 
   }

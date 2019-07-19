@@ -3,5 +3,4 @@ export class Page {
   count: number;
   page: number;
   pageSize: number;
-  pageCount: number;
 }
