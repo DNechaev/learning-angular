@@ -10,10 +10,6 @@ export class LoaderIndicatorService {
     this.subject = new BehaviorSubject<boolean>(false);
   }
 
-  isLoading() {
-    return this.subject.value;
-  }
-
   enable() {
     this.subject.next(true);
   }

@@ -21,7 +21,7 @@ export class ToastService {
   }
 
   warning(dangerTpl) {
-    this.show(dangerTpl, { classname: 'bg-warning text-light', delay: 4000, header: 'Warning'  });
+    this.show(dangerTpl, { classname: 'bg-warning text-light', delay: 8000, header: 'Warning'  });
   }
 
   danger(dangerTpl) {

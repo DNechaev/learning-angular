@@ -4,18 +4,37 @@ import { BehaviorSubject } from 'rxjs';
 @Injectable({ providedIn: 'root' })
 export class SearchService {
 
-  subject: BehaviorSubject<string>;
+  active: BehaviorSubject<boolean>;
+  search: BehaviorSubject<string>;
 
   constructor() {
-    this.subject = new BehaviorSubject<string>('');
+    this.active = new BehaviorSubject<boolean>(true);
+    this.search = new BehaviorSubject<string>('');
   }
 
   set(value: string) {
-    this.subject.next(value);
+    if (this.isActive()) {
+      this.search.next(value);
+    }
   }
 
   get() {
-    return this.subject.value;
+    if (this.isActive()) {
+      return this.search.value;
+    }
+    return '';
+  }
+
+  isActive() {
+    return this.active.value;
+  }
+
+  enable() {
+    this.active.next(true);
+  }
+
+  disable() {
+    this.active.next(false);
   }
 
 }

@@ -1,6 +1,7 @@
+<ng-content select="app-toasts"></ng-content>
 <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0">
-  <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">Tickets</a>
-  <app-search class="w-100"></app-search>
+  <a class="navbar-brand col-sm-3 col-md-2 mr-0" routerLink="/">Tickets</a>
+  <ng-content select="app-search"></ng-content>
   <ul class="navbar-nav px-3">
     <li class="nav-item text-nowrap">
       <a class="nav-link" routerLink="/auth/logout">Sign out</a>
@@ -15,17 +16,17 @@
       <div class="sidebar-sticky">
         <ul class="nav flex-column">
           <li class="nav-item">
-            <a class="nav-link" routerLink="/system/users" routerLinkActive="active"><i class="fas fa-users"></i> Users</a>
+            <a class="nav-link" routerLink="/users" routerLinkActive="active"><i class="fas fa-users"></i> Users</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" routerLink="/system/tickets" routerLinkActive="active">Tickets</a>
+            <a class="nav-link" routerLink="/tickets" routerLinkActive="active">Tickets</a>
           </li>
         </ul>
       </div>
     </nav>
 
     <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
-      <router-outlet></router-outlet>
+      <ng-content></ng-content>
     </main>
 
   </div>

@@ -1,7 +1,9 @@
-import {Component, OnInit} from '@angular/core';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {AuthenticationService} from 'src/app/shared/services/authentication.service';
-import {Router, ActivatedRoute} from '@angular/router';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router, ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
+
+import { AuthenticationService } from 'src/app/shared/services/authentication.service';
 
 @Component({
   selector: 'app-login',
@@ -9,9 +11,10 @@ import {Router, ActivatedRoute} from '@angular/router';
   styleUrls: ['./login.component.scss'],
   providers: []
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
 
-  currentUser;
+  private subscription: Subscription;
+  authorizedUser;
   form: FormGroup;
   returnUrl: string;
   error;
@@ -24,10 +27,8 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
 
-    this.currentUser = this.authenticationService.currentUserValue;
-    this.authenticationService.currentUser.subscribe((user) => {
-      console.log('[LoginComponent] currentUser', user);
-      this.currentUser = user;
+    this.subscription = this.authenticationService.currentUser.subscribe((user) => {
+        this.authorizedUser = user;
     });
 
     this.returnUrl = this.route.snapshot.queryParams.returnUrl || '/';
@@ -35,12 +36,18 @@ export class LoginComponent implements OnInit {
     this.form = new FormGroup({
       email: new FormControl(null, [Validators.required, Validators.email]),
       password: new FormControl(null, [Validators.required, Validators.minLength(4)]),
+      remember: new FormControl( false )
     });
 
   }
 
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+    this.subscription = null;
+  }
+
   onSubmit() {
-    this.authenticationService.login(this.form.value.email, this.form.value.password)
+    this.authenticationService.login(this.form.value.email, this.form.value.password, this.form.value.remember)
       .subscribe(
         data => {
           console.log('[LoginComponent] login.data', data);

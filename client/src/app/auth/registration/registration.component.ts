@@ -1,7 +1,8 @@
-import {Component, Injectable, OnInit} from '@angular/core';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {AuthenticationService} from 'src/app/shared/services/authentication.service';
-import {Router, ActivatedRoute} from '@angular/router';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AuthenticationService } from 'src/app/shared/services/authentication.service';
+import { Router, ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-registration',
@@ -9,9 +10,10 @@ import {Router, ActivatedRoute} from '@angular/router';
   styleUrls: ['./registration.component.scss'],
   providers: []
 })
-export class RegistrationComponent implements OnInit {
+export class RegistrationComponent implements OnInit, OnDestroy {
 
-  currentUser;
+  subscription: Subscription;
+  authorizedUser;
   form: FormGroup;
   error;
 
@@ -23,9 +25,8 @@ export class RegistrationComponent implements OnInit {
 
   ngOnInit() {
 
-    this.currentUser = this.authenticationService.currentUserValue;
-    this.authenticationService.currentUser.subscribe((user) => {
-      this.currentUser = user;
+    this.subscription = this.authenticationService.currentUser.subscribe((user) => {
+      this.authorizedUser = user;
     });
 
     this.form = new FormGroup({
@@ -34,7 +35,11 @@ export class RegistrationComponent implements OnInit {
       name: new FormControl(null, [Validators.required, Validators.minLength(4)]),
     });
 
+  }
 
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+    this.subscription = null;
   }
 
   onSubmit() {
@@ -47,9 +52,5 @@ export class RegistrationComponent implements OnInit {
           this.error = error.error;
         });
   }
-
-  // onTest() {
-  //  this.authenticationService.checkAccess(this.currentUser);
-  // }
 
 }

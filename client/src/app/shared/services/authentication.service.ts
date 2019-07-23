@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../environments/environment';
 import { map, retry } from 'rxjs/operators';
+
+import { environment } from '../../../environments/environment';
 import { User } from '../models/user.model';
 
 @Injectable({ providedIn: 'root' })
@@ -14,7 +15,10 @@ export class AuthenticationService {
   public  currentUser: Observable<User>;
 
   constructor(private http: HttpClient) {
-    this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(sessionStorage.getItem('currentUser')));
+
+    this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(
+      localStorage.getItem('currentUser') ? localStorage.getItem('currentUser') : sessionStorage.getItem('currentUser')
+    ));
     this.currentUser = this.currentUserSubject.asObservable();
   }
 
@@ -26,12 +30,15 @@ export class AuthenticationService {
     return (this.currentUserSubject.value) ? this.currentUserSubject.value.ssid : '';
   }
 
-  public login(email: string, password: string) {
+  public login(email: string, password: string, remember: boolean = false) {
     return this.http.post<any>(`${environment.apiUrl}/api/session/login`, { email, password })
       .pipe(
         retry(3),
         map(user => {
           sessionStorage.setItem('currentUser', JSON.stringify(user));
+          if (remember) {
+            localStorage.setItem('currentUser', JSON.stringify(user));
+          }
           this.sessionId = user.ssid;
           this.currentUserSubject.next(user);
           return user;
@@ -41,6 +48,7 @@ export class AuthenticationService {
 
   public logout() {
     sessionStorage.removeItem('currentUser');
+    localStorage.removeItem('currentUser');
     this.sessionId = null;
     this.currentUserSubject.next(null);
   }
