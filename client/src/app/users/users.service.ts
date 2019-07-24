@@ -2,16 +2,15 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-import { environment } from '../../environments/environment';
-import { Page } from '../shared/models/page.model';
-import { User } from '../shared/models/user.model';
+import { User, Page } from '../shared/models';
+import { URL_API_USERS } from '../shared/consts';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UsersService {
 
-  baseUrl: string = environment.apiUrl + '/api/users';
+  baseUrl: string = URL_API_USERS;
 
   constructor(private http: HttpClient) {}
 
@@ -35,7 +34,7 @@ export class UsersService {
     return this.http.put<User>(this.baseUrl + '/' + userId, user);
   }
 
-  public deleteUser( userId: number ): Observable<any> {
+  deleteUser( userId: number ): Observable<any> {
     return this.http.delete(this.baseUrl + '/' + userId);
   }
 

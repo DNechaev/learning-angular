@@ -20,6 +20,25 @@ body {
   z-index: 100; /* Behind the navbar */
   padding: 0;
   box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+  .nav-link {
+    font-weight: 500;
+    color: #333;
+    .feather {
+      margin-right: 4px;
+      color: #999;
+    }
+    &.active {
+      color: #0c3eff;
+      .feather {
+        color: inherit;
+      }
+    }
+    &:hover {
+      .feather {
+        color: inherit;
+      }
+    }
+  }
 }
 
 .sidebar-sticky {
@@ -30,25 +49,6 @@ body {
   padding-top: .5rem;
   overflow-x: hidden;
   overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
-}
-
-.sidebar .nav-link {
-  font-weight: 500;
-  color: #333;
-}
-
-.sidebar .nav-link .feather {
-  margin-right: 4px;
-  color: #999;
-}
-
-.sidebar .nav-link.active {
-  color: #0c3eff;
-}
-
-.sidebar .nav-link:hover .feather,
-.sidebar .nav-link.active .feather {
-  color: inherit;
 }
 
 .sidebar-heading {
@@ -68,16 +68,13 @@ body {
   box-shadow: inset -1px 0 0 rgba(0, 0, 0, .25);
 }
 
-.navbar .form-control {
-  padding: .75rem 1rem;
-  border-width: 0;
-  border-radius: 0;
+.navbar {
+  .form-control {
+    padding: .75rem 1rem;
+    border-width: 0;
+    border-radius: 0;
+  }
 }
-
-
-/*
- * Utilities
- */
 
 .border-top { border-top: 1px solid #e5e5e5; }
 .border-bottom { border-bottom: 1px solid #e5e5e5; }

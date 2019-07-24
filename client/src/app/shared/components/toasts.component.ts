@@ -12,9 +12,9 @@ import { ToastService } from '../services/toast.service';
       [delay]="toast.delay || 3000"
       (hide)="toastService.remove(toast)"
     >
-      <ng-template [ngIf]="isTemplate(toast)" [ngIfElse]="text">
-        <ng-template [ngTemplateOutlet]="toast.textOrTpl"></ng-template>
-      </ng-template>
+      <ng-container *ngIf="isTemplate(toast) else text">
+        <ng-container *ngTemplateOutlet="toast.textOrTpl"></ng-container>
+      </ng-container>
 
       <ng-template #text>{{ toast.textOrTpl }}</ng-template>
     </ngb-toast>

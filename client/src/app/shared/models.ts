@@ -1,3 +1,10 @@
+export class Page {
+  rows: Array<any>;
+  count: number;
+  page: number;
+  pageSize: number;
+}
+
 export class User {
   id: number;
   name: string;

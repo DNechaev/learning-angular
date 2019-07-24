@@ -1,12 +1,6 @@
 module.exports = (app, db) => {
     return function (req, res, next) {
 
-
-
-
-
-
-
         req.auth = {
             guest: true,
             user:  null
@@ -29,9 +23,6 @@ module.exports = (app, db) => {
             console.log('SessionId: empty');
             return next();
         }
-
-
-
 
     };
 };

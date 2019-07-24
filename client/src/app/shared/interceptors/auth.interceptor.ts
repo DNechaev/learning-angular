@@ -34,7 +34,7 @@ export class AuthInterceptor implements HttpInterceptor {
 
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
-        console.log('intercept error', error.error);
+        console.error('[AuthInterceptor] Error', error.error);
         if (error.status !== 401) {
           this.toastService.warning(error.message + ': ' + JSON.stringify(error.error));
         } else {

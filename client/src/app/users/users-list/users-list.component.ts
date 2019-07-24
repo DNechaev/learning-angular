@@ -1,15 +1,14 @@
-import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { map } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 
 import { AuthenticationService } from '../../shared/services/authentication.service';
-import { Role } from '../../shared/models/role.model';
-import { User } from '../../shared/models/user.model';
+import { Role } from '../../shared/enums';
+import { User } from '../../shared/models';
 import { UsersService } from '../users.service';
 
 import { LoaderIndicatorService } from '../../shared/services/loader-indicator.service';
 import { SearchService } from '../../shared/services/search.service';
-import {Subscription} from 'rxjs';
-
 
 @Component({
   selector: 'app-users',
@@ -39,43 +38,37 @@ export class UsersListComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    console.log('[UsersListComponent] ++++ngOnInit++++');
 
     this.searchService.enable();
     this.searchString = this.searchService.get();
 
-    this.authorizedUser = this.authenticationService.currentUserValue;
-    this.access         = this.authenticationService.checkAccess(this.authorizedUser, [Role.ADMIN]);
-
-    this.loadData();
+    // this.authorizedUser = this.authenticationService.currentUserValue;
+    // this.access         = this.authenticationService.userHasRoles(this.authorizedUser, [Role.ADMIN]);
 
     this.subscriptions.push(
       this.authenticationService.currentUser.subscribe((user) => {
-        console.log('[UsersListComponent] currentUser', user);
         this.authorizedUser = user;
-        this.access         = this.authenticationService.checkAccess(this.authorizedUser, [Role.ADMIN]);
+        this.access         = this.authenticationService.userHasRoles(this.authorizedUser, [Role.ADMIN]);
       })
     );
 
     this.subscriptions.push(
       this.loaderIndicatorService.subject.subscribe((isLoading) => {
-        console.log('[UsersListComponent] isLoading', isLoading);
         this.isLoading = isLoading;
       })
     );
 
     this.subscriptions.push(
       this.searchService.search.subscribe((searchString) => {
-        console.log('[UsersListComponent] searchString', searchString);
         this.searchString = searchString;
         this.loadData();
       })
     );
 
+    this.loadData();
   }
 
   ngOnDestroy() {
-    console.log('[UsersListComponent] ----ngOnDestroy----');
     this.subscriptions.map((subscription) => {
       subscription.unsubscribe();
     });
@@ -83,7 +76,6 @@ export class UsersListComponent implements OnInit, OnDestroy {
   }
 
   onPageChange(gotoPage: number) {
-    console.log(gotoPage);
     this.currentPage = gotoPage;
     this.loadData(gotoPage);
   }
@@ -101,22 +93,19 @@ export class UsersListComponent implements OnInit, OnDestroy {
         this.users = users;
       },
       error => {
-        console.log(error);
-        // alert(error);
+        console.error(error);
       }
     );
   }
 
   onDelete(user: User) {
-    console.log(user);
     if (confirm(`Delete user: ${user.email}?`)) {
       this.usersService.deleteUser(user.id).subscribe(
         () => {
           this.loadData();
         },
         error => {
-          console.log(error);
-          // alert('Something broke, see the console.');
+          console.error(error);
           this.loadData();
         });
     }

@@ -3,8 +3,8 @@ import {ActivatedRoute, Router} from '@angular/router';
 import { FormGroup, FormControl, Validators, FormArray, ValidatorFn } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
-import { Role } from '../../shared/models/role.model';
-import { User } from '../../shared/models/user.model';
+import { Role } from '../../shared/enums';
+import { User } from '../../shared/models';
 import { SearchService } from '../../shared/services/search.service';
 import { ToastService } from '../../shared/services/toast.service';
 import { UsersService } from '../users.service';
@@ -28,7 +28,7 @@ export class UsersEditComponent implements OnInit, OnDestroy {
   userForm: FormGroup;
   allRoles = [
     { id: 1, name: Role.ADMIN },
-    { id: 2, name: Role.MANGER },
+    { id: 2, name: Role.MANAGER },
     { id: 3, name: Role.USER },
   ];
 
@@ -44,22 +44,19 @@ export class UsersEditComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
 
-    console.log('[UsersEditComponent] ++++ngOnInit++++');
     this.userId = +this.activatedRoute.snapshot.paramMap.get('id');
 
     this.searchService.disable();
 
     this.subscriptions.push(
       this.authenticationService.currentUser.subscribe((user: User) => {
-        console.log('[UsersEditComponent] authorizedUser', user);
         this.authorizedUser = user;
-        this.access = this.authenticationService.checkAccess(this.authorizedUser, [Role.ADMIN]);
+        this.access = this.authenticationService.userHasRoles(this.authorizedUser, [Role.ADMIN]);
       })
     );
 
     this.subscriptions.push(
       this.loaderIndicatorService.subject.subscribe((isLoading) => {
-        console.log('[UsersEditComponent] isLoading', isLoading);
         this.isLoading = isLoading;
       })
     );
@@ -81,7 +78,6 @@ export class UsersEditComponent implements OnInit, OnDestroy {
       return this.toastService.warning('User won\'t loaded');
     }
     user.roles = this.getSelectedRoleIds(this.userForm.value.roles);
-    console.log('User: ', user);
     this.usersService.updateUser(this.userId, user).subscribe(
       (data) => {
         this.toastService.success('User updated!');
@@ -97,13 +93,8 @@ export class UsersEditComponent implements OnInit, OnDestroy {
     this.userForm = new FormGroup({
       name: new FormControl(null, [Validators.required, Validators.minLength(4)]),
       email: new FormControl(null, [Validators.required, Validators.email]),
-      password: new FormControl(null),
-      roles: new FormArray([], (formArray: FormArray) => {
-        const totalSelected = formArray.controls
-          .map(control => control.value)
-          .reduce((prev, next) => next ? prev + next : prev, 0);
-        return totalSelected >= 1 ? null : { required: true };
-      })
+      password: new FormControl(null, this.validatorEmptyOrMin(4)),
+      roles: new FormArray([], this.validatorMinSelectedCheckboxes(1))
     });
 
     this.allRoles.map(() => {
@@ -112,37 +103,49 @@ export class UsersEditComponent implements OnInit, OnDestroy {
 
   }
 
-  private getSelectedRoleIds(roles: any[]) {
+  private validatorMinSelectedCheckboxes(min = 1): ValidatorFn {
+    return (formArray: FormArray) => {
+      const totalSelected = formArray.controls
+        .map(control => control.value)
+        .reduce((prev, next) => next ? prev + next : prev, 0);
+      return totalSelected >= min ? null : { required: true };
+    };
+  }
+
+  private validatorEmptyOrMin(min = 1): ValidatorFn {
+    return  (formControl: FormControl) => {
+      const valueLength = formControl.value ? formControl.value.length : 0;
+      return (valueLength === 0 || valueLength >= min) ? null : { required: true };
+    };
+  }
+
+  private getSelectedRoleIds(roles: any[]): number[] {
     return roles
       .map((v, i) => v ? this.allRoles[i].id : null)
       .filter(v => v !== null);
   }
 
-  private getRoleIdsFromRoles(roles: any[]) {
+  private getRoleIdsFromRoles(roles: any[]): number[] {
     return roles
       .map((v, i) => v ? v.id : null)
       .filter(v => v !== null);
   }
 
   private loadUser(userId: number) {
-    console.log('userId: ', userId);
     this.usersService.getUserById(userId).subscribe(
       (data) => {
-        console.log('loadUser: ', data);
         this.toastService.success('User loaded!');
         this.userId = data.id;
 
         const selectedRoles = this.getRoleIdsFromRoles(data.roles);
-        console.log('selectedRoles: ', selectedRoles);
 
         data.roles = [];
         this.allRoles.map((o) => {
-          data.roles.push(selectedRoles.indexOf(o.id) !== -1);
+          data.roles.push(selectedRoles.includes(o.id));
         });
 
         this.userForm.patchValue(data);
         this.userLoaded = true;
-        console.log('userForm: ', this.userForm);
       },
       error => {
         console.error(error);

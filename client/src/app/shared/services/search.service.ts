@@ -18,14 +18,14 @@ export class SearchService {
     }
   }
 
-  get() {
+  get(): string {
     if (this.isActive()) {
       return this.search.value;
     }
     return '';
   }
 
-  isActive() {
+  isActive(): boolean {
     return this.active.value;
   }
 

@@ -3,8 +3,9 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { map, retry } from 'rxjs/operators';
 
-import { environment } from '../../../environments/environment';
-import { User } from '../models/user.model';
+import { User } from '../models';
+import { Role } from '../enums';
+import { URL_API_SESSIONS } from '../consts';
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
@@ -12,7 +13,7 @@ export class AuthenticationService {
   private sessionId: string;
   private currentUserSubject: BehaviorSubject<User>;
 
-  public  currentUser: Observable<User>;
+  currentUser: Observable<User>;
 
   constructor(private http: HttpClient) {
 
@@ -22,16 +23,16 @@ export class AuthenticationService {
     this.currentUser = this.currentUserSubject.asObservable();
   }
 
-  public get currentUserValue(): User {
+  get currentUserValue(): User {
     return this.currentUserSubject.value;
   }
 
-  public getToken() {
+  getToken(): string {
     return (this.currentUserSubject.value) ? this.currentUserSubject.value.ssid : '';
   }
 
-  public login(email: string, password: string, remember: boolean = false) {
-    return this.http.post<any>(`${environment.apiUrl}/api/session/login`, { email, password })
+  login(email: string, password: string, remember: boolean = false): Observable<any> {
+    return this.http.post<any>(URL_API_SESSIONS + '/login', { email, password })
       .pipe(
         retry(3),
         map(user => {
@@ -46,15 +47,15 @@ export class AuthenticationService {
       );
   }
 
-  public logout() {
+  logout() {
     sessionStorage.removeItem('currentUser');
     localStorage.removeItem('currentUser');
     this.sessionId = null;
     this.currentUserSubject.next(null);
   }
 
-  public registration(email: string, password: string, name: string) {
-    return this.http.post<any>(`${environment.apiUrl}/api/session/registration`, { email, password, name })
+  registration(email: string, password: string, name: string): Observable<any> {
+    return this.http.post<any>(URL_API_SESSIONS + '/registration', { email, password, name })
       .pipe(
         map(user => {
           sessionStorage.setItem('currentUser', JSON.stringify(user));
@@ -65,14 +66,14 @@ export class AuthenticationService {
       );
   }
 
-  public checkAccess(user: User, roles?: string[]) {
+  userHasRoles(user: User, roles: Role[]): boolean {
     if (!user) { return false; }
 
     const userRoles = user.roles.map( v => v.name);
 
     let access = false;
     roles.forEach((element) => {
-      if (userRoles.indexOf(element) !== -1) {
+      if (userRoles.includes(element)) {
         access = true;
       }
     });

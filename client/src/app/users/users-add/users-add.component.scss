@@ -1,1 +1,6 @@
-
+/* Show bad fields in forms */
+.input-group-text {
+  &.error-symbol {
+    background-color: rgba(255, 0, 0, 0.1);
+  }
+}

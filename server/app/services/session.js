@@ -131,11 +131,9 @@ class Session {
 
             let userRoles = user['roles'].map( v => v.name);
 
-            //console.log('checkAccess', userRoles);
-
             let access = false;
             roles.forEach(function(element) {
-                if (userRoles.indexOf(element) != -1) {
+                if (userRoles.includes(element)) {
                     access = true;
                 }
             });
