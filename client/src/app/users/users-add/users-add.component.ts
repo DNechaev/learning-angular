@@ -1,16 +1,15 @@
-import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
-import {FormGroup, FormControl, Validators, FormArray, ValidatorFn} from '@angular/forms';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormGroup, FormControl, Validators, FormArray, ValidatorFn } from '@angular/forms';
+import { Subscription } from 'rxjs';
+import { Router } from '@angular/router';
 
 import { AuthenticationService } from '../../shared/services/authentication.service';
 import { LoaderIndicatorService } from '../../shared/services/loader-indicator.service';
+import { SearchService } from '../../shared/services/search.service';
+import { ToastService } from '../../shared/services/toast.service';
 import { UsersService } from '../users.service';
 import { Role } from '../../shared/models/role.model';
 import { User } from '../../shared/models/user.model';
-import { Router } from '@angular/router';
-import {SearchService} from '../../shared/services/search.service';
-import {Subscription} from 'rxjs';
-import {ToastService} from '../../shared/services/toast.service';
-
 
 @Component({
   selector: 'app-users-add',

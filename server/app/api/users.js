@@ -95,7 +95,7 @@ module.exports = (app, db) => {
             return res.status(403).json('Forbidden');
         }
 
-        db.user.findByPk(req.params.id, {
+        db.user/*.scope('full')*/.findByPk(req.params.id, {
             include: [
                 {
                     model: db.role,
@@ -140,18 +140,27 @@ module.exports = (app, db) => {
             return res.status(403).json('Forbidden');
         }
 
-        db.user.update({
-                name: req.body.name,
-                // email: req.body.email,
-                password: req.body.password
-            },
+        let newData = {
+            name: req.body.name,
+            email: req.body.email
+        };
+
+        if (req.body.password) {
+            newData.password = req.body.password;
+        }
+
+        db.user.update(newData,
             {
                 where: {
                     id: req.params.id
                 }
-            }).then( user => {
-                user.setRoles(req.body.roles)
-                    .then(() => res.json(user))
+            }).then( () => {
+                db.user.findByPk(req.params.id)
+                    .then(user => {
+                        user.setRoles(req.body.roles)
+                            .then(() => res.json({}))
+                            .catch(err => res.status(500).json(err));
+                    })
                     .catch(err => res.status(500).json(err));
             }).catch(err => res.status(500).json(err));
 
