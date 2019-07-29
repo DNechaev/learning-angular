@@ -19,7 +19,6 @@ import { AuthInterceptor } from './shared/interceptors/auth.interceptor';
     UsersModule,
     AppRoutingModule,
   ],
-  exports: [],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
