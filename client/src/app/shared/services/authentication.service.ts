@@ -35,15 +35,7 @@ export class AuthenticationService {
     return this.http.post<any>(URL_API_SESSIONS + '/login', { email, password })
       .pipe(
         // retry(3),
-        map(user => {
-          sessionStorage.setItem('currentUser', JSON.stringify(user));
-          if (remember) {
-            localStorage.setItem('currentUser', JSON.stringify(user));
-          }
-          this.sessionId = user.ssid;
-          this.currentUserSubject.next(user);
-          return user;
-        })
+        map(user => this.applyCurrentUser(user, remember))
       );
   }
 
@@ -57,12 +49,7 @@ export class AuthenticationService {
   registration(email: string, password: string, name: string): Observable<any> {
     return this.http.post<any>(URL_API_SESSIONS + '/registration', { email, password, name })
       .pipe(
-        map(user => {
-          sessionStorage.setItem('currentUser', JSON.stringify(user));
-          this.sessionId = user.ssid;
-          this.currentUserSubject.next(user);
-          return user;
-        })
+        map(user => this.applyCurrentUser(user))
       );
   }
 
@@ -79,6 +66,16 @@ export class AuthenticationService {
     });
 
     return access;
+  }
+
+  private applyCurrentUser(user: User, remember: boolean = false) {
+    sessionStorage.setItem('currentUser', JSON.stringify(user));
+    if (remember) {
+      localStorage.setItem('currentUser', JSON.stringify(user));
+    }
+    this.sessionId = user.ssid;
+    this.currentUserSubject.next(user);
+    return user;
   }
 
 }

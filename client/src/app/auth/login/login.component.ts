@@ -9,7 +9,6 @@ import { AuthenticationService } from 'src/app/shared/services/authentication.se
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
-  providers: []
 })
 export class LoginComponent implements OnInit, OnDestroy {
 

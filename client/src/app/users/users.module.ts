@@ -25,7 +25,5 @@ import { MainLayoutComponent } from '../shared/layout/main-layout/main-layout.co
     UsersAddComponent,
     UsersEditComponent
   ],
-  providers: [],
-  exports: []
 })
 export class UsersModule {}

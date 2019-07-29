@@ -23,6 +23,5 @@ import { RegistrationComponent } from './registration/registration.component';
     LogoutComponent,
     RegistrationComponent
   ],
-  providers: [],
 })
 export class AuthModule {}

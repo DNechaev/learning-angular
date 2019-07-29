@@ -9,7 +9,7 @@ module.exports = class SessionController {
             ctx.body = ctx.authorizedUser;
         } else {
             ctx.body = {};
-        }
+        }пше
     }
 
     static async registration(ctx) {

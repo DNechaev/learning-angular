@@ -9,6 +9,7 @@ import { UsersService } from '../users.service';
 
 import { LoaderIndicatorService } from '../../shared/services/loader-indicator.service';
 import { SearchService } from '../../shared/services/search.service';
+import {ToastService} from '../../shared/services/toast.service';
 
 @Component({
   selector: 'app-users',
@@ -34,16 +35,14 @@ export class UsersListComponent implements OnInit, OnDestroy {
     private authenticationService: AuthenticationService,
     private usersService: UsersService,
     private loaderIndicatorService: LoaderIndicatorService,
-    private searchService: SearchService
+    private searchService: SearchService,
+    private toastService: ToastService
   ) {}
 
   ngOnInit() {
 
     this.searchService.enable();
     this.searchString = this.searchService.get();
-
-    // this.authorizedUser = this.authenticationService.currentUserValue;
-    // this.access         = this.authenticationService.userHasRoles(this.authorizedUser, [Role.ADMIN]);
 
     this.subscriptions.push(
       this.authenticationService.currentUser.subscribe((user) => {
@@ -102,6 +101,7 @@ export class UsersListComponent implements OnInit, OnDestroy {
     if (confirm(`Delete user: ${user.email}?`)) {
       this.usersService.deleteUser(user.id).subscribe(
         () => {
+          this.toastService.success('User deleted');
           this.loadData();
         },
         error => {

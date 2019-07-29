@@ -5,7 +5,6 @@ import { Router, ActivatedRoute } from '@angular/router';
 @Component({
   selector: 'app-logout',
   template: '',
-  providers: []
 })
 export class LogoutComponent implements OnInit {
 
