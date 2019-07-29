@@ -65,7 +65,7 @@ export class UsersListComponent implements OnInit, OnDestroy {
       })
     );
 
-    this.loadData();
+    // this.loadData();
   }
 
   ngOnDestroy() {

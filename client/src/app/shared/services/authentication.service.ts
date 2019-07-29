@@ -34,7 +34,7 @@ export class AuthenticationService {
   login(email: string, password: string, remember: boolean = false): Observable<any> {
     return this.http.post<any>(URL_API_SESSIONS + '/login', { email, password })
       .pipe(
-        retry(3),
+        // retry(3),
         map(user => {
           sessionStorage.setItem('currentUser', JSON.stringify(user));
           if (remember) {
