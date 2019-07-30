@@ -13,7 +13,7 @@ module.exports = () => {
             }
         }
 
-        // console.log('Auth middleware', ctx.authorizedUser);
+        // console.log('Auth middleware', ctx.authorizedUser != null);
         await next();
     }
 

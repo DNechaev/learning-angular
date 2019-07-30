@@ -14,7 +14,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   private subscription: Subscription;
   authorizedUser;
-  form: FormGroup;
+  formLogin: FormGroup;
   returnUrl: string;
   error;
 
@@ -32,7 +32,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     this.returnUrl = this.route.snapshot.queryParams.returnUrl || '/';
 
-    this.form = new FormGroup({
+    this.formLogin = new FormGroup({
       email: new FormControl(null, [Validators.required, Validators.email]),
       password: new FormControl(null, [Validators.required]),
       remember: new FormControl( false )
@@ -46,7 +46,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   onSubmit() {
-    this.authenticationService.login(this.form.value.email, this.form.value.password, this.form.value.remember)
+    this.authenticationService.login(this.formLogin.value.email, this.formLogin.value.password, this.formLogin.value.remember)
       .subscribe(
         data => {
           this.router.navigate([this.returnUrl]);

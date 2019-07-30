@@ -49,7 +49,21 @@ module.exports = class SessionService {
 
 
     static userHasRoles( user, roles = [] ) {
-        return true
+
+        if (!user) {
+            return false;
+        }
+
+        let userRoles = user['roles'].map( v => v.name);
+        let access = false;
+        roles.forEach(element => {
+            if (userRoles.includes(element)) {
+                access = true;
+            }
+        });
+
+        return access;
+
     }
 
 };
