@@ -1,13 +1,21 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { UsersEditComponent } from './users-edit.component';
+import { RouterModule } from '@angular/router';
+import { HttpClientModule } from '@angular/common/http';
+import { ReactiveFormsModule } from '@angular/forms';
 
-xdescribe('UsersEditComponent', () => {
+describe('UsersEditComponent', () => {
   let component: UsersEditComponent;
   let fixture: ComponentFixture<UsersEditComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [
+        RouterModule.forRoot([]),
+        HttpClientModule,
+        ReactiveFormsModule
+      ],
       declarations: [ UsersEditComponent ]
     })
     .compileComponents();

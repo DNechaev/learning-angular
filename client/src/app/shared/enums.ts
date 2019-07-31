@@ -1,5 +1,5 @@
 export const enum Role {
   ADMIN = 'ADMIN',
-  MANAGER = 'MANGER',
+  MANAGER = 'MANAGER',
   USER = 'USER'
-};
+}

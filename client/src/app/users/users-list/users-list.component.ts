@@ -2,14 +2,14 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 
-import { AuthenticationService } from '../../shared/services/authentication.service';
 import { Role } from '../../shared/enums';
 import { User } from '../../shared/models';
 import { UsersService } from '../users.service';
 
+import { AuthenticationService } from '../../shared/services/authentication.service';
 import { LoaderIndicatorService } from '../../shared/services/loader-indicator.service';
 import { SearchService } from '../../shared/services/search.service';
-import {ToastService} from '../../shared/services/toast.service';
+import { ToastService } from '../../shared/services/toast.service';
 
 @Component({
   selector: 'app-users',

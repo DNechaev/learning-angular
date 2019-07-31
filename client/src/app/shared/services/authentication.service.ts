@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { map, retry } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 import { User } from '../models';
 import { Role } from '../enums';
@@ -69,10 +69,15 @@ export class AuthenticationService {
   }
 
   private applyCurrentUser(user: User, remember: boolean = false) {
-    sessionStorage.setItem('currentUser', JSON.stringify(user));
+    sessionStorage.removeItem('currentUser');
+    localStorage.removeItem('currentUser');
+
     if (remember) {
       localStorage.setItem('currentUser', JSON.stringify(user));
+    } else {
+      sessionStorage.setItem('currentUser', JSON.stringify(user));
     }
+
     this.sessionId = user.ssid;
     this.currentUserSubject.next(user);
     return user;

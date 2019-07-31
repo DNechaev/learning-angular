@@ -23,7 +23,6 @@ describe('UsersService', () => {
     httpMock.verify();
   });
 
-  // getUserById
   it('#getUserById: Observable<User>', () => {
     const returnUser = new User();
     returnUser.id = 1;
@@ -37,7 +36,6 @@ describe('UsersService', () => {
       .flush(returnUser);
   });
 
-  // getUserById Error
   it('#getUserById: Observable<Error>', () => {
     const mockErrorResponse = { status: 404, statusText: 'Not found' };
     const data = {message: 'Invalid request parameters'};
@@ -52,7 +50,6 @@ describe('UsersService', () => {
       .flush(data, mockErrorResponse);
   });
 
-  // getUsers
   it('#getUsers: Observable<Page>', () => {
     const returnPage = {
       count: 17,
@@ -78,6 +75,41 @@ describe('UsersService', () => {
     expect(req.request.params.get('page')).toBe('2');
     expect(req.request.params.get('pageSize')).toBe('15');
     req.flush(returnPage);
+  });
+
+  it('#createUser: Observable<User>', () => {
+    const user = new User();
+    user.id = 1;
+    user.name = 'User1';
+
+    service.createUser(user).subscribe(returnUser => {
+      expect(user).toEqual(returnUser);
+    });
+
+    httpMock.expectOne(r => r.url.match('/api/users') && r.method === 'POST')
+      .flush(user);
+  });
+
+  it('#updateUser: Observable<User>', () => {
+    const user = new User();
+    user.id = 1;
+    user.name = 'User1';
+
+    service.updateUser(10, user).subscribe(returnUser => {
+      expect(user).toEqual(returnUser);
+    });
+
+    httpMock.expectOne(r => r.url.match('/api/users/10') && r.method === 'PUT')
+      .flush(user);
+  });
+
+  it('#deleteUser: Observable<any>', () => {
+    service.deleteUser(10).subscribe(ans => {
+      expect(ans).toEqual({});
+    });
+
+    httpMock.expectOne(r => r.url.match('/api/users/10') && r.method === 'DELETE')
+      .flush({});
   });
 
 });
