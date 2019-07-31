@@ -26,7 +26,7 @@ describe('LogoutComponent', () => {
     fixture = TestBed.createComponent(LogoutComponent);
     component = fixture.componentInstance;
     router = fixture.debugElement.injector.get(Router);
-    spyRoute = spyOn(router, 'navigate').and.returnValue(new Promise(() => true));
+    spyRoute = spyOn(router, 'navigate').and.returnValue(new Promise((resolve) => resolve(true)));
     fixture.detectChanges();
   });
 

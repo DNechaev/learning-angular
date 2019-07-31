@@ -40,7 +40,7 @@ describe('LoginComponent', () => {
       ssid: 'TEST_SSID'
     };
     spy = spyOn(authenticationService, 'login').and.returnValue(of(mockUser));
-    spyRoute = spyOn(router, 'navigate').and.returnValue(new Promise(() => true));
+    spyRoute = spyOn(router, 'navigate').and.returnValue(new Promise((resolve) => resolve(true)));
 
     fixture.detectChanges();
   });
