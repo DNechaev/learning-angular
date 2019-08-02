@@ -26,10 +26,11 @@ module.exports = (app) => {
 
     app.use(async (ctx, next) => {
         console.log('------------------------------------------');
-        console.log('Query: ', ctx.query);
-        //console.log('Params: ', ctx.params);
-        //console.log('Body: ', ctx.request.body);
-        //console.log('Headers: ', ctx.request.headers);
+        console.log('Href: ', ctx.href);
+        // console.log('Query: ', ctx.query);
+        // console.log('Params: ', ctx.params);
+        // console.log('Body: ', ctx.request.body);
+        // console.log('Headers: ', ctx.request.headers);
         await next();
     });
 

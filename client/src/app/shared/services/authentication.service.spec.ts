@@ -25,47 +25,159 @@ describe('AuthenticationService', () => {
     httpMock.verify();
   });
 
-  it('#login with remember', () => {
-    const returnUser = new User();
-    returnUser.id = 1;
-    returnUser.name = 'User1';
-    returnUser.ssid = 'TEST_SSID_1234567890';
+  function helperLoginUser(testUser: User, remember = true): Promise<User> {
+    return new Promise((resolve) => {
 
-    sessionStorage.removeItem('currentUser');
-    localStorage.removeItem('currentUser');
+      sessionStorage.removeItem('currentUser');
+      localStorage.removeItem('currentUser');
 
-    service.login('test@test.com', '123456', true).subscribe(user => {
-      expect(user).toEqual(returnUser);
-      expect(sessionStorage.getItem('currentUser')).toBeNull();
-      expect(localStorage.getItem('currentUser')).toBeTruthy();
-      expect(JSON.parse(localStorage.getItem('currentUser'))).toEqual(JSON.parse(JSON.stringify(returnUser)));
+      service.login('email', 'password', remember).subscribe(user => {
+        resolve(user);
+      });
+
+      httpMock.expectOne(r => r.url.match(URL_API_SESSIONS + '/login') && r.method === 'POST')
+        .flush(testUser);
+
     });
+  }
 
-    httpMock.expectOne(r => r.url.match(URL_API_SESSIONS + '/login') && r.method === 'POST')
-      .flush(returnUser);
-  });
+  function helperRegistrationUser(testUser: User): Promise<User> {
+    return new Promise((resolve) => {
 
-  it('#login without remember', () => {
+      sessionStorage.removeItem('currentUser');
+      localStorage.removeItem('currentUser');
+
+      service.registration('email', 'password', 'name').subscribe(user => {
+        resolve(user);
+      });
+
+      httpMock.expectOne(r => r.url.match(URL_API_SESSIONS + '/registration') && r.method === 'POST')
+        .flush(testUser);
+
+    });
+  }
+
+  it('registration user', async () => {
     const returnUser = new User();
     returnUser.id = 1;
-    returnUser.name = 'User1';
+    returnUser.name = 'User';
     returnUser.ssid = 'TEST_SSID';
 
     sessionStorage.removeItem('currentUser');
     localStorage.removeItem('currentUser');
 
-    service.login('test@test.com', '123456', false).subscribe(user => {
-      expect(user).toEqual(returnUser);
-      expect(sessionStorage.getItem('currentUser')).toBeTruthy();
-      expect(localStorage.getItem('currentUser')).toBeNull();
-      expect(JSON.parse(sessionStorage.getItem('currentUser'))).toEqual(JSON.parse(JSON.stringify(returnUser)));
-    });
+    const user = await helperRegistrationUser(returnUser);
 
-    httpMock.expectOne(r => r.url.match(URL_API_SESSIONS + '/login') && r.method === 'POST')
-      .flush(returnUser);
+    expect(user).toEqual(returnUser);
+    expect(localStorage.getItem('currentUser')).toBeNull();
+    expect(sessionStorage.getItem('currentUser')).toBeTruthy();
+    expect(JSON.parse(sessionStorage.getItem('currentUser'))).toEqual(JSON.parse(JSON.stringify(returnUser)));
+
   });
 
-  it('#userHasRoles', () => {
+  it('login with remember', async () => {
+    const returnUser = new User();
+    returnUser.id = 1;
+    returnUser.name = 'User';
+    returnUser.ssid = 'TEST_SSID';
+
+    const user = await helperLoginUser(returnUser, true);
+
+    expect(user).toEqual(returnUser);
+    expect(sessionStorage.getItem('currentUser')).toBeNull();
+    expect(localStorage.getItem('currentUser')).toBeTruthy();
+    expect(JSON.parse(localStorage.getItem('currentUser'))).toEqual(JSON.parse(JSON.stringify(returnUser)));
+
+  });
+
+  it('login without remember', async () => {
+    const returnUser = new User();
+    returnUser.id = 1;
+    returnUser.name = 'User';
+    returnUser.ssid = 'TEST_SSID';
+
+    const user = await helperLoginUser(returnUser, false);
+
+    expect(user).toEqual(returnUser);
+    expect(sessionStorage.getItem('currentUser')).toBeTruthy();
+    expect(localStorage.getItem('currentUser')).toBeNull();
+    expect(JSON.parse(sessionStorage.getItem('currentUser'))).toEqual(JSON.parse(JSON.stringify(returnUser)));
+
+  });
+
+  it('logout', async () => {
+    const returnUser = new User();
+    returnUser.id = 1;
+    returnUser.name = 'User';
+    returnUser.ssid = 'TEST_SSID';
+
+    const user = await helperLoginUser(returnUser, true);
+    expect(user).toEqual(returnUser);
+
+    await service.logout();
+
+    expect(sessionStorage.getItem('currentUser')).toBeNull();
+    expect(localStorage.getItem('currentUser')).toBeNull();
+    expect(service.currentUserValue).toBeNull();
+  });
+
+  it('get current user',  async () => {
+
+    const returnUser = new User();
+    returnUser.id = 1;
+    returnUser.name = 'User';
+    returnUser.ssid = 'TEST_SSID';
+
+    const user = await helperLoginUser(returnUser, false);
+
+    expect(user).toEqual(returnUser);
+    expect(service.currentUserValue).toEqual(returnUser);
+
+  });
+
+  it('get user token',  async () => {
+
+    const returnUser = new User();
+    returnUser.id = 1;
+    returnUser.name = 'User';
+    returnUser.ssid = 'TEST_SSID';
+
+    const user = await helperLoginUser(returnUser, false);
+
+    expect(user).toEqual(returnUser);
+    expect(service.getToken()).toBe(returnUser.ssid);
+
+  });
+
+  it('subscribe on user changes',  async () => {
+
+    let testUser: User;
+
+    service.currentUser.subscribe(u => {
+      testUser = u;
+    });
+
+    // -----------------------------
+    const returnUser1 = new User();
+    returnUser1.id = 1;
+    returnUser1.name = 'User1';
+    returnUser1.ssid = 'TEST_SSID1';
+
+    await helperLoginUser(returnUser1, false);
+    expect(testUser).toEqual(returnUser1);
+
+    // -----------------------------
+    const returnUser2 = new User();
+    returnUser2.id = 2;
+    returnUser2.name = 'User2';
+    returnUser2.ssid = 'TEST_SSID2';
+
+    await helperLoginUser(returnUser2, false);
+    expect(testUser).toEqual(returnUser2);
+
+  });
+
+  it('access by roles', () => {
     const user = new User();
 
     // --------------------
@@ -154,7 +266,5 @@ describe('AuthenticationService', () => {
     expect(service.userHasRoles(user, [Role.ADMIN, Role.MANAGER, Role.USER])).toBe(true);
 
   });
-
-  /* TODO: Test other services methods */
 
 });
