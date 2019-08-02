@@ -23,10 +23,10 @@ describe('UsersService', () => {
     httpMock.verify();
   });
 
-  it('#getUserById: Observable<User>', () => {
+  it('get user by id', () => {
     const returnUser = new User();
     returnUser.id = 1;
-    returnUser.name = 'User1';
+    returnUser.name = 'User';
 
     service.getUserById(1).subscribe(user => {
       expect(user).toEqual(returnUser);
@@ -36,7 +36,7 @@ describe('UsersService', () => {
       .flush(returnUser);
   });
 
-  it('#getUserById: Observable<Error>', () => {
+  it('get user by id (error test)', () => {
     const mockErrorResponse = { status: 404, statusText: 'Not found' };
     const data = {message: 'Invalid request parameters'};
 
@@ -50,7 +50,7 @@ describe('UsersService', () => {
       .flush(data, mockErrorResponse);
   });
 
-  it('#getUsers: Observable<Page>', () => {
+  it('get users', () => {
     const returnPage = {
       count: 17,
       pageSize: 15,
@@ -77,10 +77,10 @@ describe('UsersService', () => {
     req.flush(returnPage);
   });
 
-  it('#createUser: Observable<User>', () => {
+  it('create user', () => {
     const user = new User();
     user.id = 1;
-    user.name = 'User1';
+    user.name = 'User';
 
     service.createUser(user).subscribe(returnUser => {
       expect(user).toEqual(returnUser);
@@ -90,7 +90,7 @@ describe('UsersService', () => {
       .flush(user);
   });
 
-  it('#updateUser: Observable<User>', () => {
+  it('update user', () => {
     const user = new User();
     user.id = 1;
     user.name = 'User1';
@@ -103,7 +103,7 @@ describe('UsersService', () => {
       .flush(user);
   });
 
-  it('#deleteUser: Observable<any>', () => {
+  it('delete user', () => {
     service.deleteUser(10).subscribe(ans => {
       expect(ans).toEqual({});
     });
