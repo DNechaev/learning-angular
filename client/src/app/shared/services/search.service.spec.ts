@@ -1,6 +1,5 @@
 import { getTestBed, TestBed } from '@angular/core/testing';
 import { SearchService } from './search.service';
-import {User} from "../models";
 
 describe('SearchService', () => {
   let injector: TestBed;
@@ -55,7 +54,7 @@ describe('SearchService', () => {
 
   it('subscribe on search value changes',  async () => {
 
-    let testString: string = '';
+    let testString = '';
 
     service.search.subscribe(s => {
       testString = s;
@@ -74,7 +73,7 @@ describe('SearchService', () => {
     await service.disable();
 
     await service.set('TEST4');
-    expect(testString).toBe('TEST3');
+    expect(testString).toBe('TEST3'); // Old value
 
     await service.enable();
 
