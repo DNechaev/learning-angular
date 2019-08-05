@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 
 import { SharedModule } from '../shared/shared.module';
 import { SearchComponent } from '../shared/components/search/search.component';
-import { UsersRoutes } from './users.routing';
+import { ModuleRoutes } from './users.routing';
 import { UsersComponent } from './users.component';
 import { UsersListComponent } from './users-list/users-list.component';
 import { UsersAddComponent } from './users-add/users-add.component';
@@ -14,7 +14,7 @@ import { MainLayoutComponent } from '../shared/layout/main-layout/main-layout.co
 @NgModule({
   imports: [
     CommonModule,
-    RouterModule.forChild(UsersRoutes),
+    RouterModule.forChild(ModuleRoutes),
     SharedModule
   ],
   declarations: [

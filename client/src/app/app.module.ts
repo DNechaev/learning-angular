@@ -10,7 +10,6 @@ import { SharedModule } from './shared/shared.module';
 @NgModule({
   declarations: [
     AppComponent,
-    // PageNotFoundComponent,
   ],
   imports: [
     HttpClientModule,
@@ -19,13 +18,6 @@ import { SharedModule } from './shared/shared.module';
     UsersModule,
     AppRoutingModule,
   ],
-  /*providers: [
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: AuthInterceptor,
-      multi: true
-    }
-  ],*/
   bootstrap: [AppComponent]
 })
 export class AppModule {}

@@ -4,6 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 
 import { AuthenticationService } from 'src/app/shared/services/authentication.service';
+import { AuthRoutesPath } from '../auth.routing';
 
 @Component({
   selector: 'app-login',
@@ -17,6 +18,10 @@ export class LoginComponent implements OnInit, OnDestroy {
   formLogin: FormGroup;
   returnUrl: string;
   error;
+  authRoute = {
+    registration: AuthRoutesPath.PATH_TO_REGISTRATION,
+    logout: AuthRoutesPath.PATH_TO_LOGOUT,
+  };
 
   constructor(
     private route: ActivatedRoute,

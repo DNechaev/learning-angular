@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 import { MainLayoutComponent } from './main-layout.component';
 
@@ -8,7 +9,8 @@ describe('MainLayoutComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MainLayoutComponent ]
+      declarations: [ MainLayoutComponent ],
+      schemas:      [ NO_ERRORS_SCHEMA ]
     })
     .compileComponents();
   }));

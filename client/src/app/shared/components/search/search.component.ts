@@ -1,9 +1,9 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 import { SearchService } from '../../services/search.service';
-import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-search',
@@ -13,8 +13,9 @@ import {Subscription} from 'rxjs';
 export class SearchComponent implements OnInit, OnDestroy {
 
   showPanel = true;
+  debounce = 800;
+
   private searchControl: FormControl;
-  private debounce = 800;
   private subscription: Subscription;
 
   constructor(
@@ -29,7 +30,10 @@ export class SearchComponent implements OnInit, OnDestroy {
 
     this.searchControl = new FormControl('');
     this.searchControl.valueChanges
-      .pipe(debounceTime(this.debounce), distinctUntilChanged())
+      .pipe(
+        debounceTime(this.debounce),
+        distinctUntilChanged()
+      )
       .subscribe(query => {
         this.searchService.set(query);
       });

@@ -1,6 +1,6 @@
 <div class="container" *ngIf="this.authorizedUser" >
   <h1>{{ this.authorizedUser.name }}, you are already logined! </h1>
-  <a routerLink="/auth/logout">Logout</a>
+  <a [routerLink]="authRoute.logout">Logout</a>
 </div>
 
 <div class="container" *ngIf="!this.authorizedUser" >
@@ -39,6 +39,6 @@
       </div>
   </form>
   <hr/>
-  <a routerLink="/auth/registration">Not a member yet? Sign up.</a>
+  <a [routerLink]="authRoute.registration">Not a member yet? Sign up.</a>
 </div>
 

@@ -3,6 +3,8 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AuthenticationService } from 'src/app/shared/services/authentication.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { AuthRoutesPath } from '../auth.routing';
+import { AppRoutesPath } from 'src/app/app-routing.module';
 
 @Component({
   selector: 'app-registration',
@@ -15,6 +17,11 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   authorizedUser;
   form: FormGroup;
   error;
+  authRoute = {
+    home: AppRoutesPath.HOME,
+    login:  AuthRoutesPath.PATH_TO_LOGIN,
+    logout: AuthRoutesPath.PATH_TO_LOGOUT,
+  };
 
   constructor(
     private route: ActivatedRoute,
@@ -45,7 +52,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     this.authenticationService.registration(this.form.value.email, this.form.value.password, this.form.value.name)
       .subscribe(
         data => {
-          this.router.navigate(['/users']);
+          this.router.navigate([ this.authRoute.home ]);
         },
         error => {
           this.error = error.error;
