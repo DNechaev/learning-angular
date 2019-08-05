@@ -4,7 +4,7 @@
   "description": "",
   "main": "./src/app.js",
   "scripts": {
-    "start": "./node_modules/nodemon/bin/nodemon.js ./src/app.js"
+    "start": "./node_modules/nodemon/bin/nodemon.js -r esm ./src/app.js"
   },
   "keywords": [],
   "author": "",
@@ -16,10 +16,96 @@
     "koa-router": "^7.4.0",
     "koa-static": "^5.0.0",
     "mysql2": "^1.6.5",
-    "sequelize": "^5.10.0"
+    "sequelize": "^5.10.0",
+    "esm": "^3.0.0"
   },
   "devDependencies": {
     "nodemon": "^1.19.1",
     "sequelize-cli": "^5.5.0"
+  },
+  "eslintConfig": {
+    "env": {
+      "node": true,
+      "es6": true,
+      "mocha": true
+    },
+    "parserOptions": {
+      "ecmaVersion": 2018,
+      "sourceType": "module"
+    },
+    "extends": "eslint:recommended",
+    "rules": {
+      "array-bracket-spacing": [
+        "error",
+        "always"
+      ],
+      "comma-dangle": [
+        "error",
+        "always-multiline"
+      ],
+      "comma-spacing": [
+        "error"
+      ],
+      "curly": [
+        "error",
+        "multi-line"
+      ],
+      "indent": [
+        "error",
+        4,
+        {
+          "SwitchCase": 1
+        }
+      ],
+      "key-spacing": [
+        "error",
+        {
+          "align": "value"
+        }
+      ],
+      "keyword-spacing": [
+        "error"
+      ],
+      "no-case-declarations": "off",
+      "no-console": [
+        "warn",
+        {
+          "allow": [
+            "error",
+            "info"
+          ]
+        }
+      ],
+      "no-redeclare": "warn",
+      "no-shadow": "warn",
+      "no-unused-vars": "warn",
+      "no-var": "error",
+      "object-curly-spacing": [
+        "error",
+        "always"
+      ],
+      "prefer-const": "error",
+      "quotes": [
+        "error",
+        "single",
+        "avoid-escape"
+      ],
+      "require-await": "error",
+      "semi": [
+        "error",
+        "always"
+      ],
+      "space-before-blocks": [
+        "error",
+        "always"
+      ],
+      "space-in-parens": [
+        "error"
+      ],
+      "strict": [
+        "error",
+        "global"
+      ]
+    }
   }
 }

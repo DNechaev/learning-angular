@@ -1,6 +1,6 @@
-const usersService = require('../services/users.service');
+import usersService from '../services/users.service';
 
-module.exports = class UsersController {
+class UsersController {
 
     static async getAll(ctx) {
         ctx.body = await usersService.getAll(ctx.db, ctx.query);
@@ -31,4 +31,6 @@ module.exports = class UsersController {
         ctx.body = { deletedId: ctx.params.id };
     }
 
-};
+}
+
+export default UsersController;

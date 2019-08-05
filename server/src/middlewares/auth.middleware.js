@@ -1,6 +1,6 @@
-const UsersService = require('../services/users.service');
+import UsersService from '../services/users.service';
 
-module.exports = () => {
+export default () => {
 
     return async (ctx, next) => {
 

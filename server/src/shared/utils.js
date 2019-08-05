@@ -1,4 +1,4 @@
-module.exports = class Utils {
+class Utils {
 
     static paginate(query, { page, pageSize }) {
         const offset = ( page - 1 ) * pageSize;
@@ -11,4 +11,6 @@ module.exports = class Utils {
         }
     };
 
-};
+}
+
+export default Utils;

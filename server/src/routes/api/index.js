@@ -1,12 +1,12 @@
-const Router = require('koa-router');
-const usersRoutes = require('./users.routes');
-const sessionRoutes = require('./session.routes');
+import Router from 'koa-router';
+import usersRoutes from './users.routes';
+import sessionRoutes from './session.routes';
 
-module.exports = () => {
+export default () => {
     const router = new Router();
 
     router.use('/api/session', sessionRoutes());
     router.use('/api', usersRoutes());
 
     return router.routes();
-};
+}

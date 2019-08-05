@@ -1,6 +1,6 @@
-const Koa = require('koa');
-const routes = require("./routes");
-const db = require("./models");
+import Koa from 'koa';
+import routes from './routes';
+import db from './models';
 
 const app = module.exports = new Koa();
 

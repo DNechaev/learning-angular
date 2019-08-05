@@ -1,9 +1,10 @@
-const Router = require('koa-router');
-const Role = require('../../shared/roles.enum');
-const accessMiddleware = require('../../middlewares/access.middleware');
-const usersController = require('../../controllers/users.controller');
+import Router from 'koa-router';
 
-module.exports = () => {
+import Role from '../../shared/roles.enum';
+import accessMiddleware from '../../middlewares/access.middleware';
+import usersController from '../../controllers/users.controller';
+
+export default () => {
     const router = new Router();
 
     router
@@ -14,4 +15,4 @@ module.exports = () => {
         .delete('/users/:id', accessMiddleware([Role.ADMIN] ),usersController.delete );
 
     return router.routes();
-};
+}

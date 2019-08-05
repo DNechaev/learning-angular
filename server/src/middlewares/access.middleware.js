@@ -1,6 +1,6 @@
-const SessionService = require('../services/session.service');
+import SessionService from '../services/session.service';
 
-module.exports = ( allowRoles, allowAuthorizedUser = false, allowGuest = false) => {
+export default ( allowRoles, allowAuthorizedUser = false, allowGuest = false ) => {
 
     return async (ctx, next) => {
 

@@ -1,4 +1,4 @@
-module.exports = class SessionService {
+class SessionService {
 
 
     static async login( db, userValue ) {
@@ -66,4 +66,6 @@ module.exports = class SessionService {
 
     }
 
-};
+}
+
+export default SessionService;

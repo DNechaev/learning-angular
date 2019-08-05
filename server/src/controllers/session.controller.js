@@ -1,8 +1,9 @@
-const crypto = require("crypto");
-const sessionService = require('../services/session.service');
-const usersService = require('../services/users.service');
+import crypto from 'crypto';
 
-module.exports = class SessionController {
+import sessionService from '../services/session.service';
+import usersService from '../services/users.service';
+
+class SessionController {
 
     static profile(ctx) {
         if ( ctx.authorizedUser ) {
@@ -29,4 +30,6 @@ module.exports = class SessionController {
         ctx.body = {};
     }
 
-};
+}
+
+export default SessionController;

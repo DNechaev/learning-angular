@@ -1,11 +1,11 @@
-const cors = require('@koa/cors');
-const bodyParser = require('koa-bodyparser');
-const staticData = require('koa-static');
+import cors from '@koa/cors';
+import bodyParser from 'koa-bodyparser';
+import staticData from 'koa-static';
 
-const authMiddleware = require('../middlewares/auth.middleware');
-const apiRoutes = require("./api");
+import authMiddleware from '../middlewares/auth.middleware';
+import apiRoutes from './api';
 
-module.exports = (app) => {
+export default (app) => {
 
     // Error handler
     app.use(async (ctx, next) => {
@@ -46,4 +46,4 @@ module.exports = (app) => {
         ctx.body = 'Page not found';
     });
 
-};
+}

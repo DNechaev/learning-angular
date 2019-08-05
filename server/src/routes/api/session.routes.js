@@ -1,9 +1,10 @@
-const Router = require('koa-router');
-const Role = require('../../shared/roles.enum');
-const accessMiddleware = require('../../middlewares/access.middleware');
-const sessionController = require('../../controllers/session.controller');
+import Router from 'koa-router';
 
-module.exports = () => {
+import accessMiddleware from '../../middlewares/access.middleware';
+import sessionController from '../../controllers/session.controller';
+// import Role from '../../shared/roles.enum';
+
+export default () => {
     const router = new Router();
 
     router
@@ -13,4 +14,4 @@ module.exports = () => {
         .post('/registration', accessMiddleware([], false, true ), sessionController.registration );
 
     return router.routes();
-};
+}

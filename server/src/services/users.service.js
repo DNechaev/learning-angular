@@ -1,6 +1,6 @@
-const Utils = require('../shared/utils');
+import Utils from '../shared/utils';
 
-module.exports = class UserService {
+class UserService {
 
     static async getAll( db, params ) {
 
@@ -159,4 +159,6 @@ module.exports = class UserService {
         })
     }
 
-};
+}
+
+export default UserService;
