@@ -45,20 +45,20 @@ export class UsersListComponent implements OnInit, OnDestroy {
     this.searchString = this.searchService.get();
 
     this.subscriptions.push(
-      this.authenticationService.currentUser.subscribe((user) => {
+      this.authenticationService.currentUser$.subscribe((user) => {
         this.authorizedUser = user;
         this.access         = this.authenticationService.userHasRoles(this.authorizedUser, [Role.ADMIN]);
       })
     );
 
     this.subscriptions.push(
-      this.loaderIndicatorService.subject.subscribe((isLoading) => {
+      this.loaderIndicatorService.subject$.subscribe((isLoading) => {
         this.isLoading = isLoading;
       })
     );
 
     this.subscriptions.push(
-      this.searchService.search.subscribe((searchString) => {
+      this.searchService.search$.subscribe((searchString) => {
         this.searchString = searchString;
         this.loadData();
       })

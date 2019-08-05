@@ -44,14 +44,14 @@ export class UsersAddComponent implements OnInit, OnDestroy {
     this.searchService.disable();
 
     this.subscriptions.push(
-      this.authenticationService.currentUser.subscribe((user: User) => {
+      this.authenticationService.currentUser$.subscribe((user: User) => {
         this.authorizedUser = user;
         this.access = this.authenticationService.userHasRoles(this.authorizedUser, [Role.ADMIN]);
       })
     );
 
     this.subscriptions.push(
-      this.loaderIndicatorService.subject.subscribe((isLoading) => {
+      this.loaderIndicatorService.subject$.subscribe((isLoading) => {
         this.isLoading = isLoading;
       })
     );

@@ -11,24 +11,24 @@ import { URL_API_SESSIONS } from '../consts';
 export class AuthenticationService {
 
   private sessionId: string;
-  private currentUserSubject: BehaviorSubject<User>;
+  private currentUserSubject$: BehaviorSubject<User>;
 
-  currentUser: Observable<User>;
+  currentUser$: Observable<User>;
 
   constructor(private http: HttpClient) {
 
-    this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(
+    this.currentUserSubject$ = new BehaviorSubject<User>(JSON.parse(
       localStorage.getItem('currentUser') ? localStorage.getItem('currentUser') : sessionStorage.getItem('currentUser')
     ));
-    this.currentUser = this.currentUserSubject.asObservable();
+    this.currentUser$ = this.currentUserSubject$.asObservable();
   }
 
   get currentUserValue(): User {
-    return this.currentUserSubject.value;
+    return this.currentUserSubject$.value;
   }
 
   getToken(): string {
-    return (this.currentUserSubject.value) ? this.currentUserSubject.value.ssid : '';
+    return (this.currentUserSubject$.value) ? this.currentUserSubject$.value.ssid : '';
   }
 
   login(email: string, password: string, remember: boolean = false): Observable<any> {
@@ -43,7 +43,7 @@ export class AuthenticationService {
     sessionStorage.removeItem('currentUser');
     localStorage.removeItem('currentUser');
     this.sessionId = null;
-    this.currentUserSubject.next(null);
+    this.currentUserSubject$.next(null);
   }
 
   registration(email: string, password: string, name: string): Observable<any> {
@@ -79,7 +79,7 @@ export class AuthenticationService {
     }
 
     this.sessionId = user.ssid;
-    this.currentUserSubject.next(user);
+    this.currentUserSubject$.next(user);
     return user;
   }
 

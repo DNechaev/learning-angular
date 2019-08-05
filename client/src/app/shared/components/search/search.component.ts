@@ -24,7 +24,7 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
 
-    this.subscription = this.searchService.active.subscribe((showPanel) => {
+    this.subscription = this.searchService.active$.subscribe((showPanel) => {
       this.showPanel = showPanel;
     });
 

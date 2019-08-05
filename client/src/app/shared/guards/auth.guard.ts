@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { AuthenticationService } from '../services/authentication.service';
-import { AuthRoutesPath } from 'src/app/auth/auth.routing';
+import { AppRoutesPath } from 'src/app/app-routing.module';
+
 
 @Injectable({ providedIn: 'root' })
 export class AuthGuard implements CanActivate {
@@ -16,7 +17,7 @@ export class AuthGuard implements CanActivate {
       return true;
     }
 
-    this.router.navigate([ '/' + AuthRoutesPath.ROOT + '/' + AuthRoutesPath.LOGIN ], { queryParams: { returnUrl: state.url } });
+    this.router.navigate([ AppRoutesPath.HOME ], { queryParams: { returnUrl: state.url } });
     return false;
   }
 }

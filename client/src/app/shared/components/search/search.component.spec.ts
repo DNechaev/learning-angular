@@ -60,11 +60,11 @@ describe('SearchComponent', () => {
 
     tick(component.debounce / 2);
 
-    expect(searchService.search.value).toBe('');
+    expect(searchService.search$.value).toBe('');
 
     tick(component.debounce);
 
-    expect(searchService.search.value).toBe('testString');
+    expect(searchService.search$.value).toBe('testString');
 
   }));
 

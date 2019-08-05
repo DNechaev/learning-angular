@@ -1,4 +1,4 @@
-import {Component, HostBinding, TemplateRef} from '@angular/core';
+import { Component, HostBinding, TemplateRef } from '@angular/core';
 import { ToastService } from '../services/toast.service';
 
 @Component({
