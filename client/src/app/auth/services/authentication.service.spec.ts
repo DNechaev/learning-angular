@@ -2,9 +2,9 @@ import {getTestBed, TestBed} from '@angular/core/testing';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 
 import {AuthenticationService} from './authentication.service';
-import {URL_API_SESSIONS} from '../consts';
-import {User} from '../models';
-import {Role} from '../enums';
+import {URL_API_SESSIONS} from '../../shared/consts';
+import {User} from '../../shared/models';
+import {Role} from '../../shared/enums';
 
 describe('AuthenticationService', () => {
   let injector: TestBed;
@@ -153,7 +153,7 @@ describe('AuthenticationService', () => {
 
     let testUser: User;
 
-    service.currentUser.subscribe(u => {
+    service.currentUser$.subscribe(u => {
       testUser = u;
     });
 

@@ -3,7 +3,7 @@ import { FormGroup, FormControl, Validators, FormArray, ValidatorFn } from '@ang
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 
-import { AuthenticationService } from '../../shared/services/authentication.service';
+import { AuthenticationService } from '../../auth/services/authentication.service';
 import { LoaderIndicatorService } from '../../shared/services/loader-indicator.service';
 import { SearchService } from '../../shared/services/search.service';
 import { ToastService } from '../../shared/services/toast.service';

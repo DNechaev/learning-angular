@@ -8,9 +8,9 @@ import {
 import { Observable, throwError } from 'rxjs';
 import { catchError, finalize } from 'rxjs/operators';
 
-import { AuthenticationService } from '../services/authentication.service';
-import { ToastService } from '../services/toast.service';
-import { LoaderIndicatorService } from '../services/loader-indicator.service';
+import { AuthenticationService } from './services/authentication.service';
+import { ToastService } from '../shared/services/toast.service';
+import { LoaderIndicatorService } from '../shared/services/loader-indicator.service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {

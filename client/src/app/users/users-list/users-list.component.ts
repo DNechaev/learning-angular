@@ -6,7 +6,7 @@ import { Role } from '../../shared/enums';
 import { User } from '../../shared/models';
 import { UsersService } from '../users.service';
 
-import { AuthenticationService } from '../../shared/services/authentication.service';
+import { AuthenticationService } from '../../auth/services/authentication.service';
 import { LoaderIndicatorService } from '../../shared/services/loader-indicator.service';
 import { SearchService } from '../../shared/services/search.service';
 import { ToastService } from '../../shared/services/toast.service';

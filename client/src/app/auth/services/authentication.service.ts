@@ -3,9 +3,9 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 
-import { User } from '../models';
-import { Role } from '../enums';
-import { URL_API_SESSIONS } from '../consts';
+import { User } from '../../shared/models';
+import { Role } from '../../shared/enums';
+import { URL_API_SESSIONS } from '../../shared/consts';
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {

@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 
-import { AuthGuard } from '../shared/guards/auth.guard';
+import { AuthGuard } from '../auth/auth.guard';
 import { UsersComponent } from './users.component';
 import { UsersListComponent } from './users-list/users-list.component';
 import { UsersAddComponent } from './users-add/users-add.component';

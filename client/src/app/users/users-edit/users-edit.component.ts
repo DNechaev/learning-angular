@@ -8,7 +8,7 @@ import { User } from '../../shared/models';
 import { SearchService } from '../../shared/services/search.service';
 import { ToastService } from '../../shared/services/toast.service';
 import { UsersService } from '../users.service';
-import { AuthenticationService } from '../../shared/services/authentication.service';
+import { AuthenticationService } from '../../auth/services/authentication.service';
 import { LoaderIndicatorService } from '../../shared/services/loader-indicator.service';
 import { UsersRoutesPath } from '../users.routing';
 

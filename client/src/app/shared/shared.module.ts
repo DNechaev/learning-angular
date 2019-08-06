@@ -6,7 +6,7 @@ import { NgbModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { ToastsComponent } from './components/toasts.component';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
-import { AuthInterceptor } from './interceptors/auth.interceptor';
+import { AuthInterceptor } from '../auth/auth.interceptor';
 
 @NgModule({
   imports: [
