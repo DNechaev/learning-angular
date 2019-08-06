@@ -1,3 +1,5 @@
+@import '~src/sass/variables';
+
 body {
   font-size: .875rem;
 }
@@ -22,13 +24,13 @@ body {
   box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
   .nav-link {
     font-weight: 500;
-    color: #333;
+    color: $main-layout-nav-link-color;
     .feather {
       margin-right: 4px;
-      color: #999;
+      color: $main-layout-nav-link-feather-color;
     }
     &.active {
-      color: #0c3eff;
+      color: $main-layout-nav-link-active-color;
       .feather {
         color: inherit;
       }
@@ -64,8 +66,8 @@ body {
   padding-top: .75rem;
   padding-bottom: .75rem;
   font-size: 1rem;
-  background-color: rgba(0, 0, 0, .25);
-  box-shadow: inset -1px 0 0 rgba(0, 0, 0, .25);
+  background-color: $main-layout-navbar-brand-background-color;
+  box-shadow: inset -1px 0 0 $main-layout-navbar-brand-background-color;
 }
 
 .navbar {
@@ -76,6 +78,6 @@ body {
   }
 }
 
-.border-top { border-top: 1px solid #e5e5e5; }
-.border-bottom { border-bottom: 1px solid #e5e5e5; }
+.border-top { border-top: 1px solid $main-layout-border; }
+.border-bottom { border-bottom: 1px solid $main-layout-border; }
 
