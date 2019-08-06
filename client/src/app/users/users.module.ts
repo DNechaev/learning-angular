@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 import { SharedModule } from '../shared/shared.module';
-import { SearchComponent } from '../shared/components/search/search.component';
 import { ModuleRoutes } from './users.routing';
 import { UsersComponent } from './users.component';
 import { UsersListComponent } from './users-list/users-list.component';
@@ -19,7 +18,6 @@ import { MainLayoutComponent } from '../shared/layout/main-layout/main-layout.co
   ],
   declarations: [
     MainLayoutComponent,
-    SearchComponent,
     UsersComponent,
     UsersListComponent,
     UsersAddComponent,
