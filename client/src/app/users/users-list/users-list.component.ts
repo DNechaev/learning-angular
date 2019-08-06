@@ -10,6 +10,7 @@ import { AuthenticationService } from '../../shared/services/authentication.serv
 import { LoaderIndicatorService } from '../../shared/services/loader-indicator.service';
 import { SearchService } from '../../shared/services/search.service';
 import { ToastService } from '../../shared/services/toast.service';
+import { UsersRoutesPath } from '../users.routing';
 
 @Component({
   selector: 'app-users',
@@ -26,7 +27,7 @@ export class UsersListComponent implements OnInit, OnDestroy {
   pageSize     = 10;
   access       = false;
   isLoading    = false;
-  baseUrl      = '/users';
+  baseUrl      = UsersRoutesPath.PATH_TO_LIST;
   searchString = '';
 
   private authorizedUser;

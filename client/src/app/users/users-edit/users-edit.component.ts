@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, FormControl, Validators, FormArray, ValidatorFn } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
@@ -10,6 +10,7 @@ import { ToastService } from '../../shared/services/toast.service';
 import { UsersService } from '../users.service';
 import { AuthenticationService } from '../../shared/services/authentication.service';
 import { LoaderIndicatorService } from '../../shared/services/loader-indicator.service';
+import { UsersRoutesPath } from '../users.routing';
 
 @Component({
   selector: 'app-users-edit',
@@ -17,6 +18,16 @@ import { LoaderIndicatorService } from '../../shared/services/loader-indicator.s
   styleUrls: ['./users-edit.component.scss']
 })
 export class UsersEditComponent implements OnInit, OnDestroy {
+
+  constructor(
+    private authenticationService: AuthenticationService,
+    private usersService: UsersService,
+    private activatedRoute: ActivatedRoute,
+    private router: Router,
+    private loaderIndicatorService: LoaderIndicatorService,
+    private searchService: SearchService,
+    private toastService: ToastService,
+  ) {}
 
   userId: number;
   subscriptions: Subscription[] = [];
@@ -32,38 +43,38 @@ export class UsersEditComponent implements OnInit, OnDestroy {
     { id: 3, name: Role.USER },
   ];
 
-  constructor(
-    private authenticationService: AuthenticationService,
-    private usersService: UsersService,
-    private activatedRoute: ActivatedRoute,
-    private router: Router,
-    private loaderIndicatorService: LoaderIndicatorService,
-    private searchService: SearchService,
-    private toastService: ToastService,
-  ) {}
+  private static getRoleIdsFromRoles(roles: any[]): number[] {
+    return roles
+      .map((v) => v ? v.id : null)
+      .filter(v => v !== null);
+  }
 
   ngOnInit() {
 
-    this.userId = +this.activatedRoute.snapshot.paramMap.get('id');
+    // this.userId = +this.activatedRoute.snapshot.paramMap.get('id');
 
     this.searchService.disable();
 
     this.subscriptions.push(
-      this.authenticationService.currentUser$.subscribe((user: User) => {
+      this.authenticationService.currentUser$.subscribe(( user: User ) => {
         this.authorizedUser = user;
         this.access = this.authenticationService.userHasRoles(this.authorizedUser, [Role.ADMIN]);
       })
     );
 
     this.subscriptions.push(
-      this.loaderIndicatorService.subject$.subscribe((isLoading) => {
+      this.loaderIndicatorService.subject$.subscribe(( isLoading ) => {
         this.isLoading = isLoading;
       })
     );
 
     this.createForm();
 
-    this.loadUser(this.userId);
+    // this.loadUser(this.userId);
+    this.activatedRoute.data
+      .subscribe((data: { user: User }) => {
+        this.applyUser(data.user);
+      });
   }
 
   ngOnDestroy() {
@@ -81,7 +92,7 @@ export class UsersEditComponent implements OnInit, OnDestroy {
     this.usersService.updateUser(this.userId, user).subscribe(
       (data) => {
         this.toastService.success('User updated!');
-        this.router.navigate(['/users']);
+        this.router.navigate([ UsersRoutesPath.PATH_TO_LIST ]);
       },
       error => {
         console.error(error);
@@ -125,31 +136,21 @@ export class UsersEditComponent implements OnInit, OnDestroy {
       .filter(v => v !== null);
   }
 
-  private getRoleIdsFromRoles(roles: any[]): number[] {
-    return roles
-      .map((v, i) => v ? v.id : null)
-      .filter(v => v !== null);
-  }
+  private applyUser(user: User) {
 
-  private loadUser(userId: number) {
-    this.usersService.getUserById(userId).subscribe(
-      (data) => {
-        this.toastService.success('User loaded!');
-        this.userId = data.id;
+    this.toastService.success('User loaded!');
+    this.userId = user.id;
 
-        const selectedRoles = this.getRoleIdsFromRoles(data.roles);
+    const selectedRoles = UsersEditComponent.getRoleIdsFromRoles(user.roles);
 
-        data.roles = [];
-        this.allRoles.map((o) => {
-          data.roles.push(selectedRoles.includes(o.id));
-        });
+    user.roles = [];
+    this.allRoles.map((o) => {
+      user.roles.push(selectedRoles.includes(o.id));
+    });
 
-        this.userForm.patchValue(data);
-        this.userLoaded = true;
-      },
-      error => {
-        console.error(error);
-      });
+    this.userForm.patchValue(user);
+    this.userLoaded = true;
+
   }
 
 }
