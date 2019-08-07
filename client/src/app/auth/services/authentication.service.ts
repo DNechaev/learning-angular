@@ -6,29 +6,29 @@ import { map } from 'rxjs/operators';
 import { User } from '../../shared/models';
 import { Role } from '../../shared/enums';
 import { URL_API_SESSIONS } from '../../shared/consts';
+import { StorageService } from 'src/app/shared/services/storage.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
 
-  private sessionId: string;
-  private currentUserSubject$: BehaviorSubject<User>;
+  private userKey = 'currentUser';
 
-  currentUser$: Observable<User>;
+  currentUser$: BehaviorSubject<User>;
 
-  constructor(private http: HttpClient) {
-
-    this.currentUserSubject$ = new BehaviorSubject<User>(JSON.parse(
-      localStorage.getItem('currentUser') ? localStorage.getItem('currentUser') : sessionStorage.getItem('currentUser')
-    ));
-    this.currentUser$ = this.currentUserSubject$.asObservable();
+  constructor(
+    private http: HttpClient,
+    private storageService: StorageService
+  ) {
+    this.currentUser$ = new BehaviorSubject<User>(storageService.getItem(this.userKey));
   }
 
-  get currentUserValue(): User {
-    return this.currentUserSubject$.value;
+  getCurrentUser(): User {
+    return this.currentUser$.value;
   }
 
   getToken(): string {
-    return (this.currentUserSubject$.value) ? this.currentUserSubject$.value.ssid : '';
+    const user = this.getCurrentUser();
+    return user ? user.ssid : '';
   }
 
   login(email: string, password: string, remember: boolean = false): Observable<any> {
@@ -40,10 +40,8 @@ export class AuthenticationService {
   }
 
   logout() {
-    sessionStorage.removeItem('currentUser');
-    localStorage.removeItem('currentUser');
-    this.sessionId = null;
-    this.currentUserSubject$.next(null);
+    this.storageService.removeItem(this.userKey);
+    this.currentUser$.next(null);
   }
 
   registration(email: string, password: string, name: string): Observable<any> {
@@ -69,17 +67,8 @@ export class AuthenticationService {
   }
 
   private applyCurrentUser(user: User, remember: boolean = false) {
-    sessionStorage.removeItem('currentUser');
-    localStorage.removeItem('currentUser');
-
-    if (remember) {
-      localStorage.setItem('currentUser', JSON.stringify(user));
-    } else {
-      sessionStorage.setItem('currentUser', JSON.stringify(user));
-    }
-
-    this.sessionId = user.ssid;
-    this.currentUserSubject$.next(user);
+    this.storageService.setItem(this.userKey, user, remember);
+    this.currentUser$.next(user);
     return user;
   }
 

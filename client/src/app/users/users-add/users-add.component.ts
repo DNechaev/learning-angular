@@ -10,6 +10,8 @@ import { ToastService } from '../../shared/services/toast.service';
 import { UsersService } from '../users.service';
 import { Role } from '../../shared/enums';
 import { User } from '../../shared/models';
+import { AppRoutesPath } from '../../app-routing.module';
+import { UsersRoutesPath } from '../users.routing';
 
 @Component({
   selector: 'app-users-add',
@@ -29,6 +31,11 @@ export class UsersAddComponent implements OnInit, OnDestroy {
     { id: 2, name: Role.MANAGER },
     { id: 3, name: Role.USER },
   ];
+
+  urls = {
+    home: AppRoutesPath.HOME,
+    users: UsersRoutesPath.PATH_TO_LIST,
+  };
 
   constructor(
     private authenticationService: AuthenticationService,
@@ -51,7 +58,7 @@ export class UsersAddComponent implements OnInit, OnDestroy {
     );
 
     this.subscriptions.push(
-      this.loaderIndicatorService.subject$.subscribe((isLoading) => {
+      this.loaderIndicatorService.loader$.subscribe((isLoading) => {
         this.isLoading = isLoading;
       })
     );

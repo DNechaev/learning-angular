@@ -15,25 +15,25 @@ describe('LoaderIndicatorService', () => {
   });
 
   it('by default loader must be false',   async () => {
-    expect(await service.subject.value).toBe(false);
+    expect(await service.status()).toBe(false);
   });
 
   it('disable service',   async () => {
     await service.disable();
-    expect(await service.subject.value).toBe(false);
+    expect(await service.status()).toBe(false);
   });
 
   it('enable service',   async () => {
     await service.disable();
     await service.enable();
-    expect(await service.subject.value).toBe(true);
+    expect(await service.status()).toBe(true);
   });
 
   it('subscribe on indicator value changes',  async () => {
 
     let testValue = false;
 
-    service.subject.subscribe(b => {
+    service.loader$.subscribe(b => {
       testValue = b;
     });
 

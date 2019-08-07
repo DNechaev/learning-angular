@@ -56,7 +56,7 @@ describe('SearchService', () => {
 
     let testString = '';
 
-    service.search.subscribe(s => {
+    service.search$.subscribe(s => {
       testString = s;
     });
 
@@ -86,7 +86,7 @@ describe('SearchService', () => {
 
     let testValue = false;
 
-    service.active.subscribe(b => {
+    service.active$.subscribe(b => {
       testValue = b;
     });
 

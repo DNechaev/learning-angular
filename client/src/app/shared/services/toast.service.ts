@@ -5,7 +5,7 @@ import { Toast } from '../interfaces';
 export class ToastService {
   toasts: Toast[] = [];
 
-  show(textOrTpl: string | TemplateRef<any>, options: Omit<Toast, 'textOrTpl'>) {
+  show(textOrTpl: string | TemplateRef<any>, options?: Omit<Toast, 'textOrTpl'>) {
     this.toasts.push({ textOrTpl, ...options });
   }
 

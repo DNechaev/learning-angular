@@ -1,12 +1,13 @@
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a routerLink="/users">Users</a></li>
+    <li class="breadcrumb-item"><a [routerLink]="urls.home">Home</a></li>
+    <li class="breadcrumb-item"><a [routerLink]="urls.users">Users</a></li>
     <li class="breadcrumb-item active" aria-current="page">Create User</li>
   </ol>
 </nav>
 
 <div *ngIf="!access" class="alert alert-danger" role="alert">
-  <h1 class="h2"><i class="fas fa-exclamation-triangle"></i> You don't have rights for this section.</h1>
+  <i class="fas fa-exclamation-triangle"></i> You don't have rights for this section.
 </div>
 
 <div *ngIf="access" >

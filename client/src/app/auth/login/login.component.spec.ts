@@ -2,10 +2,10 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { LoginComponent } from './login.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import {Router, RouterModule} from '@angular/router';
-import { AuthenticationService } from '../../shared/services/authentication.service';
+import { Router, RouterModule } from '@angular/router';
+import { AuthenticationService } from '../services/authentication.service';
 import { of } from 'rxjs';
-import {HttpClientModule} from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;

@@ -11,6 +11,7 @@ import { UsersService } from '../users.service';
 import { AuthenticationService } from '../../auth/services/authentication.service';
 import { LoaderIndicatorService } from '../../shared/services/loader-indicator.service';
 import { UsersRoutesPath } from '../users.routing';
+import { AppRoutesPath } from '../../app-routing.module';
 
 @Component({
   selector: 'app-users-edit',
@@ -18,16 +19,6 @@ import { UsersRoutesPath } from '../users.routing';
   styleUrls: ['./users-edit.component.scss']
 })
 export class UsersEditComponent implements OnInit, OnDestroy {
-
-  constructor(
-    private authenticationService: AuthenticationService,
-    private usersService: UsersService,
-    private activatedRoute: ActivatedRoute,
-    private router: Router,
-    private loaderIndicatorService: LoaderIndicatorService,
-    private searchService: SearchService,
-    private toastService: ToastService,
-  ) {}
 
   userId: number;
   subscriptions: Subscription[] = [];
@@ -42,6 +33,21 @@ export class UsersEditComponent implements OnInit, OnDestroy {
     { id: 2, name: Role.MANAGER },
     { id: 3, name: Role.USER },
   ];
+
+  urls = {
+    home: AppRoutesPath.HOME,
+    users: UsersRoutesPath.PATH_TO_LIST,
+  };
+
+  constructor(
+    private authenticationService: AuthenticationService,
+    private usersService: UsersService,
+    private activatedRoute: ActivatedRoute,
+    private router: Router,
+    private loaderIndicatorService: LoaderIndicatorService,
+    private searchService: SearchService,
+    private toastService: ToastService,
+  ) {}
 
   private static getRoleIdsFromRoles(roles: any[]): number[] {
     return roles
@@ -63,7 +69,7 @@ export class UsersEditComponent implements OnInit, OnDestroy {
     );
 
     this.subscriptions.push(
-      this.loaderIndicatorService.subject$.subscribe(( isLoading ) => {
+      this.loaderIndicatorService.loader$.subscribe(( isLoading ) => {
         this.isLoading = isLoading;
       })
     );

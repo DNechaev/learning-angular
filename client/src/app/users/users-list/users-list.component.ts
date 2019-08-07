@@ -11,6 +11,7 @@ import { LoaderIndicatorService } from '../../shared/services/loader-indicator.s
 import { SearchService } from '../../shared/services/search.service';
 import { ToastService } from '../../shared/services/toast.service';
 import { UsersRoutesPath } from '../users.routing';
+import { AppRoutesPath } from '../../app-routing.module';
 
 @Component({
   selector: 'app-users',
@@ -27,7 +28,10 @@ export class UsersListComponent implements OnInit, OnDestroy {
   pageSize     = 10;
   access       = false;
   isLoading    = false;
-  baseUrl      = UsersRoutesPath.PATH_TO_LIST;
+  urls         = {
+    home: AppRoutesPath.HOME,
+    users: UsersRoutesPath.PATH_TO_LIST,
+  };
   searchString = '';
 
   private authorizedUser;
@@ -53,7 +57,7 @@ export class UsersListComponent implements OnInit, OnDestroy {
     );
 
     this.subscriptions.push(
-      this.loaderIndicatorService.subject$.subscribe((isLoading) => {
+      this.loaderIndicatorService.loader$.subscribe((isLoading) => {
         this.isLoading = isLoading;
       })
     );

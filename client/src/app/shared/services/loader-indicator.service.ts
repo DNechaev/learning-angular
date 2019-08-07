@@ -4,18 +4,22 @@ import { BehaviorSubject } from 'rxjs';
 @Injectable({ providedIn: 'root' })
 export class LoaderIndicatorService {
 
-  subject$: BehaviorSubject<boolean>;
+  loader$: BehaviorSubject<boolean>;
 
   constructor() {
-    this.subject$ = new BehaviorSubject<boolean>(false);
+    this.loader$ = new BehaviorSubject<boolean>(false);
+  }
+
+  status(): boolean {
+    return this.loader$.value;
   }
 
   enable() {
-    this.subject$.next(true);
+    this.loader$.next(true);
   }
 
   disable() {
-    this.subject$.next(false);
+    this.loader$.next(false);
   }
 
 }
