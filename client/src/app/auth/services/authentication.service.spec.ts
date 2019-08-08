@@ -32,7 +32,7 @@ class MockStorageService {
 
 }
 
-describe('registration', () => {
+describe('AuthenticationService: registration', () => {
   let injector: TestBed;
   let authenticationService: AuthenticationService;
   let storageService: StorageService;
@@ -76,6 +76,10 @@ describe('registration', () => {
 
   });
 
+  afterEach(() => {
+    httpMock.verify();
+  });
+
   it('user is successfully created', () => {
     expect(createdUser).toEqual(expectedUser);
   });
@@ -86,7 +90,7 @@ describe('registration', () => {
 
 });
 
-describe('login',  () => {
+describe('AuthenticationService: login',  () => {
   let injector: TestBed;
   let authenticationService: AuthenticationService;
   let storageService: StorageService;
@@ -133,6 +137,10 @@ describe('login',  () => {
     createdUser = await helperLoginUser(expectedUser);
   });
 
+  afterEach(() => {
+    httpMock.verify();
+  });
+
   it('user is successfully logged',  () => {
     expect(createdUser).toEqual(expectedUser);
   });
@@ -151,7 +159,7 @@ describe('login',  () => {
 
 });
 
-describe('logout', () => {
+describe('AuthenticationService: logout', () => {
   let injector: TestBed;
   let authenticationService: AuthenticationService;
   let storageService: StorageService;
@@ -210,7 +218,7 @@ describe('logout', () => {
 
 });
 
-describe('roles', () => {
+describe('AuthenticationService: roles', () => {
   let injector: TestBed;
   let authenticationService: AuthenticationService;
 
@@ -276,7 +284,7 @@ describe('roles', () => {
 
 });
 
-describe('AuthenticationService', () => {
+describe('AuthenticationService: AuthenticationService', () => {
   let injector: TestBed;
   let service: AuthenticationService;
   let storageService: StorageService;
@@ -330,95 +338,7 @@ describe('AuthenticationService', () => {
 
     });
   }
-/*
-  it('registration user', async () => {
-    const returnUser = new User();
-    returnUser.id = 1;
-    returnUser.name = 'User';
-    returnUser.ssid = 'TEST_SSID';
 
-    sessionStorage.removeItem('currentUser');
-    localStorage.removeItem('currentUser');
-
-    const user = await helperRegistrationUser(returnUser);
-
-    expect(user).toEqual(returnUser);
-    expect(localStorage.getItem('currentUser')).toBeNull();
-    expect(sessionStorage.getItem('currentUser')).toBeTruthy();
-    expect(JSON.parse(sessionStorage.getItem('currentUser'))).toEqual(JSON.parse(JSON.stringify(returnUser)));
-
-  });
-
-  it('login with remember', async () => {
-    const returnUser = new User();
-    returnUser.id = 1;
-    returnUser.name = 'User';
-    returnUser.ssid = 'TEST_SSID';
-
-    const user = await helperLoginUser(returnUser, true);
-
-    expect(user).toEqual(returnUser);
-    expect(storageService.getItem('TEST')).toEqual(returnUser);
-
-  });
-
-  it('login without remember', async () => {
-    const returnUser = new User();
-    returnUser.id = 1;
-    returnUser.name = 'User';
-    returnUser.ssid = 'TEST_SSID';
-
-    const user = await helperLoginUser(returnUser, false);
-
-    expect(user).toEqual(returnUser);
-    expect(storageService.getItem('TEST')).toBeTruthy();
-    expect(storageService.getItem('TEST')).toEqual(returnUser);
-
-  });
-
-  it('logout', async () => {
-    const returnUser = new User();
-    returnUser.id = 1;
-    returnUser.name = 'User';
-    returnUser.ssid = 'TEST_SSID';
-
-    const user = await helperLoginUser(returnUser, true);
-    expect(user).toEqual(returnUser);
-
-    await service.logout();
-
-    expect(storageService.getItem('TEST')).toBeNull();
-    expect(service.getCurrentUser()).toBeNull();
-  });
-
-  it('get current user',  async () => {
-
-    const returnUser = new User();
-    returnUser.id = 1;
-    returnUser.name = 'User';
-    returnUser.ssid = 'TEST_SSID';
-
-    const user = await helperLoginUser(returnUser, false);
-
-    expect(user).toEqual(returnUser);
-    expect(service.getCurrentUser()).toEqual(returnUser);
-
-  });
-
-  it('get user token',  async () => {
-
-    const returnUser = new User();
-    returnUser.id = 1;
-    returnUser.name = 'User';
-    returnUser.ssid = 'TEST_SSID';
-
-    const user = await helperLoginUser(returnUser, false);
-
-    expect(user).toEqual(returnUser);
-    expect(service.getToken()).toBe(returnUser.ssid);
-
-  });
-*/
   it('subscribe on user changes',  async () => {
 
     let testUser: User;
@@ -444,96 +364,6 @@ describe('AuthenticationService', () => {
 
     await helperLoginUser(returnUser2, false);
     expect(testUser).toEqual(returnUser2);
-
-  });
-
-  it('access by roles', () => {
-    const user = new User();
-
-    // --------------------
-    user.roles = [
-      {name: Role.ADMIN},
-      {name: Role.MANAGER},
-      {name: Role.USER}
-    ];
-
-    expect(service.userHasRoles(user, [])).toBe(false);
-
-    expect(service.userHasRoles(user, [Role.ADMIN])).toBe(true);
-    expect(service.userHasRoles(user, [Role.MANAGER])).toBe(true);
-    expect(service.userHasRoles(user, [Role.USER])).toBe(true);
-
-    expect(service.userHasRoles(user, [Role.ADMIN, Role.MANAGER])).toBe(true);
-    expect(service.userHasRoles(user, [Role.ADMIN, Role.USER])).toBe(true);
-    expect(service.userHasRoles(user, [Role.MANAGER, Role.USER])).toBe(true);
-
-    expect(service.userHasRoles(user, [Role.ADMIN, Role.MANAGER, Role.USER])).toBe(true);
-
-    // --------------------
-    user.roles = [];
-
-    expect(service.userHasRoles(user, [])).toBe(false);
-
-    expect(service.userHasRoles(user, [Role.ADMIN])).toBe(false);
-    expect(service.userHasRoles(user, [Role.MANAGER])).toBe(false);
-    expect(service.userHasRoles(user, [Role.USER])).toBe(false);
-
-    expect(service.userHasRoles(user, [Role.ADMIN, Role.MANAGER])).toBe(false);
-    expect(service.userHasRoles(user, [Role.ADMIN, Role.USER])).toBe(false);
-    expect(service.userHasRoles(user, [Role.MANAGER, Role.USER])).toBe(false);
-
-    expect(service.userHasRoles(user, [Role.ADMIN, Role.MANAGER, Role.USER])).toBe(false);
-
-    // --------------------
-    user.roles = [
-      {name: Role.ADMIN},
-    ];
-
-    expect(service.userHasRoles(user, [])).toBe(false);
-
-    expect(service.userHasRoles(user, [Role.ADMIN])).toBe(true);
-    expect(service.userHasRoles(user, [Role.MANAGER])).toBe(false);
-    expect(service.userHasRoles(user, [Role.USER])).toBe(false);
-
-    expect(service.userHasRoles(user, [Role.ADMIN, Role.MANAGER])).toBe(true);
-    expect(service.userHasRoles(user, [Role.ADMIN, Role.USER])).toBe(true);
-    expect(service.userHasRoles(user, [Role.MANAGER, Role.USER])).toBe(false);
-
-    expect(service.userHasRoles(user, [Role.ADMIN, Role.MANAGER, Role.USER])).toBe(true);
-
-    // --------------------
-    user.roles = [
-      {name: Role.MANAGER},
-    ];
-
-    expect(service.userHasRoles(user, [])).toBe(false);
-
-    expect(service.userHasRoles(user, [Role.ADMIN])).toBe(false);
-    expect(service.userHasRoles(user, [Role.MANAGER])).toBe(true);
-    expect(service.userHasRoles(user, [Role.USER])).toBe(false);
-
-    expect(service.userHasRoles(user, [Role.ADMIN, Role.MANAGER])).toBe(true);
-    expect(service.userHasRoles(user, [Role.ADMIN, Role.USER])).toBe(false);
-    expect(service.userHasRoles(user, [Role.MANAGER, Role.USER])).toBe(true);
-
-    expect(service.userHasRoles(user, [Role.ADMIN, Role.MANAGER, Role.USER])).toBe(true);
-
-    // --------------------
-    user.roles = [
-      {name: Role.USER}
-    ];
-
-    expect(service.userHasRoles(user, [])).toBe(false);
-
-    expect(service.userHasRoles(user, [Role.ADMIN])).toBe(false);
-    expect(service.userHasRoles(user, [Role.MANAGER])).toBe(false);
-    expect(service.userHasRoles(user, [Role.USER])).toBe(true);
-
-    expect(service.userHasRoles(user, [Role.ADMIN, Role.MANAGER])).toBe(false);
-    expect(service.userHasRoles(user, [Role.ADMIN, Role.USER])).toBe(true);
-    expect(service.userHasRoles(user, [Role.MANAGER, Role.USER])).toBe(true);
-
-    expect(service.userHasRoles(user, [Role.ADMIN, Role.MANAGER, Role.USER])).toBe(true);
 
   });
 

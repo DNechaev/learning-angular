@@ -43,4 +43,46 @@ describe('ToastService', () => {
 
   });
 
+  it('info',   () => {
+    const spy = spyOn(service, 'show').and.callThrough();
+
+    service.info('Message');
+
+    expect(spy.calls.count()).toBe(1);
+    expect(service.show).toHaveBeenCalledWith('Message', jasmine.anything());
+  });
+
+  it('success',   () => {
+
+    const spy = spyOn(service, 'show').and.callThrough();
+
+    service.success('Message');
+
+    expect(spy.calls.count()).toBe(1);
+    expect(service.show).toHaveBeenCalledWith('Message', jasmine.anything());
+
+  });
+
+  it('warning',   () => {
+
+    const spy = spyOn(service, 'show').and.callThrough();
+
+    service.warning('Message');
+
+    expect(spy.calls.count()).toBe(1);
+    expect(service.show).toHaveBeenCalledWith('Message', jasmine.anything());
+
+  });
+
+  it('danger',   () => {
+
+    const spy = spyOn(service, 'show').and.callThrough();
+
+    service.danger('Message');
+
+    expect(spy.calls.count()).toBe(1);
+    expect(service.show).toHaveBeenCalledWith('Message', jasmine.anything());
+
+  });
 });
+

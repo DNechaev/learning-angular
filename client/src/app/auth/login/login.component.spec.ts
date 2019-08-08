@@ -1,11 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { LoginComponent } from './login.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { AuthenticationService } from '../services/authentication.service';
 import { of } from 'rxjs';
 import { HttpClientModule } from '@angular/common/http';
+
+import { LoginComponent } from './login.component';
+import { AuthenticationService } from '../services/authentication.service';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -32,6 +32,7 @@ describe('LoginComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;
+
     authenticationService = fixture.debugElement.injector.get(AuthenticationService);
     router = fixture.debugElement.injector.get(Router);
     mockUser = {
@@ -50,7 +51,8 @@ describe('LoginComponent', () => {
   });
 
   it('should not submit by no valid form', () => {
-    expect(component.onSubmit()).toBe(false);
+    component.onSubmit();
+    expect(component.formLogin.valid).toBe(false);
   });
 
   it('should submit', () => {

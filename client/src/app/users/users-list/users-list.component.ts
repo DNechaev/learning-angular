@@ -88,6 +88,7 @@ export class UsersListComponent implements OnInit, OnDestroy {
     this.usersService.getUsers(this.searchString, page, this.pageSize )
       .pipe(
         map((pageData) => {
+          this.currentPage  = pageData.page;
           this.totalRecords = pageData.count;
           this.pageSize     = pageData.pageSize;
           return pageData.rows;

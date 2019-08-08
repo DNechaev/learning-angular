@@ -35,20 +35,7 @@ describe('SearchComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  /*
-    it('value changed', () => {
-      const input = fixture.debugElement.query(By.css('input'));
-      const el = input.nativeElement;
-      expect(el.value).toBe('');
-      el.value = 'testString';
-      fixture.detectChanges();
-      el.dispatchEvent(new Event('input'));
-      expect(el.value).toBe('testString');
-    });
-   */
-
   it('value send to SearchService', fakeAsync(() => {
-
     const input = fixture.debugElement.query(By.css('input'));
     const el = input.nativeElement;
 
@@ -59,13 +46,10 @@ describe('SearchComponent', () => {
     el.dispatchEvent(new Event('input'));
 
     tick(component.debounce / 2);
-
     expect(searchService.search$.value).toBe('');
 
     tick(component.debounce);
-
     expect(searchService.search$.value).toBe('testString');
-
   }));
 
 });

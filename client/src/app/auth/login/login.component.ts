@@ -51,9 +51,6 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   onSubmit() {
-    if (!this.formLogin.valid) {
-      return false;
-    }
     this.authenticationService.login(this.formLogin.value.email, this.formLogin.value.password, this.formLogin.value.remember)
       .subscribe(
         data => {
@@ -63,7 +60,6 @@ export class LoginComponent implements OnInit, OnDestroy {
           console.error('[LoginComponent] Error', error);
           this.error = error.error;
         });
-    return true;
   }
 
 }

@@ -19,6 +19,12 @@ export class UsersResolverService implements Resolve<User> {
   ) {}
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<User> | Observable<never> {
+
+    if (!route.paramMap.has('id')) {
+      this.router.navigate([UsersRoutesPath.PATH_TO_LIST]);
+      return EMPTY;
+    }
+
     const id = route.paramMap.get('id');
 
     return this.usersService.getUserById(+id).pipe(

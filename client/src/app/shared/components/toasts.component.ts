@@ -24,5 +24,4 @@ export class ToastsComponent {
   @HostBinding('class.ngb-toasts') role = 'true';
   constructor(public toastService: ToastService) {}
   isTemplate(toast) { return toast.textOrTpl instanceof TemplateRef; }
-
 }

@@ -14,22 +14,22 @@ describe('LoaderIndicatorService', () => {
     service = injector.get(LoaderIndicatorService);
   });
 
-  it('by default loader must be false',   async () => {
-    expect(await service.status()).toBe(false);
+  it('by default loader must be false', () => {
+    expect(service.status()).toBe(false);
   });
 
-  it('disable service',   async () => {
-    await service.disable();
-    expect(await service.status()).toBe(false);
+  it('disable service', () => {
+    service.disable();
+    expect(service.status()).toBe(false);
   });
 
-  it('enable service',   async () => {
-    await service.disable();
-    await service.enable();
-    expect(await service.status()).toBe(true);
+  it('enable service', () => {
+    service.disable();
+    service.enable();
+    expect(service.status()).toBe(true);
   });
 
-  it('subscribe on indicator value changes',  async () => {
+  it('subscribe on indicator value changes',  () => {
 
     let testValue = false;
 
@@ -37,13 +37,13 @@ describe('LoaderIndicatorService', () => {
       testValue = b;
     });
 
-    await service.enable();
+    service.enable();
     expect(testValue).toBe(true);
 
-    await service.disable();
+    service.disable();
     expect(testValue).toBe(false);
 
-    await service.enable();
+    service.enable();
     expect(testValue).toBe(true);
 
   });
