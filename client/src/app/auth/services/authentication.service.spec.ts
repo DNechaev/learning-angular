@@ -32,7 +32,7 @@ class MockStorageService {
 
 }
 
-describe('AuthenticationService: registration', () => {
+describe('AuthenticationService (registration)', () => {
   let injector: TestBed;
   let authenticationService: AuthenticationService;
   let storageService: StorageService;
@@ -90,7 +90,7 @@ describe('AuthenticationService: registration', () => {
 
 });
 
-describe('AuthenticationService: login',  () => {
+describe('AuthenticationService (login)',  () => {
   let injector: TestBed;
   let authenticationService: AuthenticationService;
   let storageService: StorageService;
@@ -159,7 +159,7 @@ describe('AuthenticationService: login',  () => {
 
 });
 
-describe('AuthenticationService: logout', () => {
+describe('AuthenticationService (logout)', () => {
   let injector: TestBed;
   let authenticationService: AuthenticationService;
   let storageService: StorageService;
@@ -218,7 +218,7 @@ describe('AuthenticationService: logout', () => {
 
 });
 
-describe('AuthenticationService: roles', () => {
+describe('AuthenticationService (roles)', () => {
   let injector: TestBed;
   let authenticationService: AuthenticationService;
 
@@ -284,7 +284,7 @@ describe('AuthenticationService: roles', () => {
 
 });
 
-describe('AuthenticationService: AuthenticationService', () => {
+describe('AuthenticationService (AuthenticationService)', () => {
   let injector: TestBed;
   let service: AuthenticationService;
   let storageService: StorageService;

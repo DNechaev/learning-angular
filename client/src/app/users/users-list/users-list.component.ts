@@ -65,7 +65,7 @@ export class UsersListComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.searchService.search$.subscribe((searchString) => {
         this.searchString = searchString;
-        this.loadData();
+        this.loadData(1);
       })
     );
 

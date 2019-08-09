@@ -22,8 +22,9 @@ describe('UsersListComponent', () => {
   let loaderIndicatorService: LoaderIndicatorService;
   let searchService: SearchService;
   let toastService: ToastService;
-
-  let expectPage: Page;
+  let expectPage1: Page;
+  let expectPage2: Page;
+  let expectPage3: Page;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -55,20 +56,39 @@ describe('UsersListComponent', () => {
     searchService = fixture.debugElement.injector.get(SearchService);
     toastService = fixture.debugElement.injector.get(ToastService);
 
-    expectPage = new Page();
-    expectPage.pageSize = 3;
-    expectPage.page = 2;
-    expectPage.count = 20;
-    expectPage.rows = [
+    expectPage1 = new Page();
+    expectPage1.pageSize = 3;
+    expectPage1.page = 1;
+    expectPage1.count = 5;
+    expectPage1.rows = [
       { id: '1', name: 'NAME1', email: 'EMAIL1' },
       { id: '2', name: 'NAME2', email: 'EMAIL2' },
       { id: '3', name: 'NAME3', email: 'EMAIL3' },
     ];
 
-    spyOn(usersService, 'getUsers').and.returnValue(of(expectPage));
+    expectPage2 = new Page();
+    expectPage2.pageSize = 3;
+    expectPage2.page = 2;
+    expectPage2.count = 5;
+    expectPage2.rows = [
+      { id: '4', name: 'NAME4', email: 'EMAIL4' },
+      { id: '5', name: 'NAME5', email: 'EMAIL5' },
+    ];
 
-    component.loadData(2);
+    expectPage3 = new Page();
+    expectPage3.pageSize = 3;
+    expectPage3.page = 1;
+    expectPage3.count = 1;
+    expectPage3.rows = [
+      { id: '20', name: 'test', email: 'EMAIL' },
+    ];
 
+    spyOn(usersService, 'getUsers')
+      .withArgs('', 1, 3).and.returnValue(of(expectPage1))
+      .withArgs('', 2, 3).and.returnValue(of(expectPage2))
+      .withArgs('test', 1, 3).and.returnValue(of(expectPage3));
+
+    component.pageSize = 3;
     fixture.detectChanges();
   });
 
@@ -76,22 +96,39 @@ describe('UsersListComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('load user', () => {
-    expect(component.users).toEqual(expectPage.rows);
+  it('load user page 1', () => {
+    component.loadData(1);
+    expect(component.users).toEqual(expectPage1.rows);
   });
 
-  it('current page', () => {
+  it('load user page 2', () => {
+    component.loadData(2);
+    expect(component.users).toEqual(expectPage2.rows);
+  });
+
+  it('current page 1', () => {
+    component.loadData(1);
+    expect(component.currentPage).toBe(1);
+  });
+
+  it('current page 2', () => {
+    component.loadData(2);
     expect(component.currentPage).toBe(2);
   });
 
   it('page size', () => {
+    component.loadData(1);
     expect(component.pageSize).toBe(3);
   });
 
   it('total records', () => {
-    expect(component.totalRecords).toBe(20);
+    component.loadData(2);
+    expect(component.totalRecords).toBe(5);
   });
 
-  /** TODO Добавить тест кейсы: смена страницы, фильтр по словам из searchService */
+  it('get users by searchService subscription', () => {
+    searchService.set('test');
+    expect(component.users).toEqual(expectPage3.rows);
+  });
 
 });

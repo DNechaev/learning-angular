@@ -57,8 +57,6 @@ export class UsersEditComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
 
-    // this.userId = +this.activatedRoute.snapshot.paramMap.get('id');
-
     this.searchService.disable();
 
     this.subscriptions.push(
@@ -76,7 +74,6 @@ export class UsersEditComponent implements OnInit, OnDestroy {
 
     this.createForm();
 
-    // this.loadUser(this.userId);
     this.activatedRoute.data
       .subscribe((data: { user: User }) => {
         this.applyUser(data.user);
@@ -90,11 +87,12 @@ export class UsersEditComponent implements OnInit, OnDestroy {
     this.subscriptions = null;
   }
 
-  onSubmit(user: User) {
+  onSubmit() {
+    const user = this.userForm.value;
     if (!this.userLoaded) {
       return this.toastService.warning('User won\'t loaded');
     }
-    user.roles = this.getSelectedRoleIds(this.userForm.value.roles);
+    user.roles = this.getSelectedRoleIds(user.roles);
     this.usersService.updateUser(this.userId, user).subscribe(
       (data) => {
         this.toastService.success('User updated!');
@@ -142,7 +140,8 @@ export class UsersEditComponent implements OnInit, OnDestroy {
       .filter(v => v !== null);
   }
 
-  private applyUser(user: User) {
+  private applyUser(user: User): void {
+    if (!user) { return; }
 
     this.toastService.success('User loaded!');
     this.userId = user.id;

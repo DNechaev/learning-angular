@@ -94,7 +94,7 @@ export class UsersAddComponent implements OnInit, OnDestroy {
     });
 
     this.roles.map((o, i) => {
-      const control = new FormControl(i === 2); // if first item set to true, else false
+      const control = new FormControl(i === 2); // checkbox USER role by default
       (this.userForm.controls.roles as FormArray).push(control);
     });
 
@@ -107,12 +107,13 @@ export class UsersAddComponent implements OnInit, OnDestroy {
     return selectedRoleIds;
   }
 
-  onSubmit(user: User) {
+  onSubmit() {
+    const user = this.userForm.value;
     user.roles = this.getSelectedRoleIds();
     this.usersService.createUser(user).subscribe(
       (data) => {
         this.toastService.success('User created!');
-        this.router.navigate(['/users']);
+        this.router.navigate([ UsersRoutesPath.PATH_TO_LIST ]);
       },
       error => {
         console.error(error);

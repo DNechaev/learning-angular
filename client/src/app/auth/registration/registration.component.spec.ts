@@ -1,11 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { RegistrationComponent } from './registration.component';
-import {Router, RouterModule} from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ReactiveFormsModule } from '@angular/forms';
-import {AuthenticationService} from '../services/authentication.service';
-import {of} from 'rxjs';
+import { AuthenticationService } from '../services/authentication.service';
+import { of } from 'rxjs';
 
 describe('RegistrationComponent', () => {
   let component: RegistrationComponent;
