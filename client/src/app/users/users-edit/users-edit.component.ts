@@ -8,10 +8,11 @@ import { User } from '../../shared/models';
 import { SearchService } from '../../shared/services/search.service';
 import { ToastService } from '../../shared/services/toast.service';
 import { UsersService } from '../users.service';
-import { AuthenticationService } from '../../auth/services/authentication.service';
+// import { AuthenticationService } from '../../auth/services/authentication.service';
 import { LoaderIndicatorService } from '../../shared/services/loader-indicator.service';
 import { UsersRoutesPath } from '../users.routing';
 import { AppRoutesPath } from '../../app-routing.module';
+import { CurrentUserProvider } from '../../shared/providers/current-user.provider';
 
 @Component({
   selector: 'app-users-edit',
@@ -40,7 +41,8 @@ export class UsersEditComponent implements OnInit, OnDestroy {
   };
 
   constructor(
-    private authenticationService: AuthenticationService,
+    // private authenticationService: AuthenticationService,
+    private currentUserProvider: CurrentUserProvider,
     private usersService: UsersService,
     private activatedRoute: ActivatedRoute,
     private router: Router,
@@ -60,9 +62,9 @@ export class UsersEditComponent implements OnInit, OnDestroy {
     this.searchService.disable();
 
     this.subscriptions.push(
-      this.authenticationService.currentUser$.subscribe(( user: User ) => {
+      this.currentUserProvider.currentUser$.subscribe(( user: User ) => {
         this.authorizedUser = user;
-        this.access = this.authenticationService.userHasRoles(this.authorizedUser, [Role.ADMIN]);
+        this.access = this.currentUserProvider.userHasRoles(this.authorizedUser, [Role.ADMIN]);
       })
     );
 

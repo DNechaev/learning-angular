@@ -3,7 +3,8 @@ import { FormGroup, FormControl, Validators, FormArray, ValidatorFn } from '@ang
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 
-import { AuthenticationService } from '../../auth/services/authentication.service';
+import { CurrentUserProvider } from '../../shared/providers/current-user.provider';
+// import { AuthenticationService } from '../../auth/services/authentication.service';
 import { LoaderIndicatorService } from '../../shared/services/loader-indicator.service';
 import { SearchService } from '../../shared/services/search.service';
 import { ToastService } from '../../shared/services/toast.service';
@@ -38,7 +39,7 @@ export class UsersAddComponent implements OnInit, OnDestroy {
   };
 
   constructor(
-    private authenticationService: AuthenticationService,
+    private currentUserProvider: CurrentUserProvider,
     private usersService: UsersService,
     private router: Router,
     private loaderIndicatorService: LoaderIndicatorService,
@@ -51,9 +52,9 @@ export class UsersAddComponent implements OnInit, OnDestroy {
     this.searchService.disable();
 
     this.subscriptions.push(
-      this.authenticationService.currentUser$.subscribe((user: User) => {
+      this.currentUserProvider.currentUser$.subscribe((user: User) => {
         this.authorizedUser = user;
-        this.access = this.authenticationService.userHasRoles(this.authorizedUser, [Role.ADMIN]);
+        this.access = this.currentUserProvider.userHasRoles(this.authorizedUser, [Role.ADMIN]);
       })
     );
 

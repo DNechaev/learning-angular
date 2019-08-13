@@ -5,6 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AuthRoutesPath } from '../auth.routing';
 import { AppRoutesPath } from 'src/app/app-routing.module';
+import {CurrentUserProvider} from "../../shared/providers/current-user.provider";
 
 @Component({
   selector: 'app-registration',
@@ -26,12 +27,13 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private authenticationService: AuthenticationService
+    private authenticationService: AuthenticationService,
+    private currentUserProvider: CurrentUserProvider
   ) {}
 
   ngOnInit() {
 
-    this.subscription = this.authenticationService.currentUser$.subscribe((user) => {
+    this.subscription = this.currentUserProvider.currentUser$.subscribe((user) => {
       this.authorizedUser = user;
     });
 

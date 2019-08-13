@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 
 import { AuthenticationService } from 'src/app/auth/services/authentication.service';
 import { AuthRoutesPath } from '../auth.routing';
+import {CurrentUserProvider} from "../../shared/providers/current-user.provider";
 
 @Component({
   selector: 'app-login',
@@ -26,12 +27,13 @@ export class LoginComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private authenticationService: AuthenticationService
+    private authenticationService: AuthenticationService,
+    private currentUserProvider: CurrentUserProvider
   ) {}
 
   ngOnInit() {
 
-    this.subscription = this.authenticationService.currentUser$.subscribe((user) => {
+    this.subscription = this.currentUserProvider.currentUser$.subscribe((user) => {
         this.authorizedUser = user;
     });
 

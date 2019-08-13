@@ -8,15 +8,15 @@ import {
 import { Observable, throwError } from 'rxjs';
 import { catchError, finalize } from 'rxjs/operators';
 
-import { AuthenticationService } from './services/authentication.service';
 import { ToastService } from '../shared/services/toast.service';
 import { LoaderIndicatorService } from '../shared/services/loader-indicator.service';
+import { CurrentUserProvider } from '../shared/providers/current-user.provider';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
 
   constructor(
-    private auth: AuthenticationService,
+    private currentUserProvider: CurrentUserProvider,
     private toastService: ToastService,
     private loaderIndicatorService: LoaderIndicatorService
   ) {}
@@ -28,7 +28,7 @@ export class AuthInterceptor implements HttpInterceptor {
 
     request = request.clone({
       setHeaders: {
-        'X-SSID': this.auth.getToken()
+        'X-SSID': this.currentUserProvider.getToken()
       }
     });
 

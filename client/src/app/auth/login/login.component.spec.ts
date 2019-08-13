@@ -6,6 +6,7 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { LoginComponent } from './login.component';
 import { AuthenticationService } from '../services/authentication.service';
+import { By } from '@angular/platform-browser';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -63,6 +64,44 @@ describe('LoginComponent', () => {
     component.onSubmit();
     expect(spy.calls.any()).toBeTruthy();
     expect(spyRoute.calls.any()).toBeTruthy();
+  });
+
+  it('bad email',  () => {
+    const inputElement = fixture.debugElement.query(By.css('#inputEmail')).nativeElement;
+    inputElement.value = 'test@test.';
+    inputElement.dispatchEvent(new Event('input'));
+    inputElement.dispatchEvent(new Event('blur'));
+    fixture.detectChanges();
+
+    const errorElement = fixture.debugElement.query(By.css('#formGroupEmail .error-symbol'));
+    expect(errorElement).toBeTruthy();
+  });
+
+  it('bad password',  () => {
+    const inputElement = fixture.debugElement.query(By.css('#inputPassword')).nativeElement;
+    inputElement.value = '';
+    inputElement.dispatchEvent(new Event('input'));
+    inputElement.dispatchEvent(new Event('blur'));
+    fixture.detectChanges();
+
+    const errorElement = fixture.debugElement.query(By.css('#formGroupPassword .error-symbol'));
+    expect(errorElement).toBeTruthy();
+  });
+
+  it('should disable Submit button when form not valid', () => {
+    const button = fixture.debugElement.query(By.css('button'));
+    expect(button.nativeElement.disabled).toBeTruthy();
+  });
+
+  it('should enable Submit button when form is valid', () => {
+    component.formLogin.patchValue({
+      email: 'test@test.com',
+      password: '1234567890'
+    });
+    fixture.detectChanges();
+
+    const button = fixture.debugElement.query(By.css('#formGroupSubmit button'));
+    expect(button.nativeElement.disabled).toBeFalsy();
   });
 
 });
