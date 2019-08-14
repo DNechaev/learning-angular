@@ -5,7 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AuthRoutesPath } from '../auth.routing';
 import { AppRoutesPath } from 'src/app/app-routing.module';
-import {CurrentUserProvider} from "../../shared/providers/current-user.provider";
+import {CurrentUserProvider} from '../../shared/providers/current-user.provider';
 
 @Component({
   selector: 'app-registration',

@@ -1,6 +1,7 @@
 import { browser, by, element, promise, ElementFinder, ElementArrayFinder } from 'protractor';
+import { Base } from './base.po';
 
-export class UsersList {
+export class UsersList extends Base {
 
   navigateToUsers(): promise.Promise<any> {
     return browser.get('/users');

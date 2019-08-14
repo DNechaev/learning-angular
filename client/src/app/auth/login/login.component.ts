@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs';
 
 import { AuthenticationService } from 'src/app/auth/services/authentication.service';
 import { AuthRoutesPath } from '../auth.routing';
-import {CurrentUserProvider} from "../../shared/providers/current-user.provider";
+import {CurrentUserProvider} from '../../shared/providers/current-user.provider';
 
 @Component({
   selector: 'app-login',
