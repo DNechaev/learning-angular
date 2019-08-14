@@ -1,7 +1,7 @@
 import { RegistrationPage } from './registration.po';
 import { browser, logging } from 'protractor';
 
-describe('workspace-project Registration', () => {
+xdescribe('workspace-project Registration', () => {
   let page: RegistrationPage;
 
   beforeEach(() => {

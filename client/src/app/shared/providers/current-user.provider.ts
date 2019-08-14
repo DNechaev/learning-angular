@@ -1,17 +1,17 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 import { User} from '../models';
 import { StorageService } from '../services/storage.service';
 import { URL_API_SESSIONS } from '../consts';
-import { HttpClient } from '@angular/common/http';
-import {Role} from "../enums";
+import { Role } from '../enums';
 
 export function CurrentUserProviderFactory(provider: CurrentUserProvider) {
   return () => provider.loadCurrentUser();
 }
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class CurrentUserProvider {
 
   private storageKey = 'SSID';
@@ -33,10 +33,10 @@ export class CurrentUserProvider {
     return key ? key : '';
   }
 
-  loadCurrentUser() {
+  loadCurrentUser(): Promise<boolean> {
     return new Promise((resolve) => {
       if (this.getToken() === '') {
-        // this.removeCurrentUser();
+        this.removeCurrentUser();
         resolve(true);
       } else {
         this.http.get<User>(URL_API_SESSIONS + '/profile')

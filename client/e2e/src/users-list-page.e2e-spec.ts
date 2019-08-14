@@ -1,19 +1,19 @@
 import { UsersList } from './page-objects/users-list.po';
 import {browser, by, element, protractor} from 'protractor';
 
-describe('UsersList Page', () => {
+xdescribe('UsersList Page', () => {
 
   const usersList: UsersList = new UsersList();
 
   beforeEach(() => {
     browser.executeScript(
-      'localStorage.setItem("currentUser","{\"id\":1,\"email\":\"admin@test.com\",\"name\":\"Admin\",\"ssid\":\"7f04e0f8a4353e26250141a13cc3be9e\",\"roles\":[]}");'
+      'localStorage.setItem("SSID","TEST_ADMIN_SSID");'
     );
     usersList.navigateToUsers();
   });
 
-  it('should display the heading Pastebin Application', () => {
-    // expect(usersList.getPastebinHeading()).toEqual('Pastebin Application');
+  it('should display the heading Application', () => {
+    expect(usersList.getHeading()).toEqual('Users');
   });
 
   it('should have a table header', async () => {

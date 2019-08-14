@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { User } from '../../shared/models';
-import { Role } from '../../shared/enums';
 import { URL_API_SESSIONS } from '../../shared/consts';
 import { CurrentUserProvider } from '../../shared/providers/current-user.provider';
 
@@ -19,7 +17,10 @@ export class AuthenticationService {
   registration(email: string, password: string, name: string): Observable<any> {
     return this.http.post<any>(URL_API_SESSIONS + '/registration', { email, password, name })
       .pipe(
-        map(user => this.currentUserProvider.setCurrentUser(user))
+        map(user => {
+          this.currentUserProvider.setCurrentUser(user);
+          return user;
+        })
       );
   }
 
@@ -27,7 +28,10 @@ export class AuthenticationService {
     return this.http.post<any>(URL_API_SESSIONS + '/login', { email, password })
       .pipe(
         // retry(3),
-        map(user => this.currentUserProvider.setCurrentUser(user, remember))
+        map(user => {
+          this.currentUserProvider.setCurrentUser(user, remember);
+          return user;
+        })
       );
   }
 

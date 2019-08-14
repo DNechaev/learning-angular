@@ -6,6 +6,10 @@ export class UsersList {
     return browser.get('/users');
   }
 
+  getHeading(): ElementFinder {
+    return element(by.css('h1'));
+  }
+
   getTable(): ElementFinder {
     return element(by.css('table'));
   }
