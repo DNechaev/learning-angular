@@ -145,8 +145,9 @@ describe('CurrentUserProvider (preload profile with bad ssid) ', () => {
       currentUserProvider.loadCurrentUser().then(() => {
         resolve(currentUserProvider.getCurrentUser());
       });
+      const mockErrorResponse = { status: 403, statusText: 'Forbidden' };
       httpMock.expectOne(r => r.url.match(URL_API_SESSIONS + '/profile') && r.method === 'GET')
-        .error(new ErrorEvent('Forbidden'));
+        .flush('Forbidden', mockErrorResponse);
     });
   }
 

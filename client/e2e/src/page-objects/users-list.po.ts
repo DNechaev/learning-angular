@@ -12,25 +12,55 @@ export class UsersList extends Base {
   }
 
   getTable(): ElementFinder {
-    return element(by.css('table'));
+    return element(by.css('#content_body table'));
   }
 
-  // getTableHeader(): promise.Promise<string> {
-    // console.log('============================================');
-    // console.log('============================================');
-    // return this.getTable().all(by.tagName('tr')).get(0).getText();
-  // }
+  getTableHeader(): promise.Promise<string> {
+    return this.getTable().all(by.tagName('tr')).get(0).getText();
+  }
 
-  getTableRow(): ElementArrayFinder {
+  getTableRows(): ElementArrayFinder {
     return this.getTable().all(by.tagName('tr'));
   }
 
+  getFirstRow(): ElementFinder {
+    return this.getTableRows().get(1);
+  }
+
+  getLastRow(): ElementFinder {
+    return this.getTableRows().last();
+  }
+
   getFirstRowData(): promise.Promise<string> {
-    return this.getTableRow().get(1).getText();
+    return this.getFirstRow().getText();
   }
 
   getLastRowData(): promise.Promise<string> {
-    return this.getTableRow().last().getText();
+    return this.getLastRow().getText();
+  }
+
+  getColumnByIndex(row: ElementFinder, index: number ): ElementFinder {
+    return row.all(by.tagName('td')).get(index);
+  }
+
+  getAddButton(): ElementFinder {
+    return element(by.css('#content_header button'));
+  }
+
+  getFirstEditButton(): ElementFinder {
+    return this.getFirstRow().all(by.css('button[title="Edit"]')).get(0);
+  }
+
+  getFirstDeleteButton(): ElementFinder {
+    return this.getFirstRow().all(by.css('button[title="Delete"]')).get(0);
+  }
+
+  getLastEditButton(): ElementFinder {
+    return this.getLastRow().all(by.css('button[title="Edit"]')).get(0);
+  }
+
+  getLastDeleteButton(): ElementFinder {
+    return this.getLastRow().all(by.css('button[title="Delete"]')).get(0);
   }
 
 }

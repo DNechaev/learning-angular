@@ -1,16 +1,11 @@
-import { AppPage } from './app.po';
+import { AppPage } from './page-objects/app.po';
 import { browser, logging } from 'protractor';
 
-xdescribe('workspace-project App', () => {
+describe('App', () => {
   let page: AppPage;
 
   beforeEach(() => {
     page = new AppPage();
-  });
-
-  it('should display Sign in', () => {
-    page.navigateTo();
-    expect(page.getTitleText()).toEqual('Sign in');
   });
 
   afterEach(async () => {
@@ -20,4 +15,10 @@ xdescribe('workspace-project App', () => {
       level: logging.Level.SEVERE,
     } as logging.Entry));
   });
+
+  it('should display Sign in', () => {
+    page.navigateTo();
+    expect(page.getTitleText()).toEqual('Sign in');
+  });
+
 });

@@ -11,10 +11,10 @@
 </div>
 
 <div *ngIf="access" >
-  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+  <div id="content_header" class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
     <h1 class="h2"><i class="fas fa-user"></i> Edit User [{{ userId }}] <div [hidden]="!isLoading || !userLoaded" class="spinner-border text-warning"></div></h1>
   </div>
-  <div class="container-fluid" >
+  <div id="content_body" class="container-fluid" >
 
     <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="form-horizontal">
 
