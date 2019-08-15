@@ -151,3 +151,28 @@ describe('User actions', () => {
   });
 
 });
+
+describe('UsersList Page (access denied)', () => {
+
+  const usersList: UsersList = new UsersList();
+
+  beforeEach(async () => {
+    await usersList.navigateToLogout();
+    await usersList.navigateToUsers();
+  });
+
+  it('login as manager role', async () => {
+    await usersList.loginAsManager();
+    await usersList.sleep(10000);
+    expect(await usersList.getAccessWarningElement().isPresent()).toBe(true);
+    expect(await usersList.getTable().isPresent()).toBe(false);
+  });
+
+  it('login as user role', async () => {
+    await usersList.loginAsUser();
+    await usersList.sleep(10000);
+    expect(await usersList.getAccessWarningElement().isPresent()).toBe(true);
+    expect(await usersList.getTable().isPresent()).toBe(false);
+  });
+
+});

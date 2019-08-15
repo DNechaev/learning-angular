@@ -10,6 +10,10 @@ export class Base {
     return browser.get('/auth/login');
   }
 
+  navigateToLogout(): promise.Promise<any> {
+    return browser.get('/auth/logout');
+  }
+
   clearFieldValue(css: string) {
     const elem = element(by.css(css));
     elem.sendKeys(protractor.Key.chord(protractor.Key.CONTROL, 'a'));
@@ -47,6 +51,10 @@ export class Base {
   async setSearchValue(value: string): Promise<void> {
     await this.clearFieldValue('app-search input');
     return this.setFieldValue('app-search input', value);
+  }
+
+  getAccessWarningElement(): ElementFinder {
+    return element(by.css('#content_access'));
   }
 
   sleep(ms) {
