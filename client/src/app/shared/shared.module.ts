@@ -6,6 +6,7 @@ import { NgbModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { RouterModule } from '@angular/router';
 
 import { MenuComponent } from './components/menu/menu.component';
+import { GridComponent } from './components/grid/grid.component';
 import { SearchComponent } from './components/search/search.component';
 import { ToastsComponent } from './components/toasts.component';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
@@ -24,6 +25,7 @@ import { CurrentUserProvider, CurrentUserProviderFactory } from './providers/cur
     ReactiveFormsModule,
   ],
   declarations: [
+    GridComponent,
     ToastsComponent,
     PageNotFoundComponent,
     SearchComponent,
@@ -51,6 +53,7 @@ import { CurrentUserProvider, CurrentUserProviderFactory } from './providers/cur
     NgbPaginationModule,
     FormsModule,
     ReactiveFormsModule,
+    GridComponent,
     ToastsComponent,
     PageNotFoundComponent,
     SearchComponent,

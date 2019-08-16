@@ -81,7 +81,7 @@ describe('User actions', () => {
 
   async function deleteUser() {
     await usersList.navigateToUsers();
-    const name = await usersList.getColumnByIndex(usersList.getLastRow(), 0).getText();
+    const name = await usersList.getColumnByIndex(usersList.getLastRow(), 1).getText();
     expect(name).toBe('TestUser');
     if ( name === 'TestUser' ) {
       await usersList.getLastDeleteButton().click();
@@ -109,7 +109,7 @@ describe('User actions', () => {
     let name: string;
 
     // Edit user
-    name = await usersList.getColumnByIndex(usersList.getLastRow(), 0).getText();
+    name = await usersList.getColumnByIndex(usersList.getLastRow(), 1).getText();
     expect(name).toBe('TestUser');
     if ( name === 'TestUser' ) {
       await usersList.getLastEditButton().click();
@@ -129,7 +129,7 @@ describe('User actions', () => {
     }
 
     // Edit user
-    name = await usersList.getColumnByIndex(usersList.getLastRow(), 0).getText();
+    name = await usersList.getColumnByIndex(usersList.getLastRow(), 1).getText();
     expect(name).toBe('TestUserChanged');
     if ( name === 'TestUserChanged' ) {
       await usersList.getLastEditButton().click();

@@ -1,17 +1,18 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
+import { Router } from '@angular/router';
 
 import { Role } from '../../shared/enums';
 import { User } from '../../shared/models';
 import { UsersService } from '../users.service';
-// import { AuthenticationService } from '../../auth/services/authentication.service';
 import { LoaderIndicatorService } from '../../shared/services/loader-indicator.service';
 import { SearchService } from '../../shared/services/search.service';
 import { ToastService } from '../../shared/services/toast.service';
 import { UsersRoutesPath } from '../users.routing';
 import { AppRoutesPath } from '../../app-routing.module';
-import {CurrentUserProvider} from '../../shared/providers/current-user.provider';
+import { CurrentUserProvider } from '../../shared/providers/current-user.provider';
+import { GridActionType, GridColumn, GridRowActionEvent } from '../../shared/components/grid/grid.interfaces';
 
 @Component({
   selector: 'app-users',
@@ -33,11 +34,16 @@ export class UsersListComponent implements OnInit, OnDestroy {
     users: UsersRoutesPath.PATH_TO_LIST,
   };
   searchString = '';
+  columns: GridColumn[] = [
+      {title: 'ID', field: 'id'},
+      {title: 'Name', field: 'name'},
+      {title: 'Email', field: 'email'}
+    ];
 
   private authorizedUser;
 
   constructor(
-    // private authenticationService: AuthenticationService,
+    private router: Router,
     private currentUserProvider: CurrentUserProvider,
     private usersService: UsersService,
     private loaderIndicatorService: LoaderIndicatorService,
@@ -70,7 +76,6 @@ export class UsersListComponent implements OnInit, OnDestroy {
       })
     );
 
-    // this.loadData();
   }
 
   ngOnDestroy() {
@@ -115,6 +120,20 @@ export class UsersListComponent implements OnInit, OnDestroy {
           console.error(error);
           this.loadData();
         });
+    }
+  }
+
+  gridAction(event: GridRowActionEvent) {
+    const user: User = event.record as User;
+    switch (event.action) {
+      case GridActionType.EDIT: {
+        this.router.navigate([ UsersRoutesPath.PATH_TO_LIST, user.id ]);
+        break;
+      }
+      case GridActionType.DELETE: {
+        this.onDelete(event.record as User);
+        break;
+      }
     }
   }
 

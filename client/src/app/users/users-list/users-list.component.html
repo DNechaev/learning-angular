@@ -17,30 +17,8 @@
 </div>
 
 <div *ngIf="access" id="content_body" class="container-fluid" >
-
-  <table class="table table-striped">
-    <thead class="thead-light">
-    <tr>
-      <th>Name</th>
-      <th>Email</th>
-      <th style="width: 5%">Actions</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor='let user of users'>
-      <td>{{ user.name }}</td>
-      <td>{{ user.email }}</td>
-      <td>
-        <div class="btn-toolbar" role="toolbar">
-          <div class="btn-group" role="group">
-            <button type="button" class="btn btn-outline-success btn-sm" data-id="{{user.id}}" title="Edit" [routerLink]="[urls.users, user.id]"><i class="far fa-edit"></i></button>
-            <button type="button" class="btn btn-outline-danger btn-sm" data-id="{{user.id}}" title="Delete" (click)="onDelete(user)"><i class="far fa-trash-alt"></i></button>
-          </div>
-        </div>
-      </td>
-    </tr>
-    </tbody>
-  </table>
+  <app-grid [columns]="columns" [records]="users" (rowAction)="gridAction($event)"></app-grid>
   <ngb-pagination class="d-flex justify-content-center" (pageChange)="onPageChange($event)" [collectionSize]="totalRecords" [pageSize]="pageSize" [(page)]="currentPage"></ngb-pagination>
 </div>
+
 

@@ -8,7 +8,6 @@ import { UsersComponent } from './users.component';
 import { UsersListComponent } from './users-list/users-list.component';
 import { UsersAddComponent } from './users-add/users-add.component';
 import { UsersEditComponent } from './users-edit/users-edit.component';
-// import { MainLayoutComponent } from '../shared/layout/main-layout/main-layout.component';
 
 @NgModule({
   imports: [
@@ -17,7 +16,6 @@ import { UsersEditComponent } from './users-edit/users-edit.component';
     SharedModule
   ],
   declarations: [
-    // MainLayoutComponent,
     UsersComponent,
     UsersListComponent,
     UsersAddComponent,

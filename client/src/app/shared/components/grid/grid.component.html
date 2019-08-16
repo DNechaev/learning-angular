@@ -1,0 +1,48 @@
+<table class="table table-striped">
+  <thead class="thead-light">
+  <tr>
+    <th *ngFor='let column of columns' style="{{ column.style }}" class="{{ column.class }}">{{ column.title }}</th>
+    <th style="width: 5%">Actions</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor='let record of records; let idx = index'
+    (click)="onRowAction({
+        action: 'SELECT_ROW',
+        record: record,
+        index: idx,
+        records: records
+    })">
+    <td *ngFor='let column of columns'
+        (click)="onCellAction({
+          action: 'SELECT_CELL',
+          value: record[column.field],
+          record: record,
+          index: idx,
+          records: records,
+          column: column,
+          valueFormatted: column.formatter({
+            value: record[column.field],
+            record: record,
+            index: idx,
+            records: records,
+            column: column
+           })
+        })">{{ column.formatter({
+          value: record[column.field],
+          record: record,
+          index: idx,
+          records: records,
+          column: column
+        }) }}</td>
+    <td>
+      <div class="btn-toolbar" role="toolbar">
+        <div class="btn-group" role="group">
+          <button type="button" class="btn btn-outline-success btn-sm" title="Edit" (click)="onRowAction({ action: 'EDIT', record: record, index: idx, records: records })"><i class="far fa-edit"></i></button>
+          <button type="button" class="btn btn-outline-danger btn-sm" title="Delete" (click)="onRowAction({ action: 'DELETE', record: record, index: idx, records: records })"><i class="far fa-trash-alt"></i></button>
+        </div>
+      </div>
+    </td>
+  </tr>
+  </tbody>
+</table>
