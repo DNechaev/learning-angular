@@ -1,6 +1,6 @@
 import Utils from '../shared/utils';
 
-class UsersService {
+class EventsService {
 
     static async getAll( db, params ) {
 
@@ -8,7 +8,7 @@ class UsersService {
         const pageSize = +(params.pageSize || 10);
 
         const where = {};
-
+/*
         // name
         if (typeof params.name === 'string' && params.name.length) {
             let queryString = params.name;
@@ -41,124 +41,106 @@ class UsersService {
                 {email: {[db.Sequelize.Op.like]: queryString + '%'}},
             ];
         }
+*/
 
-        const result = await db.user.findAndCountAll(
+        console.log('---------------------------------------------------');
+        const result = await db.event.findAndCountAll(
             Utils.paginate(
             {
-                    logging: console.log,
+                    // logging: console.log,
                     where: where,
                     include: [
                         {
-                            model: db.role,
-                            as: 'roles',
-                            attributes: ['id', 'name'],
+                            model: db.purchase,
+                            as: 'purchases',
+                            attributes: ['id', 'ticketsCount'],
                         }
                     ],
-                    distinct:true
+                    distinct: true, // correct full record count
                 }, {
                     page, pageSize
                 }
             )
         );
 
+        // Summary info by purchases
+        result.rows.forEach((row) => {
+            let purchases = row.dataValues.purchases;
+            row.dataValues.purchasesCount = purchases.length;
+            row.dataValues.ticketsCount = purchases.reduce((sum, purchase) => sum + purchase.dataValues.ticketsCount, 0);
+        });
+
+
         result.page = page;
         result.pageSize = pageSize;
         return result;
     }
 
-    static async getById( db, userId ) {
-        return await db.user.findByPk( userId, {
-            include: [
+    static async getById( db, eventId ) {
+        return await db.event.findByPk( eventId, {
+            /*include: [
                 {
                     model: db.role,
                     as: 'roles',
                     attributes: ['id', 'name'],
                 }
-            ]
+            ]*/
         });
     }
 
-    static async getBySsid( db, userSsid ) {
-        return await db.user.findOne({
-            where: {
-                ssid: userSsid
-            },
-            include: [
-                {
-                    model: db.role,
-                    as: 'roles',
-                    attributes: ['id', 'name'],
-                }
-            ]
-        });
-    }
-
-    static async create( db, userValue ) {
-        let newUser;
+    static async create( db, eventValue ) {
+        let newEvent;
         let transaction;
         let newData = {
-            name: userValue.name,
-            email: userValue.email,
-            password: userValue.password
+            name: eventValue.name,
+            dateBegin: eventValue.dateBegin,
+            dateEnd: eventValue.dateEnd,
+            price: eventValue.price,
+            ticketsCount: eventValue.ticketsCount
         };
-        if ( userValue.ssid ) {
-            newData.ssid = userValue.ssid;
-        }
         try {
             transaction = await db.sequelize.transaction();
-            newUser = await db.user.create( newData, { transaction } );
-            if ( userValue.roles ) {
-                await newUser.setRoles( userValue.roles, {transaction} );
-            }
+            newEvent = await db.event.create( newData, { transaction } );
             await transaction.commit();
         } catch (err) {
             if (err) await transaction.rollback();
             throw err;
         }
-        return await this.getById(db, newUser.id);
+        return await this.getById(db, newEvent.id);
     }
 
-    static async update( db, userId, userValue ) {
+    static async update( db, eventId, eventValue ) {
         let newData = {
-            name: userValue.name,
-            email: userValue.email
+            name: eventValue.name,
+            dateBegin: eventValue.dateBegin,
+            dateEnd: eventValue.dateEnd,
+            price: eventValue.price,
+            ticketsCount: eventValue.ticketsCount
         };
-
-        if (userValue.password) {
-            newData.password = userValue.password;
-        }
 
         let transaction;
         try {
             transaction = await db.sequelize.transaction();
-            let user = await db.user.findByPk(userId);
-            await user.update(newData, {
-                where: {id: userId}
+            let event = await db.event.findByPk(eventId);
+            await event.update(newData, {
+                where: {id: eventId}
             }, {transaction});
-
-            if (userValue.roles) {
-                await user.setRoles(userValue.roles, {transaction});
-            }
-
             await transaction.commit();
         } catch (err) {
             if (err) await transaction.rollback();
             throw err;
         }
-        return await this.getById(db, userId);
+        return await this.getById(db, eventId);
     }
 
-    static async delete( db, userId ) {
-        if ( +userId === 1 ) {
-            throw new Error('Access denied');
-        }
-        return await db.user.destroy({
+    static async delete( db, eventId ) {
+        return await db.event.destroy({
             where: {
-                id: userId
+                id: eventId
             }
         })
     }
 
 }
 
-export default UsersService;
+export default EventsService;

@@ -18,7 +18,10 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.INTEGER,
                 field: 'event_id'
             },
-            count: DataTypes.INTEGER
+            ticketsCount: {
+                type: DataTypes.INTEGER,
+                field: 'tickets_count'
+            }
         },
         {
             freezeTableName: true,

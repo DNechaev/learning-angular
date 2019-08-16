@@ -15,12 +15,29 @@ module.exports = (sequelize, DataTypes) => {
                 field: 'date_end'
             },
             price: DataTypes.DECIMAL(10, 2),
-            count: DataTypes.INTEGER
+            ticketsCount: {
+                type: DataTypes.INTEGER,
+                    field: 'tickets_count'
+            }
         },
         {
             freezeTableName: true,
             timestamps: false,
-            modelName: 'event'
+            modelName: 'event',
+            /* instanceMethods: {
+                getPurchaseSummary: function (db) {
+                    return db.purchase.find({
+                        where: {
+                            eventId: this.id
+                        },
+                        attributes: [[
+                            sequelize.fn('SUM', sequelize.col('count')),
+                            'purchaseTickets'
+                        ]],
+                        group: ['eventId']
+                    });
+                }
+            } */
         }
     );
 

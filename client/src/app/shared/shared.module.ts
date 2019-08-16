@@ -5,6 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { RouterModule } from '@angular/router';
 
+import { MenuComponent } from './components/menu/menu.component';
 import { SearchComponent } from './components/search/search.component';
 import { ToastsComponent } from './components/toasts.component';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
@@ -12,7 +13,6 @@ import { AuthInterceptor } from '../auth/auth.interceptor';
 import { AuthLayoutComponent } from './layout/auth-layout/auth-layout.component';
 import { MainLayoutComponent } from './layout/main-layout/main-layout.component';
 import { CurrentUserProvider, CurrentUserProviderFactory } from './providers/current-user.provider';
-
 
 @NgModule({
   imports: [
@@ -27,6 +27,7 @@ import { CurrentUserProvider, CurrentUserProviderFactory } from './providers/cur
     ToastsComponent,
     PageNotFoundComponent,
     SearchComponent,
+    MenuComponent,
     AuthLayoutComponent,
     MainLayoutComponent
   ],
@@ -53,6 +54,7 @@ import { CurrentUserProvider, CurrentUserProviderFactory } from './providers/cur
     ToastsComponent,
     PageNotFoundComponent,
     SearchComponent,
+    MenuComponent,
     AuthLayoutComponent,
     MainLayoutComponent
   ],

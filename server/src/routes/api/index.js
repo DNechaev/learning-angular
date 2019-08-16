@@ -1,5 +1,6 @@
 import Router from 'koa-router';
 import usersRoutes from './users.routes';
+import eventsRoutes from './events.routes';
 import sessionRoutes from './session.routes';
 
 export default () => {
@@ -7,6 +8,7 @@ export default () => {
 
     router.use('/api/session', sessionRoutes());
     router.use('/api', usersRoutes());
+    router.use('/api', eventsRoutes());
 
     return router.routes();
 }
