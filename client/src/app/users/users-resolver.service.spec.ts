@@ -3,7 +3,8 @@ import {getTestBed, TestBed} from '@angular/core/testing';
 import { UsersResolverService } from './users-resolver.service';
 import { UsersService } from './users.service';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { User } from '../shared/models';
+import { User } from '../core/user.model';
+import { URL_API_USERS } from '../core/consts';
 
 describe('UsersResolverService', () => {
   let injector: TestBed;
@@ -37,7 +38,7 @@ describe('UsersResolverService', () => {
       expect(user).toEqual(returnUser);
     });
 
-    httpMock.expectOne(r => r.url.match('/api/users/1') && r.method === 'GET')
+    httpMock.expectOne(r => r.url.match(URL_API_USERS + '/1') && r.method === 'GET')
       .flush(returnUser);
   });
 

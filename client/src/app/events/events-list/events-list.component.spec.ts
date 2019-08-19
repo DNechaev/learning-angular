@@ -5,21 +5,21 @@ import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 
-import { UsersListComponent } from './users-list.component';
+import { EventsListComponent } from './events-list.component';
 import { AuthenticationService } from '../../auth/services/authentication.service';
-import { UsersService } from '../users.service';
+import { EventsService } from '../events.service';
 import { LoaderIndicatorService } from '../../shared/services/loader-indicator.service';
 import { SearchService } from '../../shared/services/search.service';
 import { ToastService } from '../../shared/services/toast.service';
-import { Page } from 'src/app/shared/models';
-import {SharedModule} from "../../shared/shared.module";
+import { SharedModule } from '../../shared/shared.module';
+import { Page } from '../../core/page.model';
 
-describe('UsersListComponent', () => {
-  let component: UsersListComponent;
-  let fixture: ComponentFixture<UsersListComponent>;
+describe('EventsListComponent', () => {
+  let component: EventsListComponent;
+  let fixture: ComponentFixture<EventsListComponent>;
 
   let authenticationService: AuthenticationService;
-  let usersService: UsersService;
+  let eventsService: EventsService;
   let loaderIndicatorService: LoaderIndicatorService;
   let searchService: SearchService;
   let toastService: ToastService;
@@ -36,10 +36,10 @@ describe('UsersListComponent', () => {
         ReactiveFormsModule,
         NgbPaginationModule
       ],
-      declarations: [ UsersListComponent ],
+      declarations: [ EventsListComponent ],
       providers: [
         AuthenticationService,
-        UsersService,
+        EventsService,
         LoaderIndicatorService,
         SearchService,
         ToastService
@@ -49,11 +49,11 @@ describe('UsersListComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(UsersListComponent);
+    fixture = TestBed.createComponent(EventsListComponent);
     component = fixture.componentInstance;
 
     authenticationService = fixture.debugElement.injector.get(AuthenticationService);
-    usersService = fixture.debugElement.injector.get(UsersService);
+    eventsService = fixture.debugElement.injector.get(EventsService);
     loaderIndicatorService = fixture.debugElement.injector.get(LoaderIndicatorService);
     searchService = fixture.debugElement.injector.get(SearchService);
     toastService = fixture.debugElement.injector.get(ToastService);
@@ -63,9 +63,9 @@ describe('UsersListComponent', () => {
     expectPage1.page = 1;
     expectPage1.count = 5;
     expectPage1.rows = [
-      { id: '1', name: 'NAME1', email: 'EMAIL1' },
-      { id: '2', name: 'NAME2', email: 'EMAIL2' },
-      { id: '3', name: 'NAME3', email: 'EMAIL3' },
+      { id: 1, name: 'EVENT1', dateBegin: '2019-01-01T10:00:00.000Z', dateEnd: '2019-01-01T12:00:00.000Z',  price: 100, ticketsCount: 10 },
+      { id: 2, name: 'EVENT2', dateBegin: '2019-01-02T10:00:00.000Z', dateEnd: '2019-01-02T12:00:00.000Z',  price: 110, ticketsCount: 20 },
+      { id: 3, name: 'EVENT3', dateBegin: '2019-01-03T10:00:00.000Z', dateEnd: '2019-01-03T12:00:00.000Z',  price: 120, ticketsCount: 30 },
     ];
 
     expectPage2 = new Page();
@@ -73,8 +73,8 @@ describe('UsersListComponent', () => {
     expectPage2.page = 2;
     expectPage2.count = 5;
     expectPage2.rows = [
-      { id: '4', name: 'NAME4', email: 'EMAIL4' },
-      { id: '5', name: 'NAME5', email: 'EMAIL5' },
+      { id: 4, name: 'EVENT4', dateBegin: '2019-01-04T10:00:00.000Z', dateEnd: '2019-01-04T12:00:00.000Z',  price: 140, ticketsCount: 40 },
+      { id: 5, name: 'EVENT5', dateBegin: '2019-01-05T10:00:00.000Z', dateEnd: '2019-01-05T12:00:00.000Z',  price: 150, ticketsCount: 50 },
     ];
 
     expectPage3 = new Page();
@@ -82,10 +82,10 @@ describe('UsersListComponent', () => {
     expectPage3.page = 1;
     expectPage3.count = 1;
     expectPage3.rows = [
-      { id: '20', name: 'test', email: 'EMAIL' },
+      { id: 6, name: 'test', dateBegin: '2019-01-06T10:00:00.000Z', dateEnd: '2019-01-06T12:00:00.000Z',  price: 160, ticketsCount: 60 },
     ];
 
-    spyOn(usersService, 'getUsers')
+    spyOn(eventsService, 'getEvents')
       .withArgs('', 1, 3).and.returnValue(of(expectPage1))
       .withArgs('', 2, 3).and.returnValue(of(expectPage2))
       .withArgs('test', 1, 3).and.returnValue(of(expectPage3));
@@ -98,14 +98,14 @@ describe('UsersListComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('load user page 1', () => {
+  it('load event page 1', () => {
     component.loadData(1);
-    expect(component.users).toEqual(expectPage1.rows);
+    expect(component.events).toEqual(expectPage1.rows);
   });
 
-  it('load user page 2', () => {
+  it('load event page 2', () => {
     component.loadData(2);
-    expect(component.users).toEqual(expectPage2.rows);
+    expect(component.events).toEqual(expectPage2.rows);
   });
 
   it('current page 1', () => {
@@ -128,9 +128,9 @@ describe('UsersListComponent', () => {
     expect(component.totalRecords).toBe(5);
   });
 
-  it('get users by searchService subscription', () => {
+  it('get events by searchService subscription', () => {
     searchService.set('test');
-    expect(component.users).toEqual(expectPage3.rows);
+    expect(component.events).toEqual(expectPage3.rows);
   });
 
 });

@@ -5,25 +5,27 @@ import { Router } from '@angular/router';
 
 import { Role } from '../../core/enums';
 import { User } from '../../core/user.model';
-import { UsersService } from '../users.service';
+import { Event } from '../../core/event.model';
+import { EventsService } from '../events.service';
 import { LoaderIndicatorService } from '../../shared/services/loader-indicator.service';
 import { SearchService } from '../../shared/services/search.service';
 import { ToastService } from '../../shared/services/toast.service';
-import { UsersRoutesPath } from '../users.routing';
+import { EventsRoutesPath } from '../events.routing';
 import { AppRoutesPath } from '../../app-routing.module';
 import { CurrentUserProvider } from '../../shared/providers/current-user.provider';
-import { GridActionType, GridColumn, GridRowActionEvent } from '../../shared/components/grid/grid.interfaces';
+import { GridActionType, GridColumn, GridRowActionEvent, GridFormatterEvent } from '../../shared/components/grid/grid.interfaces';
+import {formatDate} from "@angular/common";
 
 @Component({
-  selector: 'app-users',
-  templateUrl: './users-list.component.html',
-  styleUrls: ['./users-list.component.scss'],
-  providers: [ UsersService ]
+  selector: 'app-events',
+  templateUrl: './events-list.component.html',
+  styleUrls: ['./events-list.component.scss'],
+  providers: [ EventsService ]
 })
-export class UsersListComponent implements OnInit, OnDestroy {
+export class EventsListComponent implements OnInit, OnDestroy {
 
   subscriptions: Subscription[] = [];
-  users: User[];
+  events: Event[];
   totalRecords = 0;
   currentPage  = 1;
   pageSize     = 10;
@@ -31,21 +33,26 @@ export class UsersListComponent implements OnInit, OnDestroy {
   isLoading    = false;
   urls         = {
     home: AppRoutesPath.HOME,
-    users: UsersRoutesPath.PATH_TO_LIST,
+    events: EventsRoutesPath.PATH_TO_LIST,
   };
   searchString = '';
+
   columns: GridColumn[] = [
       {title: 'ID', field: 'id'},
       {title: 'Name', field: 'name'},
-      {title: 'Email', field: 'email'}
+      {title: 'Date begin', field: 'dateBegin', formatter: this.dateFormatter },
+      {title: 'Date end', field: 'dateEnd', formatter: this.dateFormatter },
+      {title: 'Price', field: 'price'},
+      {title: 'Tickets count', field: 'ticketsCount'},
+      {title: 'Purchased', field: 'ticketsPurchased'}
     ];
 
-  private authorizedUser;
+  private authorizedUser: User;
 
   constructor(
     private router: Router,
     private currentUserProvider: CurrentUserProvider,
-    private usersService: UsersService,
+    private eventsService: EventsService,
     private loaderIndicatorService: LoaderIndicatorService,
     private searchService: SearchService,
     private toastService: ToastService
@@ -59,7 +66,7 @@ export class UsersListComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.currentUserProvider.currentUser$.subscribe((user) => {
         this.authorizedUser = user;
-        this.access         = this.currentUserProvider.userHasRoles(this.authorizedUser, [Role.ADMIN]);
+        this.access         = this.currentUserProvider.userHasRoles(this.authorizedUser, [Role.MANAGER]);
       })
     );
 
@@ -91,7 +98,7 @@ export class UsersListComponent implements OnInit, OnDestroy {
   }
 
   loadData(page: number = this.currentPage) {
-    this.usersService.getUsers(this.searchString, page, this.pageSize )
+    this.eventsService.getEvents(this.searchString, page, this.pageSize )
       .pipe(
         map((pageData) => {
           this.currentPage  = pageData.page;
@@ -100,8 +107,8 @@ export class UsersListComponent implements OnInit, OnDestroy {
           return pageData.rows;
         })
       ).subscribe(
-      users => {
-        this.users = users;
+      events => {
+        this.events = events;
       },
       error => {
         console.error(error);
@@ -109,11 +116,11 @@ export class UsersListComponent implements OnInit, OnDestroy {
     );
   }
 
-  onDelete(user: User) {
-    if (confirm(`Delete user: ${user.email}?`)) {
-      this.usersService.deleteUser(user.id).subscribe(
+  onDelete(event: Event) {
+    if (confirm(`Delete event: ${event.name}?`)) {
+      this.eventsService.deleteEvent(event.id).subscribe(
         () => {
-          this.toastService.success('User deleted');
+          this.toastService.success('Event deleted');
           this.loadData();
         },
         error => {
@@ -123,18 +130,22 @@ export class UsersListComponent implements OnInit, OnDestroy {
     }
   }
 
-  gridAction(event: GridRowActionEvent) {
-    const user: User = event.record as User;
-    switch (event.action) {
+  gridAction(actionEvent: GridRowActionEvent) {
+    const event: Event = actionEvent.record as Event;
+    switch (actionEvent.action) {
       case GridActionType.EDIT: {
-        this.router.navigate([ UsersRoutesPath.PATH_TO_LIST, user.id ]);
+        this.router.navigate([ EventsRoutesPath.PATH_TO_LIST, event.id ]);
         break;
       }
       case GridActionType.DELETE: {
-        this.onDelete(event.record as User);
+        this.onDelete(actionEvent.record as Event);
         break;
       }
     }
+  }
+
+  dateFormatter(event: GridFormatterEvent): string {
+    return (event.value instanceof Date) ? formatDate(event.value, 'dd.MM.y HH:mm', 'en-US') : '';
   }
 
 }

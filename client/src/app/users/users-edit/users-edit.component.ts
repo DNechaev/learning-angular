@@ -3,8 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, FormControl, Validators, FormArray, ValidatorFn } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
-import { Role } from '../../shared/enums';
-import { User } from '../../shared/models';
+import { Role } from '../../core/enums';
+import { User } from '../../core/user.model';
 import { SearchService } from '../../shared/services/search.service';
 import { ToastService } from '../../shared/services/toast.service';
 import { UsersService } from '../users.service';

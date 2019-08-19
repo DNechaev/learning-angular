@@ -67,7 +67,7 @@ class EventsService {
         result.rows.forEach((row) => {
             let purchases = row.dataValues.purchases;
             row.dataValues.purchasesCount = purchases.length;
-            row.dataValues.ticketsCount = purchases.reduce((sum, purchase) => sum + purchase.dataValues.ticketsCount, 0);
+            row.dataValues.ticketsPurchased = purchases.reduce((sum, purchase) => sum + purchase.dataValues.ticketsCount, 0);
         });
 
 

@@ -9,8 +9,8 @@ import { LoaderIndicatorService } from '../../shared/services/loader-indicator.s
 import { SearchService } from '../../shared/services/search.service';
 import { ToastService } from '../../shared/services/toast.service';
 import { UsersService } from '../users.service';
-import { Role } from '../../shared/enums';
-import { User } from '../../shared/models';
+import { Role } from '../../core/enums';
+import { User } from '../../core/user.model';
 import { AppRoutesPath } from '../../app-routing.module';
 import { UsersRoutesPath } from '../users.routing';
 

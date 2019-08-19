@@ -4,7 +4,7 @@ import { of, EMPTY } from 'rxjs';
 import { Observable } from 'rxjs/internal/Observable';
 import { take, mergeMap } from 'rxjs/operators';
 
-import { User } from '../shared/models';
+import { User } from '../core/user.model';
 import { UsersRoutesPath } from './users.routing';
 import { UsersService } from './users.service';
 

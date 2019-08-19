@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
-import { User} from '../models';
+import { User } from '../../core/user.model';
 import { StorageService } from '../services/storage.service';
-import { URL_API_SESSIONS } from '../consts';
-import { Role } from '../enums';
+import { URL_API_SESSIONS } from '../../core/consts';
+import { Role } from '../../core/enums';
 
 export function CurrentUserProviderFactory(provider: CurrentUserProvider) {
   return () => provider.loadCurrentUser();

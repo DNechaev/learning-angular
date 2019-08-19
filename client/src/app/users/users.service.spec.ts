@@ -2,7 +2,8 @@ import { TestBed, getTestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
 import { UsersService } from './users.service';
-import { User } from '../shared/models';
+import { User } from '../core/user.model';
+import { URL_API_USERS } from '../core/consts';
 
 describe('UsersService', () => {
   let injector: TestBed;
@@ -32,7 +33,7 @@ describe('UsersService', () => {
       expect(user).toEqual(returnUser);
     });
 
-    httpMock.expectOne(r => r.url.match('/api/users/1') && r.method === 'GET')
+    httpMock.expectOne(r => r.url.match( URL_API_USERS + '/1') && r.method === 'GET')
       .flush(returnUser);
   });
 
@@ -46,7 +47,7 @@ describe('UsersService', () => {
       expect(err.error).toEqual(data);
     });
 
-    httpMock.expectOne(r => r.url.match('/api/users/1') && r.method === 'GET')
+    httpMock.expectOne(r => r.url.match( URL_API_USERS + '/1') && r.method === 'GET')
       .flush(data, mockErrorResponse);
   });
 
@@ -70,7 +71,7 @@ describe('UsersService', () => {
       expect(page).toEqual(returnPage);
     });
 
-    const req = httpMock.expectOne(r => r.url.match('/api/users') && r.method === 'GET');
+    const req = httpMock.expectOne(r => r.url.match( URL_API_USERS ) && r.method === 'GET');
     expect(req.request.params.get('filter')).toBe('FilterString');
     expect(req.request.params.get('page')).toBe('2');
     expect(req.request.params.get('pageSize')).toBe('15');
@@ -86,7 +87,7 @@ describe('UsersService', () => {
       expect(user).toEqual(returnUser);
     });
 
-    httpMock.expectOne(r => r.url.match('/api/users') && r.method === 'POST')
+    httpMock.expectOne(r => r.url.match( URL_API_USERS ) && r.method === 'POST')
       .flush(user);
   });
 
@@ -99,7 +100,7 @@ describe('UsersService', () => {
       expect(user).toEqual(returnUser);
     });
 
-    httpMock.expectOne(r => r.url.match('/api/users/10') && r.method === 'PUT')
+    httpMock.expectOne(r => r.url.match(URL_API_USERS + '/10') && r.method === 'PUT')
       .flush(user);
   });
 
@@ -108,7 +109,7 @@ describe('UsersService', () => {
       expect(ans).toEqual({});
     });
 
-    httpMock.expectOne(r => r.url.match('/api/users/10') && r.method === 'DELETE')
+    httpMock.expectOne(r => r.url.match(URL_API_USERS + '/10') && r.method === 'DELETE')
       .flush({});
   });
 

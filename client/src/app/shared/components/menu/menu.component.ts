@@ -1,7 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
+
+import { DashboardRoutesPath } from '../../../dashboard/dashboard.routing';
 import { UsersRoutesPath } from '../../../users/users.routing';
-import { Role } from '../../enums';
+import { EventsRoutesPath } from '../../../events/events.routing';
+import { Role } from '../../../core/enums';
 import { CurrentUserProvider } from '../../providers/current-user.provider';
 
 @Component({
@@ -16,13 +19,19 @@ export class MenuComponent implements OnInit, OnDestroy {
 
   private fullMenuItems = [
     {
+      route: DashboardRoutesPath.PATH_DASHBOARD,
+      icon: 'fa-home',
+      title: 'Dashboard',
+      roles: [ Role.ADMIN, Role.MANAGER, Role.USER ]
+    },
+    {
       route: UsersRoutesPath.PATH_TO_LIST,
       icon: 'fa-users',
       title: 'Users',
       roles: [ Role.ADMIN ]
     },
     {
-      route: '/events',
+      route: EventsRoutesPath.PATH_TO_LIST,
       icon: 'fa-bullhorn',
       title: 'Events',
       roles: [ Role.MANAGER ]

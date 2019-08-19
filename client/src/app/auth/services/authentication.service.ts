@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { URL_API_SESSIONS } from '../../shared/consts';
+import { URL_API_SESSIONS } from '../../core/consts';
 import { CurrentUserProvider } from '../../shared/providers/current-user.provider';
 
 @Injectable({ providedIn: 'root' })

@@ -2,8 +2,8 @@ import { getTestBed, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
 import { AuthenticationService } from './authentication.service';
-import { URL_API_SESSIONS } from '../../shared/consts';
-import { User } from '../../shared/models';
+import { URL_API_SESSIONS } from '../../core/consts';
+import { User } from '../../core/user.model';
 import { CurrentUserProvider } from '../../shared/providers/current-user.provider';
 
 class MockCurrentUserProvider {

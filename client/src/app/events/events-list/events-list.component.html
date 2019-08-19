@@ -1,0 +1,24 @@
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a [routerLink]="urls.home">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Events</li>
+  </ol>
+</nav>
+
+<div *ngIf="!access" id="content_access" class="alert alert-danger" role="alert">
+  <i class="fas fa-exclamation-triangle"></i> You don't have rights for this section.
+</div>
+
+<div *ngIf="access" id="content_header" class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+  <h1 class="h2"><i class="fas fa-events"></i> Events <div [hidden]="!isLoading" class="spinner-border text-warning"></div></h1>
+  <div class="btn-toolbar mb-2 mb-md-0">
+    <button type="button" class="btn btn-outline-info" [routerLink]="[urls.events, 'new']"><i class="fa fa-plus"></i> Add New</button>
+  </div>
+</div>
+
+<div *ngIf="access" id="content_body" class="container-fluid" >
+  <app-grid [columns]="columns" [records]="events" (rowAction)="gridAction($event)"></app-grid>
+  <ngb-pagination class="d-flex justify-content-center" (pageChange)="onPageChange($event)" [collectionSize]="totalRecords" [pageSize]="pageSize" [(page)]="currentPage"></ngb-pagination>
+</div>
+
+

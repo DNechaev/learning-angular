@@ -1,5 +1,5 @@
 import { Injectable, TemplateRef } from '@angular/core';
-import { Toast } from '../interfaces';
+import { Toast } from '../../core/interfaces';
 
 @Injectable({ providedIn: 'root' })
 export class ToastService {
