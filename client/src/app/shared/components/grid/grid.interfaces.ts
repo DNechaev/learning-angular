@@ -1,17 +1,9 @@
-
-export const enum GridActionType {
-  SELECT_ROW = 'SELECT_ROW',
-  SELECT_CELL = 'SELECT_CELL',
-  EDIT = 'EDIT',
-  DELETE = 'DELETE'
-}
-
-
 export interface GridRowActionEvent {
   action: string;
   record: object;
   records: Array<object>;
   index: number;
+  transferData?: any;
 }
 
 export interface GridCellActionEvent {
@@ -40,4 +32,16 @@ export interface GridColumn {
   style?: string;
   class?: string;
   formatter?: FunctionFormatter;
+}
+
+export interface GridHighlightMap {
+  [key: string]: Array<string>;
+}
+
+export interface GridActionButton {
+  actionName: string;
+  class: any;
+  title: string;
+  html: string;
+  transferData?: any;
 }

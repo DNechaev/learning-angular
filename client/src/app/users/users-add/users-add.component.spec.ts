@@ -27,14 +27,16 @@ describe('UsersAddComponent', () => {
   let spyUsersAdd: jasmine.Spy;
   let spyRoute: jasmine.Spy;
 
-  const mockUser = new User();
-  mockUser.id = 1;
-  mockUser.name = 'User';
-  mockUser.email = 'Email';
-  mockUser.roles = [
-    { id: 2, name: 'MANAGER' },
-    { id: 3, name: 'USER' },
-  ];
+  const mockUser = new User(
+    1,
+    'User',
+    'email@test.com',
+    'password',
+    [
+      { id: 2, name: 'MANAGER' },
+      { id: 3, name: 'USER' },
+    ],
+    'TEST_SSID');
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({

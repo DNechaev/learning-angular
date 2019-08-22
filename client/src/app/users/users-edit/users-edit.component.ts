@@ -8,7 +8,6 @@ import { User } from '../../core/user.model';
 import { SearchService } from '../../shared/services/search.service';
 import { ToastService } from '../../shared/services/toast.service';
 import { UsersService } from '../users.service';
-// import { AuthenticationService } from '../../auth/services/authentication.service';
 import { LoaderIndicatorService } from '../../shared/services/loader-indicator.service';
 import { UsersRoutesPath } from '../users.routing';
 import { AppRoutesPath } from '../../app-routing.module';
@@ -41,7 +40,6 @@ export class UsersEditComponent implements OnInit, OnDestroy {
   };
 
   constructor(
-    // private authenticationService: AuthenticationService,
     private currentUserProvider: CurrentUserProvider,
     private usersService: UsersService,
     private activatedRoute: ActivatedRoute,
@@ -90,6 +88,7 @@ export class UsersEditComponent implements OnInit, OnDestroy {
   }
 
   onSubmit() {
+    if (!this.userForm.valid) { return; }
     const user = this.userForm.value;
     if (!this.userLoaded) {
       return this.toastService.warning('User won\'t loaded');

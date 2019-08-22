@@ -2,18 +2,19 @@ import { TestBed, getTestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
 import { UsersService } from './users.service';
-import { User } from '../core/user.model';
+import { User, UserAdapter } from '../core/user.model';
 import { URL_API_USERS } from '../core/consts';
 
 describe('UsersService', () => {
   let injector: TestBed;
   let service: UsersService;
   let httpMock: HttpTestingController;
+  const adapter: UserAdapter = new UserAdapter();
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [UsersService]
+      imports: [ HttpClientTestingModule ],
+      providers: [ UsersService ]
     });
     injector = getTestBed();
     service = injector.get(UsersService);
@@ -25,16 +26,22 @@ describe('UsersService', () => {
   });
 
   it('get user by id', () => {
-    const returnUser = new User();
-    returnUser.id = 1;
-    returnUser.name = 'User';
+    const serverUser = {
+      id: 1,
+      name: 'User',
+      email: 'email',
+      password: 'password',
+      role: [],
+      ssid: 'ssid'
+    };
+    const expectUser = adapter.input(serverUser);
 
     service.getUserById(1).subscribe(user => {
-      expect(user).toEqual(returnUser);
+      expect(user).toEqual(expectUser);
     });
 
     httpMock.expectOne(r => r.url.match( URL_API_USERS + '/1') && r.method === 'GET')
-      .flush(returnUser);
+      .flush(serverUser);
   });
 
   it('get user by id (error test)', () => {
@@ -52,56 +59,95 @@ describe('UsersService', () => {
   });
 
   it('get users', () => {
-    const returnPage = {
+    const serverUser1 = {
+      id: 1,
+      name: 'User1',
+      email: 'email1',
+      password: 'password1',
+      role: [],
+      ssid: 'ssid1'
+    };
+    const expectUser1 = adapter.input(serverUser1);
+
+    const serverUser2 = {
+      id: 2,
+      name: 'User2',
+      email: 'email2',
+      password: 'password2',
+      role: [],
+      ssid: 'ssid2'
+    };
+    const expectUser2 = adapter.input(serverUser2);
+
+    const serverPage = {
       count: 17,
       pageSize: 15,
       page: 2,
       rows: [
-        {
-          id: 1,
-          name: 'User1'
-        }, {
-          id: 2,
-          name: 'User2'
-        }
+        serverUser1,
+        serverUser2
       ]
     };
 
-    service.getUsers('FilterString', 2, 15).subscribe(page => {
-      expect(page).toEqual(returnPage);
+    const expectPage = {
+      count: 17,
+      pageSize: 15,
+      page: 2,
+      rows: [
+        expectUser1,
+        expectUser2
+      ]
+    };
+
+    service.getUsers({filter: 'FilterString'}, 2, 15).subscribe(page => {
+      expect(page).toEqual(expectPage);
     });
 
     const req = httpMock.expectOne(r => r.url.match( URL_API_USERS ) && r.method === 'GET');
     expect(req.request.params.get('filter')).toBe('FilterString');
     expect(req.request.params.get('page')).toBe('2');
     expect(req.request.params.get('pageSize')).toBe('15');
-    req.flush(returnPage);
+    req.flush(serverPage);
   });
 
   it('create user', () => {
-    const user = new User();
-    user.id = 1;
-    user.name = 'User';
+    const sendUser = new User(1, 'User', 'email', 'password', [], 'ssid');
+    const serverUser = {
+      id: 1,
+      name: 'User',
+      email: 'email',
+      password: 'password',
+      role: [],
+      ssid: 'ssid'
+    };
+    const expectUser = adapter.input(serverUser);
 
-    service.createUser(user).subscribe(returnUser => {
-      expect(user).toEqual(returnUser);
+    service.createUser(sendUser).subscribe(returnUser => {
+      expect(returnUser).toEqual(expectUser);
     });
 
     httpMock.expectOne(r => r.url.match( URL_API_USERS ) && r.method === 'POST')
-      .flush(user);
+      .flush(serverUser);
   });
 
   it('update user', () => {
-    const user = new User();
-    user.id = 1;
-    user.name = 'User1';
+    const sendUser = new User(1, 'User', 'email', 'password', [], 'ssid');
+    const serverUser = {
+      id: 1,
+      name: 'User',
+      email: 'email',
+      password: 'password',
+      role: [],
+      ssid: 'ssid'
+    };
+    const expectedUser = adapter.input(serverUser);
 
-    service.updateUser(10, user).subscribe(returnUser => {
-      expect(user).toEqual(returnUser);
+    service.updateUser(10, sendUser).subscribe(returnUser => {
+      expect(returnUser).toEqual(expectedUser);
     });
 
     httpMock.expectOne(r => r.url.match(URL_API_USERS + '/10') && r.method === 'PUT')
-      .flush(user);
+      .flush(serverUser);
   });
 
   it('delete user', () => {

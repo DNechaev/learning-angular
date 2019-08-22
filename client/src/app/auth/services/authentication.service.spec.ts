@@ -3,7 +3,7 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 
 import { AuthenticationService } from './authentication.service';
 import { URL_API_SESSIONS } from '../../core/consts';
-import { User } from '../../core/user.model';
+import {User, UserAdapter} from '../../core/user.model';
 import { CurrentUserProvider } from '../../shared/providers/current-user.provider';
 
 class MockCurrentUserProvider {
@@ -36,8 +36,9 @@ describe('AuthenticationService (registration)', () => {
   let httpMock: HttpTestingController;
   let expectedUser;
   let createdUser;
+  const adapter = new UserAdapter();
 
-  function helperRegistrationUser(testUser: User): Promise<User> {
+  function helperRegistrationUser(testUser): Promise<User> {
     return new Promise((resolve) => {
 
       authenticationService.registration('email', 'password', 'name').subscribe(user => {
@@ -68,8 +69,16 @@ describe('AuthenticationService (registration)', () => {
 
     httpMock = injector.get(HttpTestingController);
 
-    expectedUser = {id: 1, name: 'User', ssid: 'TEST_SSID'};
-    createdUser = await helperRegistrationUser(expectedUser);
+    const serverUser = {
+      id: 1,
+      name: 'User',
+      email: 'email',
+      password: 'password',
+      role: [],
+      ssid: 'ssid'
+    };
+    expectedUser = adapter.input(serverUser);
+    createdUser = await helperRegistrationUser(serverUser);
 
   });
 
@@ -125,11 +134,7 @@ describe('AuthenticationService (login)',  () => {
 
     httpMock = injector.get(HttpTestingController);
 
-    expectedUser = new User();
-    expectedUser.id = 1;
-    expectedUser.name = 'User';
-    expectedUser.ssid = 'SSID';
-
+    expectedUser = new User(1, 'User', 'user@test.com', 'password', [], 'SSID');
     createdUser = await helperLoginUser(expectedUser);
   });
 
@@ -186,10 +191,7 @@ describe('AuthenticationService (logout)', () => {
 
     httpMock = injector.get(HttpTestingController);
 
-    expectedUser = new User();
-    expectedUser.id = 1;
-    expectedUser.name = 'User';
-    expectedUser.ssid = 'SSID';
+    expectedUser = new User(1, 'User', 'user@test.com', 'password', [], 'SSID');
 
     createdUser = await helperLoginUser(expectedUser);
   });

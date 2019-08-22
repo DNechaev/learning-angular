@@ -8,7 +8,7 @@ class EventsService {
         const pageSize = +(params.pageSize || 10);
 
         const where = {};
-/*
+
         // name
         if (typeof params.name === 'string' && params.name.length) {
             let queryString = params.name;
@@ -22,9 +22,34 @@ class EventsService {
             };
         }
 
-        // email
-        if (typeof params.email === 'string' && params.email.length) {
-            where.email = params.email;
+        // dateBeginFrom
+        if (typeof params.dateBeginFrom === 'string' && params.dateBeginFrom.length) {
+            where.date_begin = {
+                [db.Sequelize.Op.gte]: params.dateBeginFrom
+            };
+        }
+
+        // dateBeginTo
+        if (typeof params.dateBeginTo === 'string' && params.dateBeginTo.length) {
+            where.date_begin = {
+                ...where.date_begin,
+                [db.Sequelize.Op.lte]: params.dateBeginTo
+            };
+        }
+
+        // dateEndFrom
+        if (typeof params.dateEndFrom === 'string' && params.dateEndFrom.length) {
+            where.date_end = {
+                [db.Sequelize.Op.gte]: params.dateEndFrom
+            };
+        }
+
+        // dateEndTo
+        if (typeof params.dateEndTo === 'string' && params.dateEndTo.length) {
+            where.date_end = {
+                ...where.date_end,
+                [db.Sequelize.Op.lte]: params.dateEndTo
+            };
         }
 
         // filter
@@ -35,13 +60,14 @@ class EventsService {
                 {name: {[db.Sequelize.Op.like]:  '%' + queryString}},
                 {name: {[db.Sequelize.Op.like]:  '%' + queryString + '%'}},
                 {name: {[db.Sequelize.Op.like]:  queryString + '%'}},
-                {email: {[db.Sequelize.Op.like]: queryString}},
-                {email: {[db.Sequelize.Op.like]: '%' + queryString}},
-                {email: {[db.Sequelize.Op.like]: '%' + queryString + '%'}},
-                {email: {[db.Sequelize.Op.like]: queryString + '%'}},
+                {price: {[db.Sequelize.Op.like]: queryString}},
+                {price: {[db.Sequelize.Op.like]: '%' + queryString}},
+                {price: {[db.Sequelize.Op.like]: '%' + queryString + '%'}},
+                {price: {[db.Sequelize.Op.like]: queryString + '%'}},
             ];
         }
-*/
+
+        console.log('where', where);
 
         console.log('---------------------------------------------------');
         const result = await db.event.findAndCountAll(
@@ -68,6 +94,7 @@ class EventsService {
             let purchases = row.dataValues.purchases;
             row.dataValues.purchasesCount = purchases.length;
             row.dataValues.ticketsPurchased = purchases.reduce((sum, purchase) => sum + purchase.dataValues.ticketsCount, 0);
+            row.dataValues.ticketsAvailable = row.dataValues.ticketsCount - row.dataValues.ticketsPurchased;
         });
 
 
@@ -77,15 +104,7 @@ class EventsService {
     }
 
     static async getById( db, eventId ) {
-        return await db.event.findByPk( eventId, {
-            /*include: [
-                {
-                    model: db.role,
-                    as: 'roles',
-                    attributes: ['id', 'name'],
-                }
-            ]*/
-        });
+        return await db.event.findByPk( eventId );
     }
 
     static async create( db, eventValue ) {

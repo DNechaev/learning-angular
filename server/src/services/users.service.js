@@ -24,7 +24,15 @@ class UsersService {
 
         // email
         if (typeof params.email === 'string' && params.email.length) {
-            where.email = params.email;
+            let queryString = params.email;
+            where.email = {
+                [db.Sequelize.Op.or]: [
+                    {[db.Sequelize.Op.like]: queryString},
+                    {[db.Sequelize.Op.like]: '%' + queryString},
+                    {[db.Sequelize.Op.like]: '%' + queryString + '%'},
+                    {[db.Sequelize.Op.like]: queryString + '%'}
+                ]
+            };
         }
 
         // filter

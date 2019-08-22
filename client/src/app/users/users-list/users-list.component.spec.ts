@@ -11,8 +11,8 @@ import { UsersService } from '../users.service';
 import { LoaderIndicatorService } from '../../shared/services/loader-indicator.service';
 import { SearchService } from '../../shared/services/search.service';
 import { ToastService } from '../../shared/services/toast.service';
-import { Page } from 'src/app/shared/models';
-import {SharedModule} from "../../shared/shared.module";
+import { Page } from '../../core/page.model';
+import { SharedModule } from '../../shared/shared.module';
 
 describe('UsersListComponent', () => {
   let component: UsersListComponent;
@@ -86,9 +86,9 @@ describe('UsersListComponent', () => {
     ];
 
     spyOn(usersService, 'getUsers')
-      .withArgs('', 1, 3).and.returnValue(of(expectPage1))
-      .withArgs('', 2, 3).and.returnValue(of(expectPage2))
-      .withArgs('test', 1, 3).and.returnValue(of(expectPage3));
+      .withArgs({ name: null, email: null, filter: '' }, 1, 3).and.returnValue(of(expectPage1))
+      .withArgs({ name: null, email: null, filter: '' }, 2, 3).and.returnValue(of(expectPage2))
+      .withArgs({ name: null, email: null, filter: 'test' }, 1, 3).and.returnValue(of(expectPage3));
 
     component.pageSize = 3;
     fixture.detectChanges();

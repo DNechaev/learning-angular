@@ -10,6 +10,7 @@ export class Event {
     public price: number,
     public ticketsCount: number,
     public ticketsPurchased?: number,
+    public ticketsAvailable?: number,
     public purchasesCount?: number
   ) {}
 }
@@ -25,10 +26,11 @@ export class EventAdapter implements Adapter<Event> {
       item.name,
       (item.dateBegin ? new Date(item.dateBegin) : item.dateBegin),
         (item.dateEnd ? new Date(item.dateEnd) : item.dateEnd),
-      +item.price,
-      +item.ticketsCount,
-      +item.ticketsPurchased,
-      +item.purchasesCount
+      (item.price ? +item.price : item.price),
+      (item.ticketsCount ? +item.ticketsCount : item.ticketsCount),
+      (item.ticketsPurchased ? +item.ticketsPurchased : item.ticketsPurchased),
+      (item.ticketsAvailable ? +item.ticketsAvailable : item.ticketsAvailable),
+      (item.purchasesCount ? +item.purchasesCount : item.purchasesCount)
     );
   }
 

@@ -18,7 +18,7 @@ describe('UsersList Page', () => {
   });
 
   it('should have a table header',  () => {
-    expect(usersList.getTableHeader()).toContain('Name Email Actions');
+    expect(usersList.getTableHeader()).toContain('ID Name Email Roles Actions');
   });
 
   it('table should have more than 1 row', () => {

@@ -12,6 +12,7 @@ import { Role } from '../../core/enums';
 import { User } from '../../core/user.model';
 import { AppRoutesPath } from '../../app-routing.module';
 import { EventsRoutesPath } from '../events.routing';
+import {validateDate} from "../../core/validators";
 
 @Component({
   selector: 'app-events-add',
@@ -73,15 +74,26 @@ export class EventsAddComponent implements OnInit, OnDestroy {
 
     this.eventForm = new FormGroup({
       name: new FormControl(null, [Validators.required, Validators.minLength(4)]),
-      dateBegin: new FormControl(null, [Validators.required]),
-      dateEnd: new FormControl(null, [Validators.required]),
-      price: new FormControl(null, [Validators.required]),
-      ticketsCount: new FormControl(null, [Validators.required]),
-    });
+      dateBegin: new FormControl(null, [
+        Validators.required,
+        Validators.pattern('^20[0-9]{2}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([0-1][0-9]|2[0-3]):([0-5][0-9])$')
+      ]),
+      dateEnd: new FormControl(null, [
+        Validators.required,
+        Validators.pattern('^20[0-9]{2}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([0-1][0-9]|2[0-3]):([0-5][0-9])$')
+      ]),
+      price: new FormControl(null, [Validators.required, Validators.min(1)]),
+      ticketsCount: new FormControl(null, [Validators.required, Validators.min(0)]),
+    }, [
+        validateDate('dateBegin', 'dateEnd')
+    ]);
 
   }
 
   onSubmit() {
+
+    if (!this.eventForm.valid) { return; }
+
     const event = this.eventForm.value;
     event.dateBegin = new Date(event.dateBegin);
     event.dateEnd = new Date(event.dateEnd);

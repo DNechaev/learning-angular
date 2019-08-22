@@ -2,11 +2,9 @@ import { getTestBed, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
 import { CurrentUserProvider } from './current-user.provider';
-import { Role } from '../enums';
-import { User } from '../models';
+import { User } from '../../core/user.model';
 import { StorageService } from '../services/storage.service';
-import { URL_API_SESSIONS } from '../consts';
-import { of } from 'rxjs';
+import { URL_API_SESSIONS } from '../../core/consts';
 
 class MockStorageService {
 
@@ -223,20 +221,12 @@ describe('CurrentUserProvider (set user) ', () => {
     expect(testUser).toEqual(expectedUser);
 
     // -----------------------------
-    const returnUser1 = new User();
-    returnUser1.id = 1;
-    returnUser1.name = 'User1';
-    returnUser1.ssid = 'TEST_SSID1';
-
+    const returnUser1 = new User(1, 'User1', 'email1@test.com', '123456', [], 'TEST_SSID1');
     await currentUserProvider.setCurrentUser(returnUser1);
     expect(testUser).toEqual(returnUser1);
 
     // -----------------------------
-    const returnUser2 = new User();
-    returnUser2.id = 2;
-    returnUser2.name = 'User2';
-    returnUser2.ssid = 'TEST_SSID2';
-
+    const returnUser2 = new User(2, 'User2', 'email2@test.com', '123456', [], 'TEST_SSID2');
     await currentUserProvider.setCurrentUser(returnUser2);
     expect(testUser).toEqual(returnUser2);
 

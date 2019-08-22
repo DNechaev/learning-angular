@@ -86,9 +86,15 @@ describe('EventsListComponent', () => {
     ];
 
     spyOn(eventsService, 'getEvents')
-      .withArgs('', 1, 3).and.returnValue(of(expectPage1))
-      .withArgs('', 2, 3).and.returnValue(of(expectPage2))
-      .withArgs('test', 1, 3).and.returnValue(of(expectPage3));
+      .withArgs(
+        { name: null, dateBeginFrom: null, dateBeginTo: null, dateEndFrom: null, dateEndTo: null, filter: '' }, 1, 3
+      ).and.returnValue(of(expectPage1))
+      .withArgs(
+        { name: null, dateBeginFrom: null, dateBeginTo: null, dateEndFrom: null, dateEndTo: null, filter: '' }, 2, 3
+      ).and.returnValue(of(expectPage2))
+      .withArgs(
+        { name: null, dateBeginFrom: null, dateBeginTo: null, dateEndFrom: null, dateEndTo: null, filter: 'test' }, 1, 3
+      ).and.returnValue(of(expectPage3));
 
     component.pageSize = 3;
     fixture.detectChanges();

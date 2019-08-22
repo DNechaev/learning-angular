@@ -6,6 +6,7 @@ import { UsersRoutesPath } from '../../../users/users.routing';
 import { EventsRoutesPath } from '../../../events/events.routing';
 import { Role } from '../../../core/enums';
 import { CurrentUserProvider } from '../../providers/current-user.provider';
+import { PurchasesRoutesPath } from 'src/app/purchases/purchases.routing';
 
 @Component({
   selector: 'app-menu',
@@ -32,9 +33,15 @@ export class MenuComponent implements OnInit, OnDestroy {
     },
     {
       route: EventsRoutesPath.PATH_TO_LIST,
-      icon: 'fa-bullhorn',
+      icon: 'fa-calendar-alt',
       title: 'Events',
-      roles: [ Role.MANAGER ]
+      roles: [ Role.MANAGER, Role.USER ]
+    },
+    {
+      route: PurchasesRoutesPath.PATH_TO_LIST,
+      icon: 'fa-shopping-basket',
+      title: 'Purchases',
+      roles: [ Role.ADMIN, Role.USER ]
     },
   ];
 

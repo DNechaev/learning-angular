@@ -4,6 +4,7 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { RouterModule } from '@angular/router';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 import { MenuComponent } from './components/menu/menu.component';
 import { GridComponent } from './components/grid/grid.component';
@@ -23,6 +24,7 @@ import { CurrentUserProvider, CurrentUserProviderFactory } from './providers/cur
     NgbPaginationModule,
     FormsModule,
     ReactiveFormsModule,
+    NgSelectModule
   ],
   declarations: [
     GridComponent,
@@ -53,6 +55,7 @@ import { CurrentUserProvider, CurrentUserProviderFactory } from './providers/cur
     NgbPaginationModule,
     FormsModule,
     ReactiveFormsModule,
+    NgSelectModule,
     GridComponent,
     ToastsComponent,
     PageNotFoundComponent,

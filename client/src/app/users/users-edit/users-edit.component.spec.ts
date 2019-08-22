@@ -6,7 +6,7 @@ import {ActivatedRoute, Router, RouterModule} from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { UsersService } from '../users.service';
-import { User } from 'src/app/shared/models';
+import { User } from '../../core/user.model';
 import { AuthenticationService } from '../../auth/services/authentication.service';
 import { LoaderIndicatorService } from '../../shared/services/loader-indicator.service';
 import { SearchService } from '../../shared/services/search.service';
@@ -27,14 +27,16 @@ describe('UsersEditComponent', () => {
   let spyUsersUpdate: jasmine.Spy;
   let spyRoute: jasmine.Spy;
 
-  const mockUser = new User();
-  mockUser.id = 1;
-  mockUser.name = 'User';
-  mockUser.email = 'Email';
-  mockUser.roles = [
-    { id: 2, name: 'MANAGER' },
-    { id: 3, name: 'USER' },
-  ];
+  const mockUser = new User(
+    1,
+    'User',
+    'email@test.com',
+    'password',
+    [
+      { id: 2, name: 'MANAGER' },
+      { id: 3, name: 'USER' },
+    ],
+    'TEST_SSID');
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -83,6 +85,7 @@ describe('UsersEditComponent', () => {
   });
 
   it('should not submit by no valid form', () => {
+    component.userForm.patchValue({name: ''});
     expect(component.userForm.valid).toBe(false);
   });
 

@@ -7,7 +7,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { SharedModule } from './shared/shared.module';
 import { EventsModule } from './events/events.module';
-import {DashboardModule} from "./dashboard/dashboard.module";
+import { PurchasesModule } from './purchases/purchases.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import {DashboardModule} from "./dashboard/dashboard.module";
     DashboardModule,
     UsersModule,
     EventsModule,
+    PurchasesModule,
     AppRoutingModule,
   ],
   bootstrap: [ AppComponent ],

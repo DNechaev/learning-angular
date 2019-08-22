@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 
 import { EventsEditComponent } from './events-edit.component';
-import {ActivatedRoute, Router, RouterModule} from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { EventsService } from '../events.service';
@@ -76,15 +76,17 @@ describe('EventsEditComponent', () => {
   });
 
   it('should not submit by no valid form', () => {
+    component.eventForm.patchValue({name: ''});
     expect(component.eventForm.valid).toBe(false);
   });
 
   it('should submit', () => {
     component.eventForm.patchValue({
       name: 'Test Event',
-      email: 'test@test.com',
-      password: '1234567890',
-      roles: [ false, true, true ]
+      dateBegin: '2019-01-01T00:00',
+      dateEnd: '2019-01-01T00:00',
+      price: 100,
+      ticketsCount: 10
     });
     component.onSubmit();
     expect(spyEventsUpdate.calls.any()).toBeTruthy();

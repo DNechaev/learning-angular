@@ -19,11 +19,17 @@ export class UsersService {
     private adapter: UserAdapter
   ) {}
 
-  getUsers( filter: string, page: number, pageSize: number ): Observable<Page> {
-    const params = new HttpParams()
-      .set('filter', filter)
+  getUsers( filter: object, page: number, pageSize: number ): Observable<Page> {
+    let params = new HttpParams()
       .set('page', String(page))
       .set('pageSize', String(pageSize));
+
+    Object.keys(filter).forEach(key => {
+      if (filter[key] !== null) {
+        params = params.set(key, filter[key]);
+      }
+    });
+
     return this.http.get<Page>(this.baseUrl, { params } ).pipe(
       map((p: Page) => {
         p.rows = p.rows.map(item => this.adapter.input(item));
@@ -34,16 +40,20 @@ export class UsersService {
 
   getUserById( userId: number ): Observable<User> {
     return this.http.get<User>(this.baseUrl + '/' + userId ).pipe(
-      map((u: User) => this.adapter.input(u))
+      map((u) => this.adapter.input(u))
     );
   }
 
   createUser( user: User ): Observable<User> {
-    return this.http.post<User>(this.baseUrl, this.adapter.output(user));
+    return this.http.post<User>(this.baseUrl, this.adapter.output(user)).pipe(
+      map((u) => this.adapter.input(u))
+    );
   }
 
   updateUser( userId: number, user: User): Observable<User> {
-    return this.http.put<User>(this.baseUrl + '/' + userId, this.adapter.output(user));
+    return this.http.put<User>(this.baseUrl + '/' + userId, this.adapter.output(user)).pipe(
+      map((u) => this.adapter.input(u))
+    );
   }
 
   deleteUser( userId: number ): Observable<any> {

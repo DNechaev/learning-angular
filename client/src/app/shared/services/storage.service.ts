@@ -20,12 +20,13 @@ export class StorageService {
     }
   }
 
-  getItem(key: string): any {
+  getItem(key: string, defaultValue = null): any {
     try {
-      return JSON.parse(localStorage.getItem(key) ? localStorage.getItem(key) : sessionStorage.getItem(key));
+      const value = JSON.parse(localStorage.getItem(key) ? localStorage.getItem(key) : sessionStorage.getItem(key));
+      return value === null ? defaultValue : value ;
     } catch (e) {
       console.error('Error getting data from Storage', e);
-      return null;
+      return defaultValue;
     }
   }
 

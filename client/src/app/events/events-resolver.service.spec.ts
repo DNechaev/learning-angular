@@ -3,7 +3,7 @@ import { getTestBed, TestBed } from '@angular/core/testing';
 import { EventsResolverService } from './events-resolver.service';
 import { EventsService } from './events.service';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { Event } from '../core/event.model';
+import {Event, EventAdapter} from '../core/event.model';
 import { URL_API_EVENTS } from '../core/consts';
 
 describe('EventsResolverService', () => {
@@ -30,16 +30,22 @@ describe('EventsResolverService', () => {
   });
 
   it('get event by id', () => {
-    const returnEvent = new Event(1, 'Event', new Date(), new Date(), 100, 10);
-    // returnEvent.id = 1;
-    // returnEvent.name = 'Event';
+    const serverEvent = {
+      id: 1,
+      name: 'Event',
+      dateBegin: '2019-01-01T01:01:01',
+      dateEnd: '2019-01-01T01:01:01',
+      price: 100,
+      ticketsCount: 10
+    };
+    const expectEvent = (new EventAdapter()).input(serverEvent);
 
     service.getEventById(1).subscribe(event => {
-      expect(event).toEqual(returnEvent);
+      expect(event).toEqual(expectEvent);
     });
 
     httpMock.expectOne(r => r.url.match(URL_API_EVENTS + '/1') && r.method === 'GET')
-      .flush(returnEvent);
+      .flush(serverEvent);
   });
 
 });

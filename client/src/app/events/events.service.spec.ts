@@ -2,7 +2,7 @@ import { TestBed, getTestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
 import { EventsService } from './events.service';
-import { Event } from '../core/event.model';
+import {Event, EventAdapter} from '../core/event.model';
 import { URL_API_EVENTS } from '../core/consts';
 
 describe('EventsService', () => {
@@ -25,16 +25,26 @@ describe('EventsService', () => {
   });
 
   it('get event by id', () => {
-    const returnEvent = { id: 1, name: 'Event' };
+
+    const serverEvent = {
+      id: 1,
+      name: 'Event',
+      dateBegin: '2019-01-01T01:01:01',
+      dateEnd: '2019-01-01T01:01:01',
+      price: 100,
+      ticketsCount: 10
+    };
+    const expectEvent = (new EventAdapter()).input(serverEvent);
     // returnEvent.id = 1;
     // returnEvent.name = 'Event';
+    // const returnEvent = new Event(1, );
 
     service.getEventById(1).subscribe(event => {
-      expect(event).toEqual(returnEvent);
+      expect(event).toEqual(expectEvent);
     });
 
     httpMock.expectOne(r => r.url.match(URL_API_EVENTS + '/1') && r.method === 'GET')
-      .flush(returnEvent);
+      .flush(serverEvent);
   });
 
   it('get event by id (error test)', () => {
@@ -67,7 +77,7 @@ describe('EventsService', () => {
       ]
     };
 
-    service.getEvents('FilterString', 2, 15).subscribe(page => {
+    service.getEvents({filter: 'FilterString'}, 2, 15).subscribe(page => {
       expect(page).toEqual(returnPage);
     });
 

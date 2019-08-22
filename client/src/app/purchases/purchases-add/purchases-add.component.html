@@ -1,0 +1,97 @@
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a [routerLink]="urls.home">Home</a></li>
+    <li class="breadcrumb-item"><a [routerLink]="urls.purchases">Purchases</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Create Purchase</li>
+  </ol>
+</nav>
+
+<div *ngIf="!access" id="content_access" class="alert alert-danger" role="alert">
+  <i class="fas fa-exclamation-triangle"></i> You don't have rights for this section.
+</div>
+
+<div *ngIf="access" >
+  <div id="content_header" class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+    <h1 class="h2"><i class="fas fa-shopping-basket"></i> Create Purchase <div [hidden]="!isLoading" class="spinner-border text-warning"></div></h1>
+  </div>
+  <div class="container-fluid" id="content_body">
+
+    <form [formGroup]="purchaseForm" (ngSubmit)="onSubmit()" class="form-horizontal" >
+
+      <div class="form-group row">
+        <label class="col-sm-3 col-form-label col-form-label-lg" for="fieldDate">Date:</label>
+        <div class="col-sm-9 input-group">
+          <div class="input-group-prepend" *ngIf="purchaseForm.get('date').invalid && purchaseForm.get('date').touched">
+            <span class="input-group-text text-danger error-symbol" title="Date has bad format"><i class="fa fa-exclamation-triangle"></i></span>
+          </div>
+          <input formControlName="date" type="datetime-local" class="form-control form-control-lg" id="fieldDate" placeholder="Enter begin">
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label class="col-sm-3 col-form-label col-form-label-lg" for="fieldUser">User:</label>
+        <div class="col-sm-9 input-group">
+          <div class="input-group-prepend" *ngIf="purchaseForm.get('userId').invalid && purchaseForm.get('userId').touched">
+            <span class="input-group-text text-danger error-symbol" title="User has bad format"><i class="fa fa-exclamation-triangle"></i></span>
+          </div>
+          <ng-select [items]="selectUsers"
+                     #select
+                     bindLabel="title"
+                     dropdownPosition="auto"
+                     bindValue="id"
+                     labelForId="album"
+                     placeholder="Select album"
+                     [virtualScroll]="true"
+                     formControlName="userId"
+                     id="fieldUser"
+          >
+            <ng-template ng-option-tmp let-item="item" let-search="searchTerm">
+              <div><span>Title: </span><span [ngOptionHighlight]="search">{{item.title}}</span></div>
+              <small><b>Id:</b> {{item.id}} | <b>UserId:</b> {{item.userId}}</small>
+            </ng-template>
+          </ng-select>
+        </div>
+      </div>
+
+      <!-- div class="form-group row">
+        <label class="col-sm-3 col-form-label col-form-label-lg" for="fieldUser">User:</label>
+        <div class="col-sm-9 input-group">
+          <div class="input-group-prepend" *ngIf="purchaseForm.get('userId').invalid && purchaseForm.get('userId').touched">
+            <span class="input-group-text text-danger error-symbol" title="User has bad format"><i class="fa fa-exclamation-triangle"></i></span>
+          </div>
+          <input formControlName="userId" type="number" class="form-control form-control-lg" id="fieldUser" placeholder="Enter User">
+        </div>
+      </div -->
+
+      <div class="form-group row">
+        <label class="col-sm-3 col-form-label col-form-label-lg" for="fieldEvent">Event:</label>
+        <div class="col-sm-9 input-group">
+          <div class="input-group-prepend" *ngIf="purchaseForm.get('eventId').invalid && purchaseForm.get('eventId').touched">
+            <span class="input-group-text text-danger error-symbol" title="Event has bad format"><i class="fa fa-exclamation-triangle"></i></span>
+          </div>
+          <input formControlName="eventId" type="number" class="form-control form-control-lg" id="fieldEvent" placeholder="Enter Event">
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label class="col-sm-3 col-form-label col-form-label-lg" for="fieldTicketsCount">Tickets count:</label>
+        <div class="col-sm-9 input-group">
+          <div class="input-group-prepend" *ngIf="purchaseForm.get('ticketsCount').invalid && purchaseForm.get('ticketsCount').touched">
+            <span class="input-group-text text-danger error-symbol" title="Count has bad format"><i class="fa fa-exclamation-triangle"></i></span>
+          </div>
+          <input formControlName="ticketsCount" type="number" class="form-control form-control-lg" id="fieldTicketsCount" placeholder="Enter count of tickets">
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-sm-12">
+          <div class="btn-group float-right" role="group">
+            <button type="submit" class="btn btn-primary" [disabled]="purchaseForm.invalid">Save</button>
+            <button type="button" class="btn btn-secondary" [routerLink]="urls.purchases">Cancel</button>
+          </div>
+        </div>
+      </div>
+
+    </form>
+  </div>
+</div>

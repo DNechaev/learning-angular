@@ -30,10 +30,7 @@ describe('UsersResolverService', () => {
   });
 
   it('get user by id', () => {
-    const returnUser = new User();
-    returnUser.id = 1;
-    returnUser.name = 'User';
-
+    const returnUser = new User(1, 'User', 'email', 'password', [], 'ssid');
     service.getUserById(1).subscribe(user => {
       expect(user).toEqual(returnUser);
     });

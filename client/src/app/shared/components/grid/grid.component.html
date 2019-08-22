@@ -1,7 +1,7 @@
 <table class="table table-striped">
   <thead class="thead-light">
   <tr>
-    <th *ngFor='let column of columns' style="{{ column.style }}" class="{{ column.class }}">{{ column.title }}</th>
+    <th *ngFor='let column of columns' style="{{ column.style }}" [ngClass]="column.class">{{ column.title }}</th>
     <th style="width: 5%">Actions</th>
   </tr>
   </thead>
@@ -28,18 +28,17 @@
             records: records,
             column: column
            })
-        })">{{ column.formatter({
+        })" [innerHTML]="highlightCell(column, column.formatter({
           value: record[column.field],
           record: record,
           index: idx,
           records: records,
           column: column
-        }) }}</td>
+        }))"></td>
     <td>
       <div class="btn-toolbar" role="toolbar">
         <div class="btn-group" role="group">
-          <button type="button" class="btn btn-outline-success btn-sm" title="Edit" (click)="onRowAction({ action: 'EDIT', record: record, index: idx, records: records })"><i class="far fa-edit"></i></button>
-          <button type="button" class="btn btn-outline-danger btn-sm" title="Delete" (click)="onRowAction({ action: 'DELETE', record: record, index: idx, records: records })"><i class="far fa-trash-alt"></i></button>
+          <button type="button" *ngFor='let action of actions' [ngClass]="action.class" class="btn btn-sm" title="{{ action.title }}" (click)="onRowAction({ action: action.actionName, record: record, index: idx, records: records, transferData: action.transferData })" [innerHTML]="action.html"></button>
         </div>
       </div>
     </td>

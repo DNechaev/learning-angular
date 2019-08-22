@@ -109,6 +109,7 @@ export class UsersAddComponent implements OnInit, OnDestroy {
   }
 
   onSubmit() {
+    if (!this.userForm.valid) { return; }
     const user = this.userForm.value;
     user.roles = this.getSelectedRoleIds();
     this.usersService.createUser(user).subscribe(

@@ -70,9 +70,24 @@ describe('EventsAddComponent', () => {
     expect(component.eventForm.valid).toBe(false);
   });
 
+  it('should not submit by dateBegin > dateEnd', () => {
+    component.eventForm.patchValue({
+      name: 'Test Event',
+      dateBegin: '2019-01-01T02:00',
+      dateEnd: '2019-01-01T00:00',
+      price: 100,
+      ticketsCount: 10
+    });
+    expect(component.eventForm.valid).toBe(false);
+  });
+
   it('should submit', () => {
     component.eventForm.patchValue({
       name: 'Test Event',
+      dateBegin: '2019-01-01T00:00',
+      dateEnd: '2019-01-01T00:00',
+      price: 100,
+      ticketsCount: 10
     });
     component.onSubmit();
     expect(spyEventsAdd.calls.any()).toBeTruthy();

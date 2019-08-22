@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormGroup, FormControl, Validators, FormArray, ValidatorFn } from '@angular/forms';
+import { FormGroup, FormControl, Validators, FormArray, ValidatorFn, ValidationErrors } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
 import { Role } from '../../core/enums';
@@ -14,6 +14,7 @@ import { EventsRoutesPath } from '../events.routing';
 import { AppRoutesPath } from '../../app-routing.module';
 import { CurrentUserProvider } from '../../shared/providers/current-user.provider';
 import { formatDate } from '@angular/common';
+import { validateDate } from 'src/app/core/validators';
 
 @Component({
   selector: 'app-events-edit',
@@ -84,12 +85,14 @@ export class EventsEditComponent implements OnInit, OnDestroy {
       return this.toastService.warning('Event won\'t loaded');
     }
 
+    if (!this.eventForm.valid) { return; }
+
     const event = this.eventForm.value;
     event.dateBegin = new Date(event.dateBegin);
     event.dateEnd = new Date(event.dateEnd);
 
     this.eventsService.updateEvent(this.eventId, event).subscribe(
-      (data) => {
+      () => {
         this.toastService.success('Event updated!');
         this.router.navigate([ EventsRoutesPath.PATH_TO_LIST ]);
       },
@@ -102,11 +105,19 @@ export class EventsEditComponent implements OnInit, OnDestroy {
 
     this.eventForm = new FormGroup({
       name: new FormControl(null, [Validators.required, Validators.minLength(4)]),
-      dateBegin: new FormControl(null, [Validators.required]),
-      dateEnd: new FormControl(null, [Validators.required]),
-      price: new FormControl(null, [Validators.required]),
-      ticketsCount: new FormControl(null, [Validators.required]),
-    });
+      dateBegin: new FormControl(null, [
+        Validators.required,
+        Validators.pattern('^20[0-9]{2}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([0-1][0-9]|2[0-3]):([0-5][0-9])$')
+      ]),
+      dateEnd: new FormControl(null, [
+        Validators.required,
+        Validators.pattern('^20[0-9]{2}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([0-1][0-9]|2[0-3]):([0-5][0-9])$')
+      ]),
+      price: new FormControl(null, [Validators.required, Validators.min(1)]),
+      ticketsCount: new FormControl(null, [Validators.required, Validators.min(0)]),
+    }, [
+      validateDate('dateBegin', 'dateEnd')
+    ]);
 
   }
 
@@ -117,8 +128,8 @@ export class EventsEditComponent implements OnInit, OnDestroy {
     this.eventId = event.id;
     const values = {
       ...event,
-      dateBegin: (event.dateBegin) ? formatDate(event.dateBegin, 'y-MM-ddTHH:mm', 'en-US') : '',
-      dateEnd: (event.dateEnd) ? formatDate(event.dateEnd, 'y-MM-ddTHH:mm', 'en-US') : '',
+      dateBegin: (event.dateBegin) ? formatDate(event.dateBegin, 'y-MM-ddTHH:mm', 'en-US') : null,
+      dateEnd: (event.dateEnd) ? formatDate(event.dateEnd, 'y-MM-ddTHH:mm', 'en-US') : null,
     };
 
     this.eventForm.patchValue(values);
