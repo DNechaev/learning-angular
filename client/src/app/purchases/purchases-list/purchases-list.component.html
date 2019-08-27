@@ -12,7 +12,7 @@
 <div *ngIf="access" id="content_header" class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
   <h1 class="h2"><i class="fas fa-shopping-basket"></i> Purchases <div [hidden]="!isLoading" class="spinner-border text-warning"></div></h1>
   <div class="btn-toolbar mb-2 mb-md-0">
-    <button *ngIf="accessAdmin" type="button" class="btn btn-outline-info mr-1" [routerLink]="[urls.purchases, 'new']"><i class="fa fa-plus"></i> Add New</button>
+    <button *ngIf="accessAdmin" type="button" class="btn btn-outline-info mr-1" [routerLink]="[urls.purchases, 'new']"><i class="fa fa-plus"></i> Create</button>
     <button type="button" class="btn btn-outline-primary mr-1" (click)="filterCollapse()"
             [attr.aria-expanded]="!isFilterCollapsed" aria-controls="content_settings">
       <i class="fa" [ngClass]="isFilterCollapsed ? 'fa-caret-down' : 'fa-caret-up'"></i>
@@ -27,7 +27,7 @@
   <div class="card border-primary mb-3">
     <div class="card-header">Filters</div>
     <div class="card-body pb-2">
-      <form [formGroup]="filterForm" (ngSubmit)="applyFilter(true)" class="form-horizontal">
+      <form [formGroup]="filterForm" (ngSubmit)="filterApply(true)" class="form-horizontal">
 
         <div class="form-group row">
           <label class="col-sm-2 col-form-label" for="fieldDateFrom">Date:</label>
@@ -56,7 +56,14 @@
 </div>
 
 <div *ngIf="access" id="content_body">
-  <app-grid [columns]="columns" [records]="purchases" [highlightMap]="highlightMap" [actions]="gridActions" (rowAction)="gridAction($event)"></app-grid>
+  <app-grid
+    tableClass="table-striped"
+    [columns]="gridRenderColumns"
+    [records]="purchases"
+    [getActions]="gridGetActions()"
+    (onAction)="gridActionClick($event)"
+    (onTitleClick)="gridTitleClick($event)"
+  ></app-grid>
   <ngb-pagination class="d-flex justify-content-center" (pageChange)="onPageChange($event)" [collectionSize]="totalRecords" [pageSize]="pageSize" [(page)]="currentPage"></ngb-pagination>
 </div>
 

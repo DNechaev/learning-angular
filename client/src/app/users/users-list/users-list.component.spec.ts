@@ -86,9 +86,9 @@ describe('UsersListComponent', () => {
     ];
 
     spyOn(usersService, 'getUsers')
-      .withArgs({ name: null, email: null, filter: '' }, 1, 3).and.returnValue(of(expectPage1))
-      .withArgs({ name: null, email: null, filter: '' }, 2, 3).and.returnValue(of(expectPage2))
-      .withArgs({ name: null, email: null, filter: 'test' }, 1, 3).and.returnValue(of(expectPage3));
+      .withArgs({ name: null, email: null, filter: '' }, {}, 1, 3).and.returnValue(of(expectPage1))
+      .withArgs({ name: null, email: null, filter: '' }, {},  2, 3).and.returnValue(of(expectPage2))
+      .withArgs({ name: null, email: null, filter: 'test' }, {}, 1, 3).and.returnValue(of(expectPage3));
 
     component.pageSize = 3;
     fixture.detectChanges();

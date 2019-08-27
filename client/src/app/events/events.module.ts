@@ -8,6 +8,7 @@ import { EventsComponent } from './events.component';
 import { EventsListComponent } from './events-list/events-list.component';
 import { EventsAddComponent } from './events-add/events-add.component';
 import { EventsEditComponent } from './events-edit/events-edit.component';
+import { EventsBuyComponent } from './events-buy/events-buy.component';
 
 @NgModule({
   imports: [
@@ -17,6 +18,7 @@ import { EventsEditComponent } from './events-edit/events-edit.component';
   ],
   declarations: [
     EventsComponent,
+    EventsBuyComponent,
     EventsListComponent,
     EventsAddComponent,
     EventsEditComponent

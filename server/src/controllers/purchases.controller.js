@@ -7,8 +7,9 @@ class PurchasesController {
     static async getAll(ctx) {
         if ( !SessionService.userHasRoles( ctx.authorizedUser, [Role.ADMIN] )) {
             ctx.body = await purchasesService.getAll(ctx.db, ctx.authorizedUser.id, ctx.query);
+        } else {
+            ctx.body = await purchasesService.getAll(ctx.db, null, ctx.query);
         }
-        ctx.body = await purchasesService.getAll(ctx.db, null, ctx.query);
     }
 
     static async getById(ctx) {

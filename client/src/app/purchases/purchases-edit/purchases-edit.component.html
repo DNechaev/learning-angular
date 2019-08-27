@@ -34,9 +34,29 @@
           <div class="input-group-prepend" *ngIf="purchaseForm.get('userId').invalid && purchaseForm.get('userId').touched">
             <span class="input-group-text text-danger error-symbol" title="User has bad format"><i class="fa fa-exclamation-triangle"></i></span>
           </div>
-          <input formControlName="userId" type="number" class="form-control form-control-lg" id="fieldUser" placeholder="Enter User">
+          <ng-select [items]="usersForSelect$ | async"
+                     #select
+                     dropdownPosition="auto"
+                     bindValue="id"
+                     bindLabel="name"
+                     labelForId="name"
+                     [virtualScroll]="true"
+                     formControlName="userId"
+                     id="fieldUser"
+                     class="form-control form-control-lg"
+          ></ng-select>
         </div>
       </div>
+
+      <!--div class="form-group row">
+        <label class="col-sm-3 col-form-label col-form-label-lg" for="fieldUser">User:</label>
+        <div class="col-sm-9 input-group">
+          <div class="input-group-prepend" *ngIf="purchaseForm.get('userId').invalid && purchaseForm.get('userId').touched">
+            <span class="input-group-text text-danger error-symbol" title="User has bad format"><i class="fa fa-exclamation-triangle"></i></span>
+          </div>
+          <input formControlName="userId" type="number" class="form-control form-control-lg" id="fieldUser" placeholder="Enter User">
+        </div>
+      </div-->
 
       <div class="form-group row">
         <label class="col-sm-3 col-form-label col-form-label-lg" for="fieldEvent">Event:</label>
@@ -44,9 +64,29 @@
           <div class="input-group-prepend" *ngIf="purchaseForm.get('eventId').invalid && purchaseForm.get('eventId').touched">
             <span class="input-group-text text-danger error-symbol" title="Event has bad format"><i class="fa fa-exclamation-triangle"></i></span>
           </div>
-          <input formControlName="eventId" type="number" class="form-control form-control-lg" id="fieldEvent" placeholder="Enter Event">
+          <ng-select [items]="eventsForSelect$ | async"
+                     #select
+                     dropdownPosition="auto"
+                     bindValue="id"
+                     bindLabel="name"
+                     labelForId="name"
+                     [virtualScroll]="true"
+                     formControlName="eventId"
+                     id="fieldEvent"
+                     class="form-control form-control-lg"
+          ></ng-select>
         </div>
       </div>
+
+      <!-- div class="form-group row">
+        <label class="col-sm-3 col-form-label col-form-label-lg" for="fieldEvent">Event:</label>
+        <div class="col-sm-9 input-group">
+          <div class="input-group-prepend" *ngIf="purchaseForm.get('eventId').invalid && purchaseForm.get('eventId').touched">
+            <span class="input-group-text text-danger error-symbol" title="Event has bad format"><i class="fa fa-exclamation-triangle"></i></span>
+          </div>
+          <input formControlName="eventId" type="number" class="form-control form-control-lg" id="fieldEvent" placeholder="Enter Event">
+        </div>
+      </div -->
 
       <div class="form-group row">
         <label class="col-sm-3 col-form-label col-form-label-lg" for="fieldTicketsCount">Tickets count:</label>

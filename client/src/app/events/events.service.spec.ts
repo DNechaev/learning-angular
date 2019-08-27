@@ -77,7 +77,7 @@ describe('EventsService', () => {
       ]
     };
 
-    service.getEvents({filter: 'FilterString'}, 2, 15).subscribe(page => {
+    service.getEvents({filter: 'FilterString'}, {}, 2, 15).subscribe(page => {
       expect(page).toEqual(returnPage);
     });
 

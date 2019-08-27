@@ -27,6 +27,8 @@ export class EventsEditComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
   authorizedUser: User;
   access        = false;
+  accessManager = false;
+  accessUser    = false;
   isLoading     = false;
   eventLoaded   = false;
 
@@ -55,7 +57,9 @@ export class EventsEditComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.currentUserProvider.currentUser$.subscribe(( user: User ) => {
         this.authorizedUser = user;
-        this.access = this.currentUserProvider.userHasRoles(this.authorizedUser, [Role.MANAGER]);
+        this.access = this.currentUserProvider.userHasRoles(this.authorizedUser, [ Role.MANAGER, Role.USER ]);
+        this.accessManager = this.currentUserProvider.userHasRoles(this.authorizedUser, [ Role.MANAGER ]);
+        this.accessUser = this.currentUserProvider.userHasRoles(this.authorizedUser, [ Role.USER ]);
       })
     );
 

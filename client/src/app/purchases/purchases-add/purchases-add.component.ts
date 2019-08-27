@@ -1,7 +1,8 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import {Observable, Subscription} from 'rxjs';
 import { Router } from '@angular/router';
+import { map } from 'rxjs/operators';
 
 import { CurrentUserProvider } from '../../shared/providers/current-user.provider';
 import { LoaderIndicatorService } from '../../shared/services/loader-indicator.service';
@@ -12,11 +13,15 @@ import { Role } from '../../core/enums';
 import { User } from '../../core/user.model';
 import { AppRoutesPath } from '../../app-routing.module';
 import { PurchasesRoutesPath } from '../purchases.routing';
+import { UsersService } from 'src/app/users/users.service';
+import { Page } from '../../core/page.model';
+import { EventsService } from '../../events/events.service';
 
 @Component({
   selector: 'app-purchases-add',
   templateUrl: './purchases-add.component.html',
-  styleUrls: ['./purchases-add.component.scss']
+  styleUrls: ['./purchases-add.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class PurchasesAddComponent implements OnInit, OnDestroy {
 
@@ -25,7 +30,8 @@ export class PurchasesAddComponent implements OnInit, OnDestroy {
   access       = false;
   isLoading    = false;
 
-  selectUsers = [];
+  usersForSelect$: Observable<User[]>;
+  eventsForSelect$: Observable<Event[]>;
 
   purchaseForm: FormGroup;
 
@@ -41,9 +47,19 @@ export class PurchasesAddComponent implements OnInit, OnDestroy {
     private loaderIndicatorService: LoaderIndicatorService,
     private searchService: SearchService,
     private toastService: ToastService,
+    private usersService: UsersService,
+    private eventsService: EventsService,
   ) {}
 
   ngOnInit() {
+
+    this.usersForSelect$ = this.usersService.getUsers({filter: ''}, {name: 'asc'}, 1, 200).pipe(
+      map((p: Page) => p.rows)
+    );
+
+    this.eventsForSelect$ = this.eventsService.getEvents({filter: ''}, {name: 'asc'}, 1, 200).pipe(
+      map((p: Page) => p.rows)
+    );
 
     this.searchService.disable();
 

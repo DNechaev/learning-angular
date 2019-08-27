@@ -1,19 +1,9 @@
-export interface GridRowActionEvent {
+export interface GridActionEvent {
   action: string;
   record: object;
   records: Array<object>;
   index: number;
   transferData?: any;
-}
-
-export interface GridCellActionEvent {
-  action: string;
-  record: object;
-  records: Array<object>;
-  index: number;
-  value: any;
-  valueFormatted: string;
-  column: GridColumn;
 }
 
 export interface GridFormatterEvent {
@@ -26,16 +16,31 @@ export interface GridFormatterEvent {
 
 type FunctionFormatter = (GridFormatterEvent) => string;
 
+export type SortDirection = 'asc' | 'desc' | '';
+
 export interface GridColumn {
   field: string;
   title?: string;
   style?: string;
-  class?: string;
+  headClass?: string;
+  cellClass?: string;
   formatter?: FunctionFormatter;
+  sort?: SortDirection;
+  filtered?: boolean;
+  highlightMap?: Array<string>;
 }
+export type GridColumnList = Array<GridColumn|string>;
 
 export interface GridHighlightMap {
   [key: string]: Array<string>;
+}
+
+export interface GridFilterMap {
+  [key: string]: string;
+}
+
+export interface GridSortMap {
+  [key: string]: SortDirection;
 }
 
 export interface GridActionButton {
@@ -44,4 +49,10 @@ export interface GridActionButton {
   title: string;
   html: string;
   transferData?: any;
+}
+
+export interface GridRowEvent {
+  record: object;
+  records: Array<object>;
+  index: number;
 }

@@ -1,8 +1,11 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormGroup, FormControl, Validators, FormArray, ValidatorFn, ValidationErrors } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { FormGroup, FormControl, Validators} from '@angular/forms';
+import { Observable, Subscription } from 'rxjs';
+import { formatDate } from '@angular/common';
+import { map } from 'rxjs/operators';
 
+import { Page } from '../../core/page.model';
 import { Role } from '../../core/enums';
 import { User } from '../../core/user.model';
 import { Purchase } from '../../core/purchase.model';
@@ -13,13 +16,15 @@ import { LoaderIndicatorService } from '../../shared/services/loader-indicator.s
 import { PurchasesRoutesPath } from '../purchases.routing';
 import { AppRoutesPath } from '../../app-routing.module';
 import { CurrentUserProvider } from '../../shared/providers/current-user.provider';
-import { formatDate } from '@angular/common';
-import { validateDate } from 'src/app/core/validators';
+
+import { UsersService } from 'src/app/users/users.service';
+import { EventsService } from 'src/app/events/events.service';
 
 @Component({
   selector: 'app-purchases-edit',
   templateUrl: './purchases-edit.component.html',
-  styleUrls: ['./purchases-edit.component.scss']
+  styleUrls: ['./purchases-edit.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class PurchasesEditComponent implements OnInit, OnDestroy {
 
@@ -29,6 +34,9 @@ export class PurchasesEditComponent implements OnInit, OnDestroy {
   access        = false;
   isLoading     = false;
   purchaseLoaded   = false;
+
+  usersForSelect$: Observable<User[]>;
+  eventsForSelect$: Observable<Event[]>;
 
   purchaseForm: FormGroup;
 
@@ -45,10 +53,20 @@ export class PurchasesEditComponent implements OnInit, OnDestroy {
     private loaderIndicatorService: LoaderIndicatorService,
     private searchService: SearchService,
     private toastService: ToastService,
+    private usersService: UsersService,
+    private eventsService: EventsService,
   ) {}
 
 
   ngOnInit() {
+
+    this.usersForSelect$ = this.usersService.getUsers({filter: ''}, { name: 'asc' }, 1, 200).pipe(
+      map((p: Page) => p.rows)
+    );
+
+    this.eventsForSelect$ = this.eventsService.getEvents({filter: ''}, { name: 'asc' }, 1, 200).pipe(
+      map((p: Page) => p.rows)
+    );
 
     this.searchService.disable();
 

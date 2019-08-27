@@ -99,7 +99,7 @@ describe('UsersService', () => {
       ]
     };
 
-    service.getUsers({filter: 'FilterString'}, 2, 15).subscribe(page => {
+    service.getUsers({filter: 'FilterString'}, {}, 2, 15).subscribe(page => {
       expect(page).toEqual(expectPage);
     });
 

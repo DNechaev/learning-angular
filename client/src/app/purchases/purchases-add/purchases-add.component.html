@@ -34,22 +34,25 @@
           <div class="input-group-prepend" *ngIf="purchaseForm.get('userId').invalid && purchaseForm.get('userId').touched">
             <span class="input-group-text text-danger error-symbol" title="User has bad format"><i class="fa fa-exclamation-triangle"></i></span>
           </div>
-          <ng-select [items]="selectUsers"
+
+          <select class="form-control form-control-lg" id="fieldUser" formControlName="userId">
+            <option>TEST 1</option>
+            <option>TEST 2</option>
+            <option>TEST 3</option>
+          </select>
+
+          <!-- ng-select [items]="usersForSelect$ | async"
                      #select
-                     bindLabel="title"
                      dropdownPosition="auto"
                      bindValue="id"
-                     labelForId="album"
-                     placeholder="Select album"
+                     bindLabel="name"
+                     labelForId="name"
+                     placeholder="Select user"
                      [virtualScroll]="true"
                      formControlName="userId"
                      id="fieldUser"
-          >
-            <ng-template ng-option-tmp let-item="item" let-search="searchTerm">
-              <div><span>Title: </span><span [ngOptionHighlight]="search">{{item.title}}</span></div>
-              <small><b>Id:</b> {{item.id}} | <b>UserId:</b> {{item.userId}}</small>
-            </ng-template>
-          </ng-select>
+                     class="form-control form-control-lg"
+          ></ng-select -->
         </div>
       </div>
 

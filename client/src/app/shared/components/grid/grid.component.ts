@@ -1,10 +1,9 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import {
   GridColumn,
-  GridRowActionEvent,
-  GridCellActionEvent,
-  GridHighlightMap,
-  GridActionButton
+  GridActionEvent,
+  GridActionButton,
+  GridRowEvent
 } from './grid.interfaces';
 
 @Component({
@@ -15,18 +14,25 @@ import {
 export class GridComponent implements OnInit {
 
   private columns: Array<GridColumn>;
+  private showActionsColumn = false;
 
   @Input('columns')
   set _columns(value: Array<GridColumn | string>) {
     this.columns = [];
-    value.forEach( (column: GridColumn | string) => {
-      if ( typeof column === 'string' ) {
+    value.forEach((column: GridColumn | string) => {
+      if (column === 'ACTIONS') {
+        this.showActionsColumn = true;
+      } else if (typeof column === 'string') {
         this.columns.push({
           field: column,
           title: column,
           formatter: ((data) => data.value),
           style: '',
-          class: ''
+          headClass: '',
+          cellClass: '',
+          filtered: false,
+          sort: '',
+          highlightMap: []
         });
       } else {
         this.columns.push({
@@ -34,17 +40,24 @@ export class GridComponent implements OnInit {
           title: column.title || column.field,
           formatter: column.formatter || ((data) => data.value),
           style: column.style || '',
-          class: column.class || ''
+          headClass: column.headClass || '',
+          cellClass: column.cellClass || '',
+          filtered: column.filtered || false,
+          sort: column.sort || '',
+          highlightMap: column.highlightMap || [],
         });
       }
     });
   }
 
-  @Input() highlightMap: GridHighlightMap = {};
   @Input() records: Array<object> = [];
-  @Input() actions: Array<GridActionButton> = [];
-  @Output() rowAction = new EventEmitter<GridRowActionEvent>();
-  @Output() cellAction = new EventEmitter<GridCellActionEvent>();
+  @Input() tableClass: string;
+
+  @Input() getRowClass: ($event: GridRowEvent) => string;
+  @Input() getActions: ($event: GridRowEvent) => GridActionButton[];
+
+  @Output() onAction = new EventEmitter<GridActionEvent>();
+  @Output() onTitleClick = new EventEmitter<GridColumn>();
 
   constructor() {
     this.columns = [];
@@ -52,18 +65,36 @@ export class GridComponent implements OnInit {
 
   ngOnInit() {}
 
-  onRowAction(event: GridRowActionEvent) {
-    this.rowAction.emit(event);
+  _getRowClass($event: GridRowEvent) {
+    if (this.getRowClass) {
+      return this.getRowClass($event);
+    }
+    return '';
   }
 
-  onCellAction(event: GridCellActionEvent) {
-    this.cellAction.emit(event);
+  _getActions($event: GridRowEvent) {
+    if (!this.showActionsColumn) { return null; }
+    if (this.getActions) {
+      return this.getActions($event);
+    }
+    return [];
+  }
+
+  _onTitleClick($event: GridColumn) {
+    if (this.onAction) {
+      this.onTitleClick.emit($event);
+    }
+  }
+  _onAction($event: GridActionEvent) {
+    if (this.onAction) {
+      this.onAction.emit($event);
+    }
   }
 
   highlightCell(column: GridColumn, value): string {
-    if (column.field in this.highlightMap) {
+    if (column.highlightMap) {
       return this.highlightString(
-        value, this.highlightMap[column.field],
+        value, column.highlightMap,
         '<span class="text-primary font-italic font-weight-bold">', '</span>'
       );
     }
@@ -76,7 +107,8 @@ export class GridComponent implements OnInit {
     // get all substrings segments
     const allSegments = [];
     highlightStrings.forEach(v => {
-      const pos = value.search(v);
+      if (v === null) { return; }
+      const pos = value.toLowerCase().search(v.toLowerCase());
       if (pos >= 0) {
         allSegments.push({start: pos, stop: pos + v.length});
       }

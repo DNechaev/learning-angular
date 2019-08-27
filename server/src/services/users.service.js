@@ -6,12 +6,16 @@ class UsersService {
 
         const page     = +(params.page || 1);
         const pageSize = +(params.pageSize || 10);
+        const clientWhere = JSON.parse(params.where || {});
+        const clientOrder  = JSON.parse(params.order || {});
 
+        // --------------------------------------------------------------------
+        // WHERE
         const where = {};
 
         // name
-        if (typeof params.name === 'string' && params.name.length) {
-            let queryString = params.name;
+        if (typeof clientWhere.name === 'string' && clientWhere.name.length) {
+            let queryString = clientWhere.name;
             where.name = {
                 [db.Sequelize.Op.or]: [
                     {[db.Sequelize.Op.like]: queryString},
@@ -23,8 +27,8 @@ class UsersService {
         }
 
         // email
-        if (typeof params.email === 'string' && params.email.length) {
-            let queryString = params.email;
+        if (typeof clientWhere.email === 'string' && clientWhere.email.length) {
+            let queryString = clientWhere.email;
             where.email = {
                 [db.Sequelize.Op.or]: [
                     {[db.Sequelize.Op.like]: queryString},
@@ -36,8 +40,8 @@ class UsersService {
         }
 
         // filter
-        if (typeof params.filter === 'string' && params.filter.length) {
-            let queryString = params.filter;
+        if (typeof clientWhere.filter === 'string' && clientWhere.filter.length) {
+            let queryString = clientWhere.filter;
             where[db.Sequelize.Op.or] = [
                 {name: {[db.Sequelize.Op.like]:  queryString}},
                 {name: {[db.Sequelize.Op.like]:  '%' + queryString}},
@@ -49,12 +53,23 @@ class UsersService {
                 {email: {[db.Sequelize.Op.like]: queryString + '%'}},
             ];
         }
+        // console.log('where', where);
 
+        // --------------------------------------------------------------------
+        // ORDER
+        const order = [];
+        Object.keys(clientOrder).forEach((key) => {
+            order.push([ key, clientOrder[key] ]);
+        });
+        // console.log('order', order);
+
+        // console.log('---------------------------------------------------');
         const result = await db.user.findAndCountAll(
             Utils.paginate(
             {
-                    logging: console.log,
+                    // logging: console.log,
                     where: where,
+                    order: order,
                     include: [
                         {
                             model: db.role,

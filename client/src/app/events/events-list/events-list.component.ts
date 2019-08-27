@@ -1,28 +1,29 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {map} from 'rxjs/operators';
-import {Subscription} from 'rxjs';
-import {Router} from '@angular/router';
-import {formatDate} from '@angular/common';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { map } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
+import { Router } from '@angular/router';
+import { formatDate } from '@angular/common';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
-import {Role} from '../../core/enums';
-import {User} from '../../core/user.model';
-import {Event} from '../../core/event.model';
-import {EventsService} from '../events.service';
-import {LoaderIndicatorService} from '../../shared/services/loader-indicator.service';
-import {SearchService} from '../../shared/services/search.service';
-import {ToastService} from '../../shared/services/toast.service';
-import {EventsRoutesPath} from '../events.routing';
-import {AppRoutesPath} from '../../app-routing.module';
-import {CurrentUserProvider} from '../../shared/providers/current-user.provider';
+import { Role } from '../../core/enums';
+import { User } from '../../core/user.model';
+import { Event } from '../../core/event.model';
+import { EventsService } from '../events.service';
+import { LoaderIndicatorService } from '../../shared/services/loader-indicator.service';
+import { SearchService } from '../../shared/services/search.service';
+import { ToastService } from '../../shared/services/toast.service';
+import { EventsRoutesPath } from '../events.routing';
+import { AppRoutesPath } from '../../app-routing.module';
+import { CurrentUserProvider } from '../../shared/providers/current-user.provider';
 import {
-  GridActionButton,
+  GridActionEvent,
   GridColumn,
   GridFormatterEvent,
-  GridHighlightMap,
-  GridRowActionEvent
+  GridHighlightMap
 } from '../../shared/components/grid/grid.interfaces';
-import {StorageService} from '../../shared/services/storage.service';
+import { StorageService } from '../../shared/services/storage.service';
+import { BaseListComponent } from '../../core/base-list.component';
+
 
 @Component({
   selector: 'app-events',
@@ -30,38 +31,54 @@ import {StorageService} from '../../shared/services/storage.service';
   styleUrls: ['./events-list.component.scss'],
   providers: [ EventsService ]
 })
-export class EventsListComponent implements OnInit, OnDestroy {
+export class EventsListComponent extends BaseListComponent implements OnInit, OnDestroy {
+
+  private authorizedUser: User;
 
   subscriptions: Subscription[] = [];
   events: Event[];
   totalRecords = 0;
   currentPage  = 1;
   pageSize     = 10;
-  access       = false;
+
+  access = false;
+  accessUser = false;
   accessManager = false;
+
   isLoading    = false;
   isFilterCollapsed;
   filterForm: FormGroup;
   highlightMap: GridHighlightMap;
-  gridActions: GridActionButton[] = [];
+
   urls = {
     home: AppRoutesPath.HOME,
     events: EventsRoutesPath.PATH_TO_LIST,
   };
   searchString = '';
 
-  columns: GridColumn[] = [
-      {title: 'ID', field: 'id'},
-      {title: 'Name', field: 'name'},
-      {title: 'Date begin', field: 'dateBegin', formatter: this.dateFormatter },
-      {title: 'Date end', field: 'dateEnd', formatter: this.dateFormatter },
-      {title: 'Price', field: 'price'},
-      {title: 'Tickets', field: 'ticketsCount'},
-      {title: 'Purchased', field: 'ticketsPurchased'},
-      {title: 'Available', field: 'ticketsAvailable'}
-    ];
+  columns: Array<GridColumn|string> = [];
 
-  private authorizedUser: User;
+  // GRID
+  gridAllowedSortFields = ['id', 'name', 'dateBegin', 'dateEnd', 'price', 'ticketsCount'];
+  gridAllowedFilterFields = {
+    name: ['name'],
+    dateBegin: ['dateBegin', 'dateBeginFrom', 'dateBeginTo'],
+    dateEnd: ['dateEnd', 'dateEndFrom', 'dateEndTo'],
+    price: ['price'],
+  };
+  gridSortData = {};
+
+  gridColumns: Array<GridColumn|string> = [
+    {title: 'ID', field: 'id'},
+    {title: 'Name', field: 'name'},
+    {title: 'Date begin', field: 'dateBegin', formatter: this.dateFormatter },
+    {title: 'Date end', field: 'dateEnd', formatter: this.dateFormatter },
+    {title: 'Price', field: 'price', headClass: 'text-right', cellClass: 'text-right'},
+    {title: 'Tickets', field: 'ticketsCount', headClass: 'text-right', cellClass: 'text-right'},
+    {title: 'Purchased', field: 'ticketsPurchased', headClass: 'text-right', cellClass: 'text-right'},
+    {title: 'Available', field: 'ticketsAvailable', headClass: 'text-right', cellClass: 'text-right'},
+    'ACTIONS'
+  ];
 
   constructor(
     private router: Router,
@@ -71,20 +88,23 @@ export class EventsListComponent implements OnInit, OnDestroy {
     private searchService: SearchService,
     private toastService: ToastService,
     private storageService: StorageService
-  ) {}
+  ) { super(); }
 
   ngOnInit() {
 
     this.searchService.enable();
     this.searchString = this.searchService.get();
-    this.isFilterCollapsed = this.storageService.getItem('EventsList_Filter_IsCollapsed', true);
     this.createFilterForm();
+    this.loadSettings();
 
     this.subscriptions.push(
       this.currentUserProvider.currentUser$.subscribe(user => {
         this.authorizedUser = user;
+
         this.access = this.currentUserProvider.userHasRoles(this.authorizedUser, [Role.MANAGER, Role.USER]);
+        this.accessUser = this.currentUserProvider.userHasRoles(this.authorizedUser, [Role.USER]);
         this.accessManager = this.currentUserProvider.userHasRoles(this.authorizedUser, [Role.MANAGER]);
+
       })
     );
 
@@ -101,8 +121,6 @@ export class EventsListComponent implements OnInit, OnDestroy {
       })
     );
 
-    this.gridActions.push({actionName: 'EDIT', title: 'Edit', class: 'btn-outline-success', html: '<i class="far fa-edit"></i>'});
-    this.gridActions.push({actionName: 'DELETE', title: 'Delete', class: 'btn-outline-danger', html: '<i class="far fa-trash-alt"></i>'});
   }
 
   ngOnDestroy() {
@@ -112,17 +130,31 @@ export class EventsListComponent implements OnInit, OnDestroy {
     this.subscriptions = null;
   }
 
+  loadSettings() {
+    this.isFilterCollapsed = this.storageService.getItem('EventsList_Filter_IsCollapsed', true);
+    this.gridSortData = this.storageService.getItem('EventsList_SortData', {});
+    this.filterForm.patchValue(this.storageService.getItem('EventsList_Filter_FormValue', {}));
+  }
+
+  saveSettings() {
+    this.storageService.setItem('EventsList_SortData', this.gridSortData);
+    this.storageService.setItem('EventsList_Filter_IsCollapsed', this.isFilterCollapsed);
+    this.storageService.setItem('EventsList_Filter_FormValue', this.filterForm.value);
+  }
+
   onPageChange(gotoPage: number) {
     this.currentPage = gotoPage;
     this.loadData(gotoPage);
   }
 
   loadData(page: number = this.currentPage) {
-    this.makeHighlightMap();
+    this.gridSearchString = this.searchString;
+    this.gridFilterData = this.filterForm.value;
+    this.gridCalcColumns();
     this.eventsService.getEvents({
       ...this.filterForm.value,
       filter: this.searchString
-    }, page, this.pageSize )
+    }, this.gridSortData, page, this.pageSize )
       .pipe(
         map((pageData) => {
           this.currentPage  = pageData.page;
@@ -154,15 +186,25 @@ export class EventsListComponent implements OnInit, OnDestroy {
     }
   }
 
-  gridAction(actionEvent: GridRowActionEvent) {
-    const event: Event = actionEvent.record as Event;
-    switch (actionEvent.action) {
+  gridTitleClick(column: GridColumn) {
+    this.gridSortColumn(column);
+    this.saveSettings();
+    this.loadData(1);
+  }
+
+  gridActionClick($event: GridActionEvent) {
+    const event: Event = $event.record as Event;
+    switch ($event.action) {
+      case 'BUY': {
+        this.router.navigate([ EventsRoutesPath.PATH_TO_LIST, event.id , 'buy' ]);
+        break;
+      }
       case 'EDIT': {
         this.router.navigate([ EventsRoutesPath.PATH_TO_LIST, event.id ]);
         break;
       }
       case 'DELETE': {
-        this.onDelete(actionEvent.record as Event);
+        this.onDelete($event.record as Event);
         break;
       }
     }
@@ -195,39 +237,56 @@ export class EventsListComponent implements OnInit, OnDestroy {
 
   filterCollapse() {
     this.isFilterCollapsed = !this.isFilterCollapsed;
-    this.storageService.setItem('EventsList_Filter_IsCollapsed', this.isFilterCollapsed);
+    this.saveSettings();
   }
 
   applyFilter(store = false) {
     if (store) {
-      this.storageService.setItem('EventsList_Filter_FormValue', this.filterForm.value);
+      this.saveSettings();
     }
-
     this.loadData(1);
   }
 
   filterReset() {
     this.filterForm.reset();
-    this.storageService.setItem('EventsList_Filter_FormValue', this.filterForm.value);
+    this.saveSettings();
     this.loadData(1);
   }
 
-  makeHighlightMap() {
-    this.highlightMap = {
-      name: [],
-      price: [],
-      ticketsCount: []
-    };
-
-    if (this.searchString.length) {
-      Object.keys(this.highlightMap).forEach( key => this.highlightMap[key].push(this.searchString));
-    }
-
-    Object.keys(this.filterForm.value).forEach( key => {
-      if (key in this.highlightMap) {
-        this.highlightMap[key].push(this.filterForm.value[key]);
+  gridGetActions() {
+    return ($event: GridActionEvent) => {
+      const event = $event.record as Event;
+      const actions = [];
+      if (this.accessUser && event.status === 3 && event.ticketsAvailable > 0) {
+        actions.push({
+          actionName: 'BUY',
+          title: 'Buy',
+          class: 'btn-outline-info',
+          html: '<i class="fa fa-cart-plus"></i>'
+        });
       }
-    });
+      if (this.accessManager) {
+        actions.push({
+          actionName: 'EDIT',
+          title: 'Edit',
+          class: 'btn-outline-success',
+          html: '<i class="far fa-edit"></i>'
+        });
+        actions.push({
+          actionName: 'DELETE',
+          title: 'Delete',
+          class: 'btn-outline-danger',
+          html: '<i class="far fa-trash-alt"></i>'
+        });
+      }
+      return actions;
+    };
   }
 
+  getRowClass() {
+    return ($event: GridActionEvent) => {
+      const event = $event.record as Event;
+      return (event.status === 1 ? 'table-secondary' : (event.status === 2) ? 'table-warning' : '');
+    };
+  }
 }

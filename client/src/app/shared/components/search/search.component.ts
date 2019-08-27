@@ -28,7 +28,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       this.showPanel = showPanel;
     });
 
-    this.searchControl = new FormControl('');
+    this.searchControl = new FormControl(this.searchService.get());
     this.searchControl.valueChanges
       .pipe(
         debounceTime(this.debounce),

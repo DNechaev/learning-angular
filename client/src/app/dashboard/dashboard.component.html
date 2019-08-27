@@ -1,6 +1,36 @@
 <app-main-layout>
   <app-toasts></app-toasts>
-  <app-search class="w-100"></app-search>
-  <h1>Dashboard</h1>
+
+  <!--nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a [routerLink]="urls.home">Home</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+    </ol>
+  </nav -->
+
+
+  <!-- div id="content_header" class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+    <h1 class="h2"><i class="fas fa-home"></i> Dashboard</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+    </div>
+  </div -->
+
+  <div id="content_body">
+
+    <div class="card mb-3">
+      <img src="assets/theater.jpg" class="card-img-top" alt="...">
+      <div class="card-body">
+        <h5 class="card-title">Me</h5>
+        <p class="card-text">
+          {{ authorizedUser.name }}<br>
+          {{ authorizedUser.email }}<br>
+          {{ authorizedUser.roles | json }}<br>
+        </p>
+        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+      </div>
+    </div>
+
+  </div>
+
 </app-main-layout>
 

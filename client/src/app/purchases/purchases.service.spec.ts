@@ -77,7 +77,7 @@ describe('PurchasesService', () => {
       ]
     };
 
-    service.getPurchases({filter: 'FilterString'}, 2, 15).subscribe(page => {
+    service.getPurchases({filter: 'FilterString'}, {}, 2, 15).subscribe(page => {
       expect(page).toEqual(returnPage);
     });
 
@@ -89,7 +89,7 @@ describe('PurchasesService', () => {
   });
 
   it('create purchase', () => {
-    const purchase = new Purchase(1, 'Purchase', new Date(), new Date(), 100, 10);
+    const purchase = new Purchase(1, new Date(), 1, 1, 100, 10);
     // purchase.id = 1;
     // purchase.name = 'Purchase';
 
@@ -102,10 +102,7 @@ describe('PurchasesService', () => {
   });
 
   it('update purchase', () => {
-    const purchase = new Purchase(1, 'Purchase1', new Date(), new Date(), 100, 10);
-    // const purchase = new Purchase();
-    // purchase.id = 1;
-    // purchase.name = 'Purchase1';
+    const purchase = new Purchase(1, new Date(), 1, 2, 100);
 
     service.updatePurchase(10, purchase).subscribe(returnPurchase => {
       expect(purchase).toEqual(returnPurchase);

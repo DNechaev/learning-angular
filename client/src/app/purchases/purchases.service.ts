@@ -19,16 +19,12 @@ export class PurchasesService {
     private adapter: PurchaseAdapter
   ) {}
 
-  getPurchases( filter: object, page: number, pageSize: number ): Observable<Page> {
-    let params = new HttpParams()
+  getPurchases( where: object, order: object, page: number, pageSize: number ): Observable<Page> {
+    const params = new HttpParams()
       .set('page', String(page))
-      .set('pageSize', String(pageSize));
-
-    Object.keys(filter).forEach(key => {
-      if (filter[key] !== null) {
-        params = params.set(key, filter[key]);
-      }
-    });
+      .set('pageSize', String(pageSize))
+      .set('where', JSON.stringify(where))
+      .set('order', JSON.stringify(order));
 
     return this.http.get<Page>(this.baseUrl, { params } ).pipe(
       map((p: Page) => {

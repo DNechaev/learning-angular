@@ -27,7 +27,7 @@ describe('PurchasesEditComponent', () => {
   let spyPurchasesUpdate: jasmine.Spy;
   let spyRoute: jasmine.Spy;
 
-  const mockPurchase = new Purchase(1, 'Purchase', new Date(), new Date(), 100, 10);
+  const mockPurchase = new Purchase(1, new Date(), 1, 2, 100);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({

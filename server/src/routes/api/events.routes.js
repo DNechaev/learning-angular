@@ -10,7 +10,7 @@ export default () => {
 
     router
         .get('/events', accessMiddleware([Role.MANAGER, Role.USER] ), eventsController.getAll )
-        .get('/events/:id', accessMiddleware([Role.MANAGER] ), eventsController.getById )
+        .get('/events/:id', accessMiddleware([Role.MANAGER, Role.USER] ), eventsController.getById )
         .post('/events', accessMiddleware([Role.MANAGER] ), eventsController.create )
         .put('/events/:id', accessMiddleware([Role.MANAGER] ), eventsController.update )
         .delete('/events/:id', accessMiddleware([Role.MANAGER] ), eventsController.delete )

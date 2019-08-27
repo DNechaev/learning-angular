@@ -2,16 +2,32 @@ import Utils from '../shared/utils';
 
 class EventsService {
 
+    static makeEvent(event) {
+        const purchases = event.dataValues.purchases;
+        event.dataValues.purchasesCount = purchases.length;
+        event.dataValues.ticketsPurchased = purchases.reduce((sum, purchase) => sum + purchase.dataValues.ticketsCount, 0);
+        event.dataValues.ticketsAvailable = event.dataValues.ticketsCount - event.dataValues.ticketsPurchased;
+
+        const now = new Date();
+        event.dataValues.status = (now < event.dataValues.dateBegin ? 3 : (now > event.dataValues.dateEnd ? 1 : 2));
+
+        return event;
+    }
+
     static async getAll( db, params ) {
 
         const page     = +(params.page || 1);
         const pageSize = +(params.pageSize || 10);
+        const clientWhere = JSON.parse(params.where || {});
+        const clientOrder  = JSON.parse(params.order || {});
 
+        // --------------------------------------------------------------------
+        // WHERE
         const where = {};
 
         // name
-        if (typeof params.name === 'string' && params.name.length) {
-            let queryString = params.name;
+        if (typeof clientWhere.name === 'string' && clientWhere.name.length) {
+            let queryString = clientWhere.name;
             where.name = {
                 [db.Sequelize.Op.or]: [
                     {[db.Sequelize.Op.like]: queryString},
@@ -23,38 +39,38 @@ class EventsService {
         }
 
         // dateBeginFrom
-        if (typeof params.dateBeginFrom === 'string' && params.dateBeginFrom.length) {
+        if (typeof clientWhere.dateBeginFrom === 'string' && clientWhere.dateBeginFrom.length) {
             where.date_begin = {
-                [db.Sequelize.Op.gte]: params.dateBeginFrom
+                [db.Sequelize.Op.gte]: clientWhere.dateBeginFrom
             };
         }
 
         // dateBeginTo
-        if (typeof params.dateBeginTo === 'string' && params.dateBeginTo.length) {
+        if (typeof clientWhere.dateBeginTo === 'string' && clientWhere.dateBeginTo.length) {
             where.date_begin = {
                 ...where.date_begin,
-                [db.Sequelize.Op.lte]: params.dateBeginTo
+                [db.Sequelize.Op.lte]: clientWhere.dateBeginTo
             };
         }
 
         // dateEndFrom
-        if (typeof params.dateEndFrom === 'string' && params.dateEndFrom.length) {
+        if (typeof clientWhere.dateEndFrom === 'string' && clientWhere.dateEndFrom.length) {
             where.date_end = {
-                [db.Sequelize.Op.gte]: params.dateEndFrom
+                [db.Sequelize.Op.gte]: clientWhere.dateEndFrom
             };
         }
 
         // dateEndTo
-        if (typeof params.dateEndTo === 'string' && params.dateEndTo.length) {
+        if (typeof clientWhere.dateEndTo === 'string' && clientWhere.dateEndTo.length) {
             where.date_end = {
                 ...where.date_end,
-                [db.Sequelize.Op.lte]: params.dateEndTo
+                [db.Sequelize.Op.lte]: clientWhere.dateEndTo
             };
         }
 
         // filter
-        if (typeof params.filter === 'string' && params.filter.length) {
-            let queryString = params.filter;
+        if (typeof clientWhere.filter === 'string' && clientWhere.filter.length) {
+            let queryString = clientWhere.filter;
             where[db.Sequelize.Op.or] = [
                 {name: {[db.Sequelize.Op.like]:  queryString}},
                 {name: {[db.Sequelize.Op.like]:  '%' + queryString}},
@@ -67,14 +83,23 @@ class EventsService {
             ];
         }
 
-        console.log('where', where);
+        // console.log('where', where);
 
-        console.log('---------------------------------------------------');
+        // --------------------------------------------------------------------
+        // ORDER
+        const order = [];
+        Object.keys(clientOrder).forEach((key) => {
+            order.push([ key, clientOrder[key] ]);
+        });
+        // console.log('order', order);
+
+        // console.log('---------------------------------------------------');
         const result = await db.event.findAndCountAll(
             Utils.paginate(
             {
                     // logging: console.log,
                     where: where,
+                    order: order,
                     include: [
                         {
                             model: db.purchase,
@@ -91,10 +116,7 @@ class EventsService {
 
         // Summary info by purchases
         result.rows.forEach((row) => {
-            let purchases = row.dataValues.purchases;
-            row.dataValues.purchasesCount = purchases.length;
-            row.dataValues.ticketsPurchased = purchases.reduce((sum, purchase) => sum + purchase.dataValues.ticketsCount, 0);
-            row.dataValues.ticketsAvailable = row.dataValues.ticketsCount - row.dataValues.ticketsPurchased;
+            this.makeEvent(row);
         });
 
 
@@ -104,7 +126,17 @@ class EventsService {
     }
 
     static async getById( db, eventId ) {
-        return await db.event.findByPk( eventId );
+        const event = await db.event.findByPk( eventId, {
+            include: [
+                {
+                    model: db.purchase,
+                    as: 'purchases',
+                    attributes: ['id', 'ticketsCount'],
+                }
+            ]
+        });
+
+        return this.makeEvent(event);
     }
 
     static async create( db, eventValue ) {

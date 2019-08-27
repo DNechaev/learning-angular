@@ -1,28 +1,28 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {map} from 'rxjs/operators';
-import {Subscription} from 'rxjs';
-import {Router} from '@angular/router';
-import {formatDate} from '@angular/common';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { map } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
+import { Router } from '@angular/router';
+import { formatDate } from '@angular/common';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
-import {Role} from '../../core/enums';
-import {User} from '../../core/user.model';
-import {Purchase} from '../../core/purchase.model';
-import {PurchasesService} from '../purchases.service';
-import {LoaderIndicatorService} from '../../shared/services/loader-indicator.service';
-import {SearchService} from '../../shared/services/search.service';
-import {ToastService} from '../../shared/services/toast.service';
-import {PurchasesRoutesPath} from '../purchases.routing';
-import {AppRoutesPath} from '../../app-routing.module';
-import {CurrentUserProvider} from '../../shared/providers/current-user.provider';
+import { Role } from '../../core/enums';
+import { User } from '../../core/user.model';
+import { Purchase } from '../../core/purchase.model';
+import { PurchasesService } from '../purchases.service';
+import { LoaderIndicatorService } from '../../shared/services/loader-indicator.service';
+import { SearchService } from '../../shared/services/search.service';
+import { ToastService } from '../../shared/services/toast.service';
+import { PurchasesRoutesPath } from '../purchases.routing';
+import { AppRoutesPath } from '../../app-routing.module';
+import { CurrentUserProvider } from '../../shared/providers/current-user.provider';
 import {
-  GridActionButton,
   GridColumn,
   GridFormatterEvent,
-  GridHighlightMap,
-  GridRowActionEvent
+  GridActionEvent
 } from '../../shared/components/grid/grid.interfaces';
-import {StorageService} from '../../shared/services/storage.service';
+import { StorageService } from '../../shared/services/storage.service';
+import { BaseListComponent } from '../../core/base-list.component';
+import {EventsRoutesPath} from "../../events/events.routing";
 
 @Component({
   selector: 'app-purchases',
@@ -30,7 +30,9 @@ import {StorageService} from '../../shared/services/storage.service';
   styleUrls: ['./purchases-list.component.scss'],
   providers: [ PurchasesService ]
 })
-export class PurchasesListComponent implements OnInit, OnDestroy {
+export class PurchasesListComponent extends BaseListComponent implements OnInit, OnDestroy {
+
+  private authorizedUser: User;
 
   subscriptions: Subscription[] = [];
   purchases: Purchase[];
@@ -38,32 +40,40 @@ export class PurchasesListComponent implements OnInit, OnDestroy {
   currentPage  = 1;
   pageSize     = 10;
   access       = false;
-  accessAdmin = false;
+  accessAdmin  = false;
   isLoading    = false;
   isFilterCollapsed;
   filterForm: FormGroup;
-  highlightMap: GridHighlightMap;
-  gridActions: GridActionButton[] = [];
+
   urls = {
     home: AppRoutesPath.HOME,
     purchases: PurchasesRoutesPath.PATH_TO_LIST,
   };
-  searchString = '';
 
-  columns: GridColumn[] = [
-      {title: 'ID', field: 'id'},
-      {title: 'Date', field: 'date', formatter: this.dateFormatter },
-      {title: 'User', field: 'userId', formatter: ($event) => {
-          return $event.record.user ? $event.record.user.name : '<span class="text-secondary">Unknown{' + $event.value + '}</span>';
-        }
-      },
-      {title: 'Event', field: 'eventId', formatter: ($event) => {
-          return $event.record.event ? $event.record.event.name : '<span class="text-secondary">Unknown{' + $event.value + '}</span>';
-        }},
-      {title: 'Tickets', field: 'ticketsCount'}
-    ];
+  // GRID
+  gridAllowedSortFields = ['id', 'date'];
+  gridAllowedFilterFields = {
+    date: ['date', 'dateFrom', 'dateTo']
+  };
+  gridSortData = {};
 
-  private authorizedUser: User;
+  gridColumns: Array<GridColumn|string> = [
+    { title: 'ID', field: 'id' },
+    { title: 'Date', field: 'date', formatter: this.dateFormatter },
+    { title: 'Event', field: 'eventId', formatter: ($event) => {
+        return $event.record.event ?
+          '<a href="' + EventsRoutesPath.PATH_TO_LIST + '/' + $event.record.event.id + '">' + $event.record.event.name + '</a>' :
+          '<span class="text-secondary">Unknown{' + $event.value + '}</span>';
+      }},
+    { title: 'User', field: 'userId', formatter: ($event) => {
+        return $event.record.user ? $event.record.user.name : '<span class="text-secondary">Unknown{' + $event.value + '}</span>';
+      }},
+    { title: 'Tickets', field: 'ticketsCount', headClass: 'text-right', cellClass: 'text-right'},
+    { title: 'Price', field: 'price', headClass: 'text-right', cellClass: 'text-right', formatter: ($event) => {
+        return $event.record.event ? $event.record.event.price : '<span class="text-secondary">Unknown{' + $event.value + '}</span>';
+      }},
+    { title: 'Sum', field: 'sum', headClass: 'text-right', cellClass: 'text-right' }
+  ];
 
   constructor(
     private router: Router,
@@ -73,20 +83,20 @@ export class PurchasesListComponent implements OnInit, OnDestroy {
     private searchService: SearchService,
     private toastService: ToastService,
     private storageService: StorageService
-  ) {}
+  ) { super(); }
 
   ngOnInit() {
 
-    this.searchService.enable();
-    this.searchString = this.searchService.get();
-    this.isFilterCollapsed = this.storageService.getItem('PurchasesList_Filter_IsCollapsed', true);
+    this.searchService.disable();
+    this.gridSearchString = this.searchService.get();
     this.createFilterForm();
+    this.loadSettings();
 
     this.subscriptions.push(
       this.currentUserProvider.currentUser$.subscribe(user => {
         this.authorizedUser = user;
-        this.access = this.currentUserProvider.userHasRoles(this.authorizedUser, [Role.ADMIN, Role.USER]);
-        this.accessAdmin = this.currentUserProvider.userHasRoles(this.authorizedUser, [Role.ADMIN]);
+        this.access = this.currentUserProvider.userHasRoles(this.authorizedUser, [ Role.ADMIN, Role.USER ]);
+        this.accessAdmin = this.currentUserProvider.userHasRoles(this.authorizedUser, [ Role.ADMIN ]);
       })
     );
 
@@ -98,13 +108,11 @@ export class PurchasesListComponent implements OnInit, OnDestroy {
 
     this.subscriptions.push(
       this.searchService.search$.subscribe(searchString => {
-        this.searchString = searchString;
-        this.applyFilter();
+        this.gridSearchString = searchString;
+        this.filterApply();
       })
     );
 
-    this.gridActions.push({actionName: 'EDIT', title: 'Edit', class: 'btn-outline-success', html: '<i class="far fa-edit"></i>'});
-    this.gridActions.push({actionName: 'DELETE', title: 'Delete', class: 'btn-outline-danger', html: '<i class="far fa-trash-alt"></i>'});
   }
 
   ngOnDestroy() {
@@ -114,17 +122,13 @@ export class PurchasesListComponent implements OnInit, OnDestroy {
     this.subscriptions = null;
   }
 
-  onPageChange(gotoPage: number) {
-    this.currentPage = gotoPage;
-    this.loadData(gotoPage);
-  }
-
   loadData(page: number = this.currentPage) {
-    this.makeHighlightMap();
+    this.gridFilterData = this.filterForm.value;
+    this.gridCalcColumns();
     this.purchasesService.getPurchases({
       ...this.filterForm.value,
-      filter: this.searchString
-    }, page, this.pageSize )
+      filter: this.gridSearchString
+    }, this.gridSortData,  page, this.pageSize )
       .pipe(
         map((pageData) => {
           this.currentPage  = pageData.page;
@@ -142,6 +146,11 @@ export class PurchasesListComponent implements OnInit, OnDestroy {
     );
   }
 
+  onPageChange(gotoPage: number) {
+    this.currentPage = gotoPage;
+    this.loadData(gotoPage);
+  }
+
   onDelete(purchase: Purchase) {
     if (confirm(`Delete purchase: ${purchase.id}?`)) {
       this.purchasesService.deletePurchase(purchase.id).subscribe(
@@ -156,26 +165,34 @@ export class PurchasesListComponent implements OnInit, OnDestroy {
     }
   }
 
-  gridAction(actionPurchase: GridRowActionEvent) {
-    const purchase: Purchase = actionPurchase.record as Purchase;
-    switch (actionPurchase.action) {
-      case 'EDIT': {
-        this.router.navigate([ PurchasesRoutesPath.PATH_TO_LIST, purchase.id ]);
-        break;
-      }
-      case 'DELETE': {
-        this.onDelete(actionPurchase.record as Purchase);
-        break;
-      }
-    }
-  }
-
   dateFormatter(purchase: GridFormatterEvent): string {
     return (purchase.value instanceof Date) ? formatDate(purchase.value, 'dd.MM.y HH:mm', 'en-US') : '';
   }
+  /**
+   * -------------------------------------------
+   * S E T T I N G S
+   * -------------------------------------------
+   */
+
+  loadSettings() {
+    this.isFilterCollapsed = this.storageService.getItem('PurchasesList_Filter_IsCollapsed', true);
+    this.gridSortData = this.storageService.getItem('PurchasesList_SortData', {});
+    this.filterForm.patchValue(this.storageService.getItem('PurchasesList_Filter_FormValue', {}));
+  }
+
+  saveSettings() {
+    this.storageService.setItem('PurchasesList_SortData', this.gridSortData);
+    this.storageService.setItem('PurchasesList_Filter_IsCollapsed', this.isFilterCollapsed);
+    this.storageService.setItem('PurchasesList_Filter_FormValue', this.filterForm.value);
+  }
+
+  /**
+   * -------------------------------------------
+   * F O R M  F I L T E R
+   * -------------------------------------------
+   */
 
   private createFilterForm() {
-
     this.filterForm = new FormGroup({
       dateFrom: new FormControl(null, [
         Validators.pattern('^20[0-9]{2}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([0-1][0-9]|2[0-3]):([0-5][0-9])$')
@@ -184,44 +201,79 @@ export class PurchasesListComponent implements OnInit, OnDestroy {
         Validators.pattern('^20[0-9]{2}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([0-1][0-9]|2[0-3]):([0-5][0-9])$')
       ]),
     });
-
-    this.filterForm.patchValue(this.storageService.getItem('PurchasesList_Filter_FormValue', {}));
   }
 
   filterCollapse() {
     this.isFilterCollapsed = !this.isFilterCollapsed;
-    this.storageService.setItem('PurchasesList_Filter_IsCollapsed', this.isFilterCollapsed);
+    this.saveSettings();
   }
 
-  applyFilter(store = false) {
+  filterApply(store = false) {
     if (store) {
-      this.storageService.setItem('PurchasesList_Filter_FormValue', this.filterForm.value);
+      this.saveSettings();
     }
-
     this.loadData(1);
   }
 
   filterReset() {
     this.filterForm.reset();
-    this.storageService.setItem('PurchasesList_Filter_FormValue', this.filterForm.value);
+    this.saveSettings();
     this.loadData(1);
   }
 
-  makeHighlightMap() {
-    this.highlightMap = {
-      name: [],
-      price: [],
-      ticketsCount: []
-    };
+  /**
+   * -------------------------------------------
+   * G R I D
+   * -------------------------------------------
+   */
 
-    if (this.searchString.length) {
-      Object.keys(this.highlightMap).forEach( key => this.highlightMap[key].push(this.searchString));
-    }
-
-    Object.keys(this.filterForm.value).forEach( key => {
-      if (key in this.highlightMap) {
-        this.highlightMap[key].push(this.filterForm.value[key]);
+  gridGetActions() {
+    return ($event: GridActionEvent) => {
+      if (this.accessAdmin) {
+        return [
+          {
+            actionName: 'EDIT',
+            title: 'Edit',
+            class: 'btn-outline-success',
+            html: '<i class="far fa-edit"></i>'
+          }, {
+            actionName: 'DELETE',
+            title: 'Delete',
+            class: 'btn-outline-danger',
+            html: '<i class="far fa-trash-alt"></i>'
+          }
+        ];
       }
+      return [];
+    };
+  }
+
+  gridActionClick($event: GridActionEvent) {
+    const purchase: Purchase = $event.record as Purchase;
+    switch ($event.action) {
+      case 'EDIT': {
+        this.router.navigate([ PurchasesRoutesPath.PATH_TO_LIST, purchase.id ]);
+        break;
+      }
+      case 'DELETE': {
+        this.onDelete($event.record as Purchase);
+        break;
+      }
+    }
+  }
+
+  gridTitleClick(column: GridColumn) {
+    this.gridSortColumn(column);
+    this.saveSettings();
+    this.loadData(1);
+  }
+
+  gridCalcColumns() {
+    super.gridCalcColumns((columns) => {
+      if (this.accessAdmin) {
+        columns.push('ACTIONS');
+      }
+      return columns;
     });
   }
 

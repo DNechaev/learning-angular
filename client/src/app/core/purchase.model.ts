@@ -9,7 +9,8 @@ export class Purchase {
     public eventId: number,
     public ticketsCount: number,
     public user?: any,
-    public event?: any
+    public event?: any,
+    public sum?: number,
   ) {}
 }
 
@@ -26,7 +27,8 @@ export class PurchaseAdapter implements Adapter<Purchase> {
       (item.eventId ? +item.eventId : item.eventId),
       item.ticketsCount,
       (item.user ? item.user : undefined),
-      (item.event ? item.event : undefined)
+      (item.event ? item.event : undefined),
+      (item.sum ? +item.sum : item.sum),
     );
   }
 
