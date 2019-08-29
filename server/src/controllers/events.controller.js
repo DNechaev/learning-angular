@@ -1,9 +1,12 @@
 import eventsService from '../services/events.service';
+import SessionService from "../services/session.service";
+import Role from "../shared/roles.enum";
+import purchasesService from "../services/purchases.service";
 
 class EventsController {
 
     static async getAll(ctx) {
-        ctx.body = await eventsService.getAll(ctx.db, ctx.query);
+        ctx.body = await eventsService.getAll(ctx.db, ctx.query, ctx.authorizedUser.id);
     }
 
     static async getById(ctx) {

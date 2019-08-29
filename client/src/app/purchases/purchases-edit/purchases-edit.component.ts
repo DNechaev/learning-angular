@@ -29,9 +29,12 @@ import { EventsService } from 'src/app/events/events.service';
 export class PurchasesEditComponent implements OnInit, OnDestroy {
 
   purchaseId: number;
+  purchase: Purchase;
   subscriptions: Subscription[] = [];
   authorizedUser: User;
   access        = false;
+  accessAdmin   = false;
+  accessUser    = false;
   isLoading     = false;
   purchaseLoaded   = false;
 
@@ -73,7 +76,9 @@ export class PurchasesEditComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.currentUserProvider.currentUser$.subscribe(( user: User ) => {
         this.authorizedUser = user;
-        this.access = this.currentUserProvider.userHasRoles(this.authorizedUser, [Role.ADMIN]);
+        this.access = this.currentUserProvider.userHasRoles(this.authorizedUser, [Role.ADMIN, Role.USER]);
+        this.accessAdmin = this.currentUserProvider.userHasRoles(this.authorizedUser, [ Role.ADMIN ]);
+        this.accessUser = this.currentUserProvider.userHasRoles(this.authorizedUser, [ Role.USER ]);
       })
     );
 
@@ -134,7 +139,7 @@ export class PurchasesEditComponent implements OnInit, OnDestroy {
 
   private applyPurchase(purchase: Purchase): void {
     if (!purchase) { return; }
-
+    this.purchase = purchase;
     this.toastService.success('Purchase loaded!');
     this.purchaseId = purchase.id;
     const values = {

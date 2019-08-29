@@ -22,7 +22,7 @@ import {
 } from '../../shared/components/grid/grid.interfaces';
 import { StorageService } from '../../shared/services/storage.service';
 import { BaseListComponent } from '../../core/base-list.component';
-import {EventsRoutesPath} from "../../events/events.routing";
+import { EventsRoutesPath } from '../../events/events.routing';
 
 @Component({
   selector: 'app-purchases',

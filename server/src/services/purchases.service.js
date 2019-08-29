@@ -7,7 +7,7 @@ class PurchasesService {
         return purchase;
     }
 
-    static async getAll( db, userId, params ) {
+    static async getAll( db, currentUserId, params ) {
 
         const page     = +(params.page || 1);
         const pageSize = +(params.pageSize || 10);
@@ -19,8 +19,8 @@ class PurchasesService {
         const where = {};
 
         // Only self purchases
-        if (userId) {
-            where.userId = userId;
+        if (currentUserId) {
+            where.userId = currentUserId;
         }
 
         // dateFrom
@@ -83,8 +83,14 @@ class PurchasesService {
         return result;
     }
 
-    static async getById( db, purchaseId ) {
+    static async getById( db, purchaseId, currentUserId ) {
+        const where = {};
+        // Only self purchases
+        if (currentUserId) {
+            where.userId = currentUserId;
+        }
         return db.purchase.findByPk( purchaseId, {
+            where: where,
             include: [
                 {
                     model: db.user,

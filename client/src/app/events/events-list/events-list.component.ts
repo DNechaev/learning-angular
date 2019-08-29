@@ -1,28 +1,29 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { map } from 'rxjs/operators';
-import { Subscription } from 'rxjs';
-import { Router } from '@angular/router';
-import { formatDate } from '@angular/common';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {map} from 'rxjs/operators';
+import {Subscription} from 'rxjs';
+import {Router} from '@angular/router';
+import {formatDate} from '@angular/common';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
 
-import { Role } from '../../core/enums';
-import { User } from '../../core/user.model';
-import { Event } from '../../core/event.model';
-import { EventsService } from '../events.service';
-import { LoaderIndicatorService } from '../../shared/services/loader-indicator.service';
-import { SearchService } from '../../shared/services/search.service';
-import { ToastService } from '../../shared/services/toast.service';
-import { EventsRoutesPath } from '../events.routing';
-import { AppRoutesPath } from '../../app-routing.module';
-import { CurrentUserProvider } from '../../shared/providers/current-user.provider';
+import {Role} from '../../core/enums';
+import {User} from '../../core/user.model';
+import {Event} from '../../core/event.model';
+import {EventsService} from '../events.service';
+import {LoaderIndicatorService} from '../../shared/services/loader-indicator.service';
+import {SearchService} from '../../shared/services/search.service';
+import {ToastService} from '../../shared/services/toast.service';
+import {EventsRoutesPath} from '../events.routing';
+import {AppRoutesPath} from '../../app-routing.module';
+import {CurrentUserProvider} from '../../shared/providers/current-user.provider';
 import {
   GridActionEvent,
   GridColumn,
   GridFormatterEvent,
   GridHighlightMap
 } from '../../shared/components/grid/grid.interfaces';
-import { StorageService } from '../../shared/services/storage.service';
-import { BaseListComponent } from '../../core/base-list.component';
+import {StorageService} from '../../shared/services/storage.service';
+import {BaseListComponent} from '../../core/base-list.component';
+import {PurchasesRoutesPath} from "../../purchases/purchases.routing";
 
 
 @Component({
@@ -195,6 +196,10 @@ export class EventsListComponent extends BaseListComponent implements OnInit, On
   gridActionClick($event: GridActionEvent) {
     const event: Event = $event.record as Event;
     switch ($event.action) {
+      case 'PURCHASE': {
+        this.router.navigate([ PurchasesRoutesPath.PATH_TO_LIST, event.myPurchaseId ]);
+        break;
+      }
       case 'BUY': {
         this.router.navigate([ EventsRoutesPath.PATH_TO_LIST, event.id , 'buy' ]);
         break;
@@ -257,6 +262,14 @@ export class EventsListComponent extends BaseListComponent implements OnInit, On
     return ($event: GridActionEvent) => {
       const event = $event.record as Event;
       const actions = [];
+      if (event.myPurchaseId) {
+        actions.push({
+          actionName: 'PURCHASE',
+          title: 'My purchase',
+          class: 'btn-outline-primary',
+          html: '<i class="fa fa-ticket-alt"></i>'
+        });
+      }
       if (this.accessUser && event.status === 3 && event.ticketsAvailable > 0) {
         actions.push({
           actionName: 'BUY',

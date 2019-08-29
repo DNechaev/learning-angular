@@ -142,6 +142,9 @@ class UsersService {
     }
 
     static async update( db, userId, userValue ) {
+        if ( +userId === 1 ) {
+            throw new Error('Access denied');
+        }
         let newData = {
             name: userValue.name,
             email: userValue.email

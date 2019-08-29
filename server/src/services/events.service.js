@@ -2,9 +2,13 @@ import Utils from '../shared/utils';
 
 class EventsService {
 
-    static makeEvent(event) {
+    static makeEvent(event, currentUserId) {
         const purchases = event.dataValues.purchases;
-        event.dataValues.purchasesCount = purchases.length;
+        event.dataValues.myPurchaseId = null;
+        if (currentUserId) {
+            event.dataValues.myPurchaseId = purchases.reduce((id, purchase) => purchase.userId === currentUserId ? purchase.id : id, event.dataValues.myPurchaseId);
+        }
+        event.dataValues.purchasesCount   = purchases.length;
         event.dataValues.ticketsPurchased = purchases.reduce((sum, purchase) => sum + purchase.dataValues.ticketsCount, 0);
         event.dataValues.ticketsAvailable = event.dataValues.ticketsCount - event.dataValues.ticketsPurchased;
 
@@ -14,7 +18,7 @@ class EventsService {
         return event;
     }
 
-    static async getAll( db, params ) {
+    static async getAll( db, params, currentUserId ) {
 
         const page     = +(params.page || 1);
         const pageSize = +(params.pageSize || 10);
@@ -104,7 +108,7 @@ class EventsService {
                         {
                             model: db.purchase,
                             as: 'purchases',
-                            attributes: ['id', 'ticketsCount'],
+                            attributes: ['id', 'userId', 'ticketsCount'],
                         }
                     ],
                     distinct: true, // correct full record count
@@ -116,7 +120,7 @@ class EventsService {
 
         // Summary info by purchases
         result.rows.forEach((row) => {
-            this.makeEvent(row);
+            this.makeEvent(row, currentUserId);
         });
 
 
@@ -131,7 +135,7 @@ class EventsService {
                 {
                     model: db.purchase,
                     as: 'purchases',
-                    attributes: ['id', 'ticketsCount'],
+                    attributes: ['id', 'userId', 'ticketsCount'],
                 }
             ]
         });

@@ -1,4 +1,4 @@
-<table class="table" [ngClass]="tableClass">
+<table class="table table-sm table-hover" [ngClass]="tableClass">
   <thead class="thead-light">
   <tr>
     <th *ngFor='let column of columns'
@@ -32,8 +32,8 @@
           index: idx,
           records: records
         }); let actions">
-      <div class="btn-toolbar" role="toolbar">
-        <div class="btn-group" role="group">
+      <div class="btn-toolbar pl-3" role="toolbar">
+        <div class="btn-group btn-group-sm" role="group">
           <button type="button" *ngFor='let action of actions' [ngClass]="action['class']" class="btn btn-sm" title="{{ action.title }}" (click)="_onAction({ action: action.actionName, record: record, index: idx, records: records, transferData: action.transferData })" [innerHTML]="action.html"></button>
         </div>
       </div>

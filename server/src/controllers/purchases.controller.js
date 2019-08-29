@@ -13,7 +13,12 @@ class PurchasesController {
     }
 
     static async getById(ctx) {
-        const event = await purchasesService.getById(ctx.db, ctx.params.id);
+        let event;
+        if ( !SessionService.userHasRoles( ctx.authorizedUser, [Role.ADMIN] )) {
+            event = await purchasesService.getById(ctx.db, ctx.params.id, ctx.authorizedUser.id);
+        } else {
+            event = await purchasesService.getById(ctx.db, ctx.params.id);
+        }
         if ( event ) {
             ctx.body = event;
         } else {

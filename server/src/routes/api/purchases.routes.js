@@ -9,7 +9,7 @@ export default () => {
 
     router
         .get('/purchases', accessMiddleware([Role.ADMIN, Role.USER] ), purchasesController.getAll )
-        .get('/purchases/:id', accessMiddleware([Role.ADMIN] ),purchasesController.getById )
+        .get('/purchases/:id', accessMiddleware([Role.ADMIN, Role.USER] ),purchasesController.getById )
         .post('/purchases', accessMiddleware([Role.ADMIN] ),purchasesController.create )
         .put('/purchases/:id', accessMiddleware([Role.ADMIN] ),purchasesController.update )
         .delete('/purchases/:id', accessMiddleware([Role.ADMIN] ),purchasesController.delete );

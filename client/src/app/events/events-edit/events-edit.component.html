@@ -3,7 +3,7 @@
     <li class="breadcrumb-item"><a [routerLink]="urls.home">Home</a></li>
     <li class="breadcrumb-item"><a [routerLink]="urls.events">Events</a></li>
     <li *ngIf="accessManager" class="breadcrumb-item active" aria-current="page">Edit Event</li>
-    <li *ngIf="accessUser" class="breadcrumb-item active" aria-current="page">View Event</li>
+    <li *ngIf="!accessManager && accessUser" class="breadcrumb-item active" aria-current="page">View Event</li>
   </ol>
 </nav>
 
@@ -82,7 +82,7 @@
   </div>
 </div>
 
-<div *ngIf="accessUser" >
+<div *ngIf="!accessManager && accessUser" >
   <div id="content_view_header" class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
     <h1 class="h2"><i class="fas fa-calendar-check"></i> View Event [{{ eventId }}] <div [hidden]="!isLoading || !eventLoaded" class="spinner-border text-warning"></div></h1>
   </div>

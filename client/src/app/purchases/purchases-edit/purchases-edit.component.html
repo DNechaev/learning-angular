@@ -2,7 +2,8 @@
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a [routerLink]="urls.home">Home</a></li>
     <li class="breadcrumb-item"><a [routerLink]="urls.purchases">Purchases</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Edit Purchase</li>
+    <li *ngIf="accessAdmin" class="breadcrumb-item active" aria-current="page">Edit Purchase</li>
+    <li *ngIf="!accessAdmin && accessUser" class="breadcrumb-item active" aria-current="page">View Purchase</li>
   </ol>
 </nav>
 
@@ -10,7 +11,7 @@
   <i class="fas fa-exclamation-triangle"></i> You don't have rights for this section.
 </div>
 
-<div *ngIf="access" >
+<div *ngIf="accessAdmin" >
   <div id="content_header" class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
     <h1 class="h2"><i class="fas fa-shopping-basket"></i> Edit Purchase [{{ purchaseId }}] <div [hidden]="!isLoading || !purchaseLoaded" class="spinner-border text-warning"></div></h1>
   </div>
@@ -111,3 +112,38 @@
   </div>
 </div>
 
+
+<div *ngIf="!accessAdmin && accessUser" >
+  <div id="content_view_header" class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+    <h1 class="h2"><i class="fas fa-shopping-basket"></i> Edit Purchase [{{ purchaseId }}] <div [hidden]="!isLoading || !purchaseLoaded" class="spinner-border text-warning"></div></h1>
+  </div>
+  <div id="content_view_body" class="container-fluid" >
+
+    <form [formGroup]="purchaseForm" (ngSubmit)="onSubmit()" class="form-horizontal">
+
+      <div class="form-group row">
+        <label class="col-sm-3 col-form-label col-form-label-lg">Date:</label>
+        <label class="col-sm-9 col-form-label col-form-label-lg">{{ purchaseForm.value.date | date: 'medium' }}</label>
+      </div>
+
+      <div class="form-group row">
+        <label class="col-sm-3 col-form-label col-form-label-lg">Event:</label>
+        <label class="col-sm-9 col-form-label col-form-label-lg">{{ purchase.event.name }}</label>
+      </div>
+
+      <div class="form-group row">
+        <label class="col-sm-3 col-form-label col-form-label-lg">Tickets count:</label>
+        <label class="col-sm-9 col-form-label col-form-label-lg">{{ purchaseForm.value.ticketsCount }}</label>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-sm-12">
+          <div class="btn-group float-right" role="group">
+            <button type="button" class="btn btn-primary" [routerLink]="urls.purchases">OK</button>
+          </div>
+        </div>
+      </div>
+
+    </form>
+  </div>
+</div>

@@ -12,7 +12,8 @@ export class Event {
     public ticketsPurchased?: number,
     public ticketsAvailable?: number,
     public purchasesCount?: number,
-    public status?: number
+    public status?: number,
+    public myPurchaseId?: number,
   ) {}
 }
 
@@ -33,6 +34,7 @@ export class EventAdapter implements Adapter<Event> {
       (item.ticketsAvailable ? +item.ticketsAvailable : item.ticketsAvailable),
       (item.purchasesCount ? +item.purchasesCount : item.purchasesCount),
       (item.status ? +item.status : item.status),
+      (item.myPurchaseId ? +item.myPurchaseId : item.myPurchaseId),
     );
   }
 
