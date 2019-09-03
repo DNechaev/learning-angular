@@ -1,0 +1,70 @@
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a [routerLink]="urls.home">Home</a></li>
+    <li class="breadcrumb-item"><a [routerLink]="urls.events">Events</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Buy</li>
+  </ol>
+</nav>
+
+<div *ngIf="!access" id="content_access" class="alert alert-danger" role="alert">
+  <i class="fas fa-exclamation-triangle"></i> You don't have rights for this section.
+</div>
+
+<div *ngIf="access" >
+  <div id="content_header" class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+    <h1 class="h2"><i class="fas fa-shopping-cart"></i> Buy <div [hidden]="!isLoading || !eventLoaded" class="spinner-border text-warning"></div></h1>
+  </div>
+  <div id="content_body" class="container-fluid" >
+
+    <form [formGroup]="buyForm" (ngSubmit)="onSubmit()" class="form-horizontal">
+
+      <div class="form-group row">
+        <label class="col-sm-3 col-form-label col-form-label-lg">Event:</label>
+        <label class="col-sm-9 col-form-label col-form-label-lg">{{ event.name }}</label>
+      </div>
+
+      <div class="form-group row">
+        <label class="col-sm-3 col-form-label col-form-label-lg">Begin date:</label>
+        <label class="col-sm-9 col-form-label col-form-label-lg">{{ event.dateBegin | date: 'medium' }}</label>
+      </div>
+
+      <div class="form-group row">
+        <label class="col-sm-3 col-form-label col-form-label-lg">End date:</label>
+        <label class="col-sm-9 col-form-label col-form-label-lg">{{ event.dateEnd | date: 'medium' }}</label>
+      </div>
+
+      <div class="form-group row">
+        <label class="col-sm-3 col-form-label col-form-label-lg">Available tickets:</label>
+        <label class="col-sm-9 col-form-label col-form-label-lg">{{ event.ticketsAvailable }}</label>
+      </div>
+
+      <div *ngIf="canBuy" class="form-group row">
+        <label class="col-sm-3 col-form-label col-form-label-lg" for="fieldTicketsCount">Tickets count:</label>
+        <div class="col-sm-9 input-group">
+          <div class="input-group-prepend" *ngIf="buyForm.get('ticketsCount').invalid">
+            <span class="input-group-text text-danger error-symbol" title="Count has bad format"><i class="fa fa-exclamation-triangle"></i></span>
+          </div>
+          <input formControlName="ticketsCount" type="number" class="form-control form-control-lg" id="fieldTicketsCount" placeholder="Enter count of tickets">
+        </div>
+      </div>
+
+      <div *ngIf="!canBuy" class="form-group row">
+        <div class="col-sm-12 alert alert-danger" role="alert">
+          <i class="fas fa-exclamation-triangle"></i> You don't have rights for this section.
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-sm-12">
+          <div class="btn-group float-right" role="group">
+            <button *ngIf="canBuy" type="submit" class="btn btn-primary" [disabled]="buyForm.invalid">Buy</button>
+            <button *ngIf="canBuy" type="button" class="btn btn-secondary" [routerLink]="urls.events">Cancel</button>
+            <button *ngIf="!canBuy" type="button" class="btn btn-secondary" [routerLink]="urls.events">Back</button>
+          </div>
+        </div>
+      </div>
+
+    </form>
+  </div>
+</div>
+

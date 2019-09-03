@@ -1,0 +1,44 @@
+<div class="container" *ngIf="this.authorizedUser" >
+  <h1>{{ this.authorizedUser.name }}, you are already logined! </h1>
+  <a [routerLink]="authRoute.logout">Logout</a>
+</div>
+
+<div class="container" *ngIf="!this.authorizedUser" >
+  <h1 class="text-center">Registration</h1>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-horizontal" >
+    <div class="form-group row" id="formGroupEmail">
+      <label class="col-sm-3 col-form-label" for="inputEmail">Email</label>
+      <div class="col-sm-9 input-group">
+        <div class="input-group-prepend" *ngIf="form.get('email').invalid && form.get('email').touched">
+          <span class="input-group-text text-danger error-symbol border-danger" title="Email has bad format"><i class="fa fa-exclamation-triangle"></i></span>
+        </div>
+        <input formControlName="email" type="email" class="form-control" [ngClass]="{'border-danger': form.get('email').invalid && form.get('email').touched}" id="inputEmail" placeholder="Email">
+      </div>
+    </div>
+    <div class="form-group row" id="formGroupPassword">
+      <label class="col-sm-3 col-form-label" for="inputPassword">Password</label>
+      <div class="col-sm-9 input-group">
+        <div class="input-group-prepend" *ngIf="form.get('password').invalid && form.get('password').touched">
+          <span class="input-group-text text-danger error-symbol border-danger" title="Password has bad format"><i class="fa fa-exclamation-triangle"></i></span>
+        </div>
+        <input formControlName="password"  type="password" class="form-control" [ngClass]="{'border-danger': form.get('password').invalid && form.get('password').touched}" id="inputPassword" placeholder="Password">
+      </div>
+    </div>
+    <div class="form-group row" id="formGroupName">
+      <label class="col-sm-3 col-form-label" for="inputName">Name</label>
+      <div class="col-sm-9 input-group">
+        <div class="input-group-prepend" *ngIf="form.get('name').invalid && form.get('name').touched">
+          <span class="input-group-text text-danger error-symbol border-danger" title="Name has bad format"><i class="fa fa-exclamation-triangle"></i></span>
+        </div>
+        <input formControlName="name"  type="text" class="form-control" [ngClass]="{'border-danger': form.get('name').invalid && form.get('name').touched}" id="inputName" placeholder="Name">
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-sm-6 offset-sm-3">
+        <button type="submit" class="btn btn-primary btn-block" [disabled]="form.invalid">Registration</button>
+      </div>
+    </div>
+  </form>
+  <hr/>
+  <a [routerLink]="authRoute.login">Are you already registered? Sign in.</a>
+</div>

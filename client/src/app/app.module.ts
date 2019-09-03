@@ -1,22 +1,29 @@
-import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { HttpClientModule } from '@angular/common/http';
 
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { UsersComponent } from './components/users/users.component';
-import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
+import { SharedModule } from './shared/shared.module';
+import { EventsModule } from './events/events.module';
+import { PurchasesModule } from './purchases/purchases.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 
 @NgModule({
   declarations: [
     AppComponent,
-    UsersComponent,
-    PageNotFoundComponent
   ],
   imports: [
-    BrowserModule,
-    AppRoutingModule
+    HttpClientModule,
+    SharedModule,
+    AuthModule,
+    DashboardModule,
+    UsersModule,
+    EventsModule,
+    PurchasesModule,
+    AppRoutingModule,
   ],
-  providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [ AppComponent ],
 })
-export class AppModule { }
+export class AppModule {}

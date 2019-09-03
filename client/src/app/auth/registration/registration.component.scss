@@ -1,0 +1,8 @@
+@import '~src/sass/variables';
+
+/* Show bad fields in forms */
+.input-group-text {
+  &.error-symbol {
+    background-color: $color-error-field;
+  }
+}

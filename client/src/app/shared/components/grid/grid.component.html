@@ -1,0 +1,43 @@
+<table class="table table-sm table-hover" [ngClass]="tableClass">
+  <thead class="thead-light">
+  <tr>
+    <th *ngFor='let column of columns'
+        style="{{ column.style }}"
+        [ngClass]="column.headClass"
+        (click)="_onTitleClick(column)">
+      {{ column.title }} <i *ngIf="column.sort === 'asc'" class="fa fa-arrow-down"></i><i *ngIf="column.sort === 'desc'" class="fa fa-arrow-up"></i><i *ngIf="column.filtered" class="fa fa-filter"></i>
+    </th>
+    <th style="width: 5%" class="text-center" *ngIf="showActionsColumn">Actions</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor='let record of records; let idx = index'
+    [ngClass] = "_getRowClass({
+          record: record,
+          index: idx,
+          records: records
+        })">
+    <td *ngFor='let column of columns'
+        [innerHTML]="highlightCell(column, column.formatter({
+          value: record[column.field],
+          record: record,
+          index: idx,
+          records: records,
+          column: column
+        }))"
+        [ngClass]="column.cellClass"
+    ></td>
+    <td *ngIf="_getActions({
+          record: record,
+          index: idx,
+          records: records
+        }); let actions">
+      <div class="btn-toolbar pl-3" role="toolbar">
+        <div class="btn-group btn-group-sm" role="group">
+          <button type="button" *ngFor='let action of actions' [ngClass]="action['class']" class="btn btn-sm" title="{{ action.title }}" (click)="_onAction({ action: action.actionName, record: record, index: idx, records: records, transferData: action.transferData })" [innerHTML]="action.html"></button>
+        </div>
+      </div>
+    </td>
+  </tr>
+  </tbody>
+</table>

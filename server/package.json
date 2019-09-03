@@ -2,26 +2,110 @@
   "name": "restApiTestServer",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./src/app.js",
   "scripts": {
-    "start": "./node_modules/nodemon/bin/nodemon.js server.js",
-    "sequelize-skeleton": "./node_modules/sequelize-cli/lib/sequelize init:models; ./node_modules/sequelize-cli/lib/sequelize init:config",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "./node_modules/nodemon/bin/nodemon.js -r esm ./src/app.js"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
-    "body-parser": "^1.19.0",
-    "express": "^4.17.1",
+    "@koa/cors": "^2.2.3",
+    "koa": "^2.7.0",
+    "koa-bodyparser": "^4.2.1",
+    "koa-router": "^7.4.0",
+    "koa-static": "^5.0.0",
     "mysql2": "^1.6.5",
-    "sequelize": "^5.10.0"
+    "sequelize": "^5.10.0",
+    "esm": "^3.0.0"
   },
   "devDependencies": {
-    "faker": "^4.1.0",
-    "lodash.random": "^3.2.0",
-    "lodash.times": "^4.3.2",
     "nodemon": "^1.19.1",
     "sequelize-cli": "^5.5.0"
+  },
+  "eslintConfig": {
+    "env": {
+      "node": true,
+      "es6": true,
+      "mocha": true
+    },
+    "parserOptions": {
+      "ecmaVersion": 2018,
+      "sourceType": "module"
+    },
+    "extends": "eslint:recommended",
+    "rules": {
+      "array-bracket-spacing": [
+        "error",
+        "always"
+      ],
+      "comma-dangle": [
+        "error",
+        "always-multiline"
+      ],
+      "comma-spacing": [
+        "error"
+      ],
+      "curly": [
+        "error",
+        "multi-line"
+      ],
+      "indent": [
+        "error",
+        4,
+        {
+          "SwitchCase": 1
+        }
+      ],
+      "key-spacing": [
+        "error",
+        {
+          "align": "value"
+        }
+      ],
+      "keyword-spacing": [
+        "error"
+      ],
+      "no-case-declarations": "off",
+      "no-console": [
+        "warn",
+        {
+          "allow": [
+            "error",
+            "info"
+          ]
+        }
+      ],
+      "no-redeclare": "warn",
+      "no-shadow": "warn",
+      "no-unused-vars": "warn",
+      "no-var": "error",
+      "object-curly-spacing": [
+        "error",
+        "always"
+      ],
+      "prefer-const": "error",
+      "quotes": [
+        "error",
+        "single",
+        "avoid-escape"
+      ],
+      "require-await": "error",
+      "semi": [
+        "error",
+        "always"
+      ],
+      "space-before-blocks": [
+        "error",
+        "always"
+      ],
+      "space-in-parens": [
+        "error"
+      ],
+      "strict": [
+        "error",
+        "global"
+      ]
+    }
   }
 }

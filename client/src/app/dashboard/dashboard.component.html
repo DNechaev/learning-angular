@@ -1,0 +1,139 @@
+<app-main-layout>
+  <app-toasts></app-toasts>
+
+  <div id="content_body">
+
+    <div class="card-columns">
+
+      <div *ngIf="accessAdmin && reportUsers" class="card bg-light border-warning shadow mb-4">
+        <div class="card-header bg-warning text-white font-weight-bold">Users</div>
+        <div class="card-body">
+          <p class="card-text">This shows information about all registered users.</p>
+          <table class="table table-borderless">
+            <thead>
+            <tr>
+              <th></th>
+              <th class="text-right">Count</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <th>Total</th>
+              <td class="text-right">{{ reportUsers.total }}</td>
+            </tr>
+            <tr>
+              <th>Admins</th>
+              <td class="text-right">{{ reportUsers.admins }}</td>
+            </tr>
+            <tr>
+              <th>Managers</th>
+              <td class="text-right">{{ reportUsers.managers }}</td>
+            </tr>
+            <tr>
+              <th>Users</th>
+              <td class="text-right">{{ reportUsers.users }}</td>
+            </tr>
+            </tbody>
+          </table>
+          <a [routerLink]="urls.users" class="card-link d-flex justify-content-end">View</a>
+        </div>
+      </div>
+
+      <div *ngIf="reportEvents" class="card bg-light border-primary shadow mb-4">
+        <div class="card-header bg-primary text-white font-weight-bold">Events</div>
+        <div class="card-body">
+          <p class="card-text">This shows information about events for the entire period of time.</p>
+          <table class="table table-borderless">
+            <thead>
+            <tr>
+              <th></th>
+              <th class="text-right">Count</th>
+              <th class="text-right">Sum</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <th>Total</th>
+              <td class="text-right">{{ reportEvents.totalCount }}</td>
+              <td class="text-right">{{ reportEvents.totalSum | currency }}</td>
+            </tr>
+            <tr>
+              <th>Will be</th>
+              <td class="text-right">{{ reportEvents.willCount }}</td>
+              <td class="text-right">{{ reportEvents.willSum | currency }}</td>
+            </tr>
+            <tr>
+              <th>Goes</th>
+              <td class="text-right">{{ reportEvents.goesCount }}</td>
+              <td class="text-right">{{ reportEvents.goesSum | currency }}</td>
+            </tr>
+            <tr>
+              <th>Passed</th>
+              <td class="text-right">{{ reportEvents.passedCount }}</td>
+              <td class="text-right">{{ reportEvents.passedSum | currency }}</td>
+            </tr>
+            </tbody>
+          </table>
+          <a [routerLink]="urls.events" class="card-link d-flex justify-content-end">View</a>
+        </div>
+      </div>
+
+      <div *ngIf="reportPurchases" class="card bg-light border-success shadow mb-4">
+        <div class="card-header bg-success text-white font-weight-bold">Purchases</div>
+        <div class="card-body">
+          <p class="card-text">This shows data on ticket purchases for all events for the entire period of time.</p>
+          <table class="table table-borderless">
+            <tbody>
+            <tr>
+              <th>Total</th>
+              <td class="text-right">{{ reportPurchases.total }}</td>
+            </tr>
+            <tr>
+              <th>Sum</th>
+              <td class="text-right">{{ reportPurchases.sum | currency }}</td>
+            </tr>
+            <tr>
+              <th>Avg price</th>
+              <td class="text-right">{{ reportPurchases.price | currency }}</td>
+            </tr>
+            </tbody>
+          </table>
+          <a [routerLink]="urls.purchases" class="card-link d-flex justify-content-end">View</a>
+        </div>
+      </div>
+
+      <div class="card bg-light border-info shadow mb-4">
+        <div class="card-header bg-info text-white font-weight-bold">My Profile</div>
+        <div class="card-body">
+          <p class="card-text">This shows your profile details.</p>
+          <table class="table table-borderless">
+            <tbody>
+            <tr>
+              <th>Name</th>
+              <td>{{ authorizedUser.name }}</td>
+            </tr>
+            <tr>
+              <th>Email</th>
+              <td>{{ authorizedUser.email }}</td>
+            </tr>
+            <tr>
+              <th>Roles</th>
+              <td>
+                <div *ngFor='let role of authorizedUser.roles'>
+                  <label>{{ role.name }}</label>
+                </div>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+
+          <a [routerLink]="urls.logout" class="card-link d-flex justify-content-end">Sign out</a>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</app-main-layout>
+

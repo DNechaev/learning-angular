@@ -1,0 +1,128 @@
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a [routerLink]="urls.home">Home</a></li>
+    <li class="breadcrumb-item"><a [routerLink]="urls.events">Events</a></li>
+    <li *ngIf="accessManager" class="breadcrumb-item active" aria-current="page">Edit Event</li>
+    <li *ngIf="!accessManager && accessUser" class="breadcrumb-item active" aria-current="page">View Event</li>
+  </ol>
+</nav>
+
+<div *ngIf="!access" id="content_access" class="alert alert-danger" role="alert">
+  <i class="fas fa-exclamation-triangle"></i> You don't have rights for this section.
+</div>
+
+<div *ngIf="accessManager" >
+  <div id="content_header" class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+    <h1 class="h2"><i class="fas fa-calendar-check"></i> Edit Event [{{ eventId }}] <div [hidden]="!isLoading || !eventLoaded" class="spinner-border text-warning"></div></h1>
+  </div>
+  <div id="content_body" class="container-fluid" >
+
+    <form [formGroup]="eventForm" (ngSubmit)="onSubmit()" class="form-horizontal">
+
+      <div class="form-group row">
+        <label class="col-sm-3 col-form-label col-form-label-lg" for="fieldName">Name:</label>
+        <div class="col-sm-9 input-group">
+          <div class="input-group-prepend" *ngIf="eventForm.get('name').invalid && eventForm.get('name').touched">
+            <span class="input-group-text text-danger error-symbol" title="Name has bad format"><i class="fa fa-exclamation-triangle"></i></span>
+          </div>
+          <input formControlName="name" type="text" class="form-control form-control-lg" id="fieldName" placeholder="Enter name">
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label class="col-sm-3 col-form-label col-form-label-lg" for="fieldDateBegin">Begin date:</label>
+        <div class="col-sm-9 input-group">
+          <div class="input-group-prepend" *ngIf="eventForm.get('dateBegin').invalid && eventForm.get('dateBegin').touched">
+            <span class="input-group-text text-danger error-symbol" title="Date has bad format"><i class="fa fa-exclamation-triangle"></i></span>
+          </div>
+          <input formControlName="dateBegin" type="datetime-local" class="form-control form-control-lg" id="fieldDateBegin" placeholder="Enter begin date">
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label class="col-sm-3 col-form-label col-form-label-lg" for="fieldDateEnd">End date:</label>
+        <div class="col-sm-9 input-group">
+          <div class="input-group-prepend" *ngIf="(eventForm.get('dateEnd').invalid && eventForm.get('dateEnd').touched) || eventForm.errors?.hasOwnProperty('date')">
+            <span class="input-group-text text-danger error-symbol" title="Date has bad format"><i class="fa fa-exclamation-triangle"></i></span>
+          </div>
+          <input formControlName="dateEnd" type="datetime-local" class="form-control form-control-lg" id="fieldDateEnd" placeholder="Enter end date">
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label class="col-sm-3 col-form-label col-form-label-lg" for="fieldPrice">Price:</label>
+        <div class="col-sm-9 input-group">
+          <div class="input-group-prepend" *ngIf="eventForm.get('price').invalid && eventForm.get('price').touched">
+            <span class="input-group-text text-danger error-symbol" title="Price has bad format"><i class="fa fa-exclamation-triangle"></i></span>
+          </div>
+          <input formControlName="price" type="number" class="form-control form-control-lg" id="fieldPrice" placeholder="Enter price">
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label class="col-sm-3 col-form-label col-form-label-lg" for="fieldTicketsCount">Tickets count:</label>
+        <div class="col-sm-9 input-group">
+          <div class="input-group-prepend" *ngIf="eventForm.get('ticketsCount').invalid && eventForm.get('ticketsCount').touched">
+            <span class="input-group-text text-danger error-symbol" title="Count has bad format"><i class="fa fa-exclamation-triangle"></i></span>
+          </div>
+          <input formControlName="ticketsCount" type="number" class="form-control form-control-lg" id="fieldTicketsCount" placeholder="Enter count of tickets">
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-sm-12">
+          <div class="btn-group float-right" role="group">
+            <button type="submit" class="btn btn-primary" [disabled]="eventForm.invalid">Save</button>
+            <button type="button" class="btn btn-secondary" [routerLink]="urls.events">Cancel</button>
+          </div>
+        </div>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+<div *ngIf="!accessManager && accessUser" >
+  <div id="content_view_header" class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+    <h1 class="h2"><i class="fas fa-calendar-check"></i> View Event [{{ eventId }}] <div [hidden]="!isLoading || !eventLoaded" class="spinner-border text-warning"></div></h1>
+  </div>
+  <div id="content_view_body" class="container-fluid" >
+
+    <form class="form-horizontal">
+
+      <div class="form-group row">
+        <label class="col-sm-3 col-form-label col-form-label-lg">Name:</label>
+        <label class="col-sm-9 col-form-label col-form-label-lg">{{ eventForm.value.name }}</label>
+      </div>
+
+      <div class="form-group row">
+        <label class="col-sm-3 col-form-label col-form-label-lg">Begin date:</label>
+        <label class="col-sm-9 col-form-label col-form-label-lg">{{ eventForm.value.dateBegin | date: 'medium' }}</label>
+      </div>
+
+      <div class="form-group row">
+        <label class="col-sm-3 col-form-label col-form-label-lg">End date:</label>
+        <label class="col-sm-9 col-form-label col-form-label-lg">{{ eventForm.value.dateEnd | date: 'medium' }}</label>
+      </div>
+
+      <div class="form-group row">
+        <label class="col-sm-3 col-form-label col-form-label-lg">Price:</label>
+        <label class="col-sm-9 col-form-label col-form-label-lg">{{ eventForm.value.price }}</label>
+      </div>
+
+      <div class="form-group row">
+        <label class="col-sm-3 col-form-label col-form-label-lg">Tickets count:</label>
+        <label class="col-sm-9 col-form-label col-form-label-lg">{{ eventForm.value.ticketsCount }}</label>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-sm-12">
+          <div class="btn-group float-right" role="group">
+            <button type="button" class="btn btn-primary" [routerLink]="urls.events">OK</button>
+          </div>
+        </div>
+      </div>
+
+    </form>
+  </div>
+</div>

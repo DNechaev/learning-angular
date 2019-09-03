@@ -1,0 +1,11 @@
+@import '~src/sass/variables';
+
+.form-control-dark {
+  color: $search-component-color;
+  background-color: $search-component-background-color;
+  border-color: $search-component-border-color;
+  &:focus {
+    border-color: transparent;
+    box-shadow: 0 0 0 3px $search-component-box-shadow;
+  }
+}

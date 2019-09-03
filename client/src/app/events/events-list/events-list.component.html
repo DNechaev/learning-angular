@@ -1,0 +1,90 @@
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a [routerLink]="urls.home">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Events</li>
+  </ol>
+</nav>
+
+<div *ngIf="!access" id="content_access" class="alert alert-danger" role="alert">
+  <i class="fas fa-exclamation-triangle"></i> You don't have rights for this section.
+</div>
+
+<div *ngIf="access" id="content_header" class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+  <h1 class="h2"><i class="fas fa-calendar-alt"></i> Events <div [hidden]="!isLoading" class="spinner-border text-warning"></div></h1>
+  <div class="btn-toolbar mb-2 mb-md-0">
+    <button *ngIf="accessManager" type="button" class="btn btn-outline-info mr-1" [routerLink]="[urls.events, 'new']"><i class="fa fa-plus"></i> Create</button>
+    <button type="button" class="btn btn-outline-primary mr-1" (click)="filterCollapse()"
+            [attr.aria-expanded]="!isFilterCollapsed" aria-controls="content_settings">
+      <i class="fa" [ngClass]="isFilterCollapsed ? 'fa-caret-down' : 'fa-caret-up'"></i>
+    </button>
+    <button type="button" class="btn btn-outline-secondary mr-1" (click)="loadData()">
+      <i class="fa fa-sync"></i>
+    </button>
+  </div>
+</div>
+
+<div *ngIf="access" id="content_settings" [ngbCollapse]="isFilterCollapsed">
+  <div class="card border-primary mb-3">
+    <div class="card-header">Filters</div>
+    <div class="card-body pb-2">
+      <form [formGroup]="filterForm" (ngSubmit)="applyFilter(true)" class="form-horizontal">
+
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label" for="fieldName">Name:</label>
+          <div class="col-sm-10 input-group">
+            <input formControlName="name" type="text" class="form-control" id="fieldName">
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label" for="fieldDateBeginFrom">Begin date:</label>
+          <div class="col-sm-5 input-group">
+            <div class="input-group-prepend"><span class="input-group-text">from</span></div>
+            <input formControlName="dateBeginFrom" type="datetime-local" class="form-control" id="fieldDateBeginFrom">
+          </div>
+          <div class="col-sm-5 input-group">
+            <div class="input-group-prepend"><span class="input-group-text">to</span></div>
+            <input formControlName="dateBeginTo" type="datetime-local" class="form-control" id="fieldDateBeginTo">
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label" for="fieldDateEndFrom">End date:</label>
+          <div class="col-sm-5 input-group">
+            <div class="input-group-prepend"><span class="input-group-text">from</span></div>
+            <input formControlName="dateEndFrom" type="datetime-local" class="form-control" id="fieldDateEndFrom">
+          </div>
+          <div class="col-sm-5 input-group">
+            <div class="input-group-prepend"><span class="input-group-text">to</span></div>
+            <input formControlName="dateEndTo" type="datetime-local" class="form-control" id="fieldDateEndTo">
+          </div>
+        </div>
+
+        <div class="form-group row mb-2">
+          <div class="col-sm-12">
+            <div class="btn-group float-right" role="group">
+              <button type="submit" class="btn btn-primary" [disabled]="filterForm.invalid">Apply</button>
+              <button type="button" class="btn btn btn-outline-info" (click)="filterReset()">Reset</button>
+            </div>
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="access" id="content_body">
+  <app-grid
+    tableClass="table-striped"
+    [columns]="gridRenderColumns"
+    [records]="events"
+    [getRowClass]="getRowClass()"
+    [getActions]="gridGetActions()"
+    (onAction)="gridActionClick($event)"
+    (onTitleClick)="gridTitleClick($event)"
+  ></app-grid>
+  <ngb-pagination class="d-flex justify-content-center" (pageChange)="onPageChange($event)" [collectionSize]="totalRecords" [pageSize]="pageSize" [(page)]="currentPage"></ngb-pagination>
+</div>
+
+
